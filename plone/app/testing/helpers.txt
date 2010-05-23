@@ -1,0 +1,21 @@
+Plone testing helpers
+--------------------
+
+This package contains various test helpers. They are all importable from
+``plone.app.testing`` directly, or from their canonical locations at
+``plone.app.testing.helpers``.
+
+    >>> from plone.app.testing import helpers
+
+For testing, we need a testrunner
+
+    >>> from zope.testing.testrunner import runner
+
+User management
+---------------
+
+Product and profile installation
+--------------------------------
+
+Component architecture sandboxing
+---------------------------------
