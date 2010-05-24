@@ -11,7 +11,7 @@ def test_suite():
     suite = unittest.TestSuite()
     suite.addTests([
         doctest.DocFileSuite('cleanup.txt', optionflags=OPTIONFLAGS),
-        doctest.DocFileSuite('layers.txt', optionflags=OPTIONFLAGS),
-        doctest.DocFileSuite('helpers.txt',optionflags=OPTIONFLAGS),
+        doctest.DocFileSuite('layers.txt',  optionflags=OPTIONFLAGS),
+        doctest.DocFileSuite('helpers.txt', optionflags=OPTIONFLAGS),
     ])
     return suite
