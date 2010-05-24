@@ -1,0 +1,55 @@
+Cleanup functions
+-----------------
+
+When imported, this package will register a few cleanup handlers with
+``zope.testing.cleanup`` to clean up global state left by various Zope, CMF
+and Plone packages.
+
+    >>> import zope.testing.cleanup
+
+GenericSetup profiles registry
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The profiles registry is populated on startup via the ``registerProfile()``
+or the corresponding ``<genericsetup:registerProfile />`` ZCML directive.
+
+    >>> from Products.GenericSetup.registry import _profile_registry
+
+A dummy profile may look like so:
+
+    >>> _profile_registry.registerProfile('dummy', u"Dummy profile", u"", ".", 'plone.app.testing')
+
+We can find it in the profile registry again:
+
+    >>> _profile_registry.listProfiles()
+    ('plone.app.testing:dummy',)
+    
+On cleanup, the registry is cleared.
+
+    >>> zope.testing.cleanup.cleanUp()
+
+    >>> _profile_registry.listProfiles()
+    ()
+
+PluggableAuthService MultiPlugins list
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The ``PluggableAuthService`` package maintains a global list of so-called
+multi-plugins.
+
+    >>> from Products.PluggableAuthService import PluggableAuthService
+    >>> PluggableAuthService.MultiPlugins
+    []
+
+A new plugin can be registered using the ``registerPlugin()`` API.
+    
+    >>> PluggableAuthService.registerMultiPlugin("dummy_plugin")
+    >>> PluggableAuthService.MultiPlugins
+    ['dummy_plugin']
+
+On cleanup, this list is emptied.
+
+    >>> zope.testing.cleanup.cleanUp()
+
+    >>> PluggableAuthService.MultiPlugins
+    []
