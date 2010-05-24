@@ -2,9 +2,7 @@
 # plone.app.testing directly
 
 from plone.testing import Layer
-from plone.testing import z2
-from plone.testing import zca
-from plone.testing import zodb
+from plone.testing import zodb, zca, z2
 
 from plone.app.testing.interfaces import (
         PLONE_SITE_ID,
@@ -18,8 +16,6 @@ from plone.app.testing.interfaces import (
         SITE_OWNER_USER_NAME,
         SITE_OWNER_USER_PASSWORD
     )
-
-from plone.app.testing import helpers
 
 class PloneSite(Layer):
     """This layer sets up a basic Plone site, with:
@@ -286,6 +282,7 @@ class PloneSite(Layer):
         portal.setupCurrentSkin(portal.REQUEST)
         
         # Pseudo-login as the test user
+        from plone.app.testing import helpers
         helpers.login(portal, TEST_USER_NAME)
     
     def tearDownEnvironment(self, portal):
@@ -294,6 +291,7 @@ class PloneSite(Layer):
         """
         
         # Clear the security manager
+        from plone.app.testing import helpers
         helpers.logout()
         
         # Clear any cached data using plone.memoize's RAM caches

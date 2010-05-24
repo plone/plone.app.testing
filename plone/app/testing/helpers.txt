@@ -1,9 +1,12 @@
 Plone testing helpers
---------------------
+---------------------
 
-This package contains various test helpers. They are all importable from
-``plone.app.testing`` directly, or from their canonical locations at
-``plone.app.testing.helpers``.
+This package contains various test helpers that are useful for writing custom
+layers using the ``PloneSite`` fixture, and for writing tests using such
+layers.
+
+The helpers are all importable from ``plone.app.testing`` directly, or from
+their canonical locations at ``plone.app.testing.helpers``.
 
     >>> from plone.app.testing import helpers
 
@@ -11,11 +14,354 @@ For testing, we need a testrunner
 
     >>> from zope.testing.testrunner import runner
 
-User management
----------------
+Let's create a custom layer that exercises these helpers. In this layer, we
+will perform the following setup:
 
-Product and profile installation
---------------------------------
+1. Stack a new ``DemoStorage`` on top of the one from the base layer. This
+   ensures that any persistent changes performed in this layer can be torn
+   down completely, simply by popping the demo storage.
 
-Component architecture sandboxing
----------------------------------
+2. Push a new global component registry. This allows us to register components
+   (e.g. by loading ZCML or using the test API from ``zope.component``) and
+   tear down those registration easily by popping the component registry.
+   We pass the portal so that the local component site manager can be
+   configured appropriately.
+   
+   *Note:* We obtain the portal from the ``ploneSite()`` context manager,
+   which will ensure that the portal is properly set up and commit our changes
+   on exiting the ``with`` block.
+
+3. Make some persistent changes, to illustrate how these are torn down when
+   we pop the ZODB ``DemoStorage``.
+
+4. Install a product using the ``portal_quickinstaller`` tool.
+
+5. Apply a named extension profile.
+
+On tear-down, we only need to pop the ``DemoStorage`` (to roll back all
+persistent changes) and the stacked component registry (to roll back all
+global component registrations). Of course, if our setup had changed any other
+global or external state, we would need to tear that down as well.
+    
+    >>> from plone.testing import Layer
+    >>> from plone.testing import zca, z2, zodb
+
+    >>> from plone.app.testing import PLONE_INTEGRATION_TESTING
+
+    >>> class HelperDemos(Layer):
+    ...     defaultBases = (PLONE_INTEGRATION_TESTING,)
+    ...     
+    ...     def setUp(self):
+    ...         
+    ...         # Push a new database storage so that database changes
+    ...         # commited during layer setup can be easily torn down
+    ...         self['zodbDB'] = zodb.stackDemoStorage(self.get('zodbDB'), name='HelperDemos')
+    ...         
+    ...         with helpers.ploneSite() as portal:
+    ...             
+    ...             # Push a new component registry so that ZCML registations 
+    ...             # and other global component registry changes are sandboxed
+    ...             helpers.pushGlobalRegistry(portal)
+    ...             
+    ...             # Register some components
+    ...             from zope.component import provideUtility
+    ...             from zope.interface import Interface
+    ...             provideUtility(object(), Interface, name=u"dummy1")
+    ...
+    ...             # Make some persistent changes
+    ...             portal.title = u"New title"
+    ...                 
+    ...             # Install a product using portal_quickinstaller
+    ...             helpers.quickInstallProduct(portal, 'plonetheme.classic')
+    ...             
+    ...             # Apply a GenericSetup (extension) profile
+    ...             helpers.applyProfile(portal, 'plonetheme.sunburst:default')
+    ...     
+    ...     def tearDown(self):
+    ...         
+    ...         # Pop the component registry, thus removing component
+    ...         # architecture registrations
+    ...         with helpers.ploneSite() as portal:
+    ...             helpers.popGlobalRegistry(portal)
+    ...         
+    ...         # Pop the demo storage, thus restoring the database to the
+    ...         # previous state
+    ...         self['zodbDB'].close()
+    ...         del self['zodbDB']
+
+    >>> HELPER_DEMOS = HelperDemos()
+
+Let's now simulate layer setup:
+
+    >>> options = runner.get_options([], [])
+    >>> setupLayers = {}
+    >>> runner.setup_layer(options, HELPER_DEMOS, setupLayers)
+    Set up plone.testing.zca.LayerCleanup in ... seconds.
+    Set up plone.testing.z2.Startup in ... seconds.
+    Set up plone.testing.z2.IntegrationTesting in ... seconds.
+    Set up plone.app.testing.layers.PloneSite:Integration in ... seconds.
+    Set up HelperDemos in ... seconds.
+
+We should see the newly registered components and the persistent changes
+having taken effect.
+
+    >>> from zope.component import queryUtility
+    >>> from zope.interface import Interface
+    >>> queryUtility(Interface, name="dummy1")
+    <object object at ...>
+    
+    >>> with helpers.ploneSite() as portal:
+    ...     print portal.title
+    New title
+    
+We should also see our product installation in the quickinstaller tool
+and the results of the profile having been applied.
+
+    >>> with helpers.ploneSite() as portal:
+    ...     print portal['portal_quickinstaller'].isProductInstalled('plonetheme.classic')
+    ...     print portal['portal_skins'].getDefaultSkin()
+    True
+    Sunburst Theme
+    
+Let's now simulate a test.
+
+    >>> zca.LAYER_CLEANUP.testSetUp()
+    >>> z2.STARTUP.testSetUp()
+    >>> z2.INTEGRATION_TESTING.testSetUp()
+    >>> PLONE_INTEGRATION_TESTING.testSetUp()
+    >>> HELPER_DEMOS.testSetUp()
+
+In a test, we can use helpers to simulate login, logging out and changing a
+user's roles. These may also be used during layer setup if required, using
+the ``ploneSite()`` context manager as shown above.
+
+    >>> from AccessControl import getSecurityManager
+    >>> from plone.app.testing import TEST_USER_NAME
+
+    >>> portal = HELPER_DEMOS['portal'] # would normally be self.layer['portal']
+
+    >>> getSecurityManager().getUser().getRolesInContext(portal)
+    ['Member', 'Authenticated']
+
+    >>> getSecurityManager().getUser().getUserName() == TEST_USER_NAME
+    True    
+    >>> helpers.setRoles(portal, TEST_USER_NAME, ['Manager'])
+    >>> getSecurityManager().getUser().getRolesInContext(portal)
+    ['Manager', 'Authenticated']
+
+    >>> helpers.logout()
+    >>> getSecurityManager().getUser()
+    <SpecialUser 'Anonymous User'>
+    
+    >>> helpers.login(portal, TEST_USER_NAME)
+    >>> getSecurityManager().getUser().getUserName() == TEST_USER_NAME
+    True
+    
+    >>> portal.invokeFactory('Folder', 'folder1', title=u"Folder 1")
+    'folder1'
+    
+Let's now tear down the test.
+
+    >>> HELPER_DEMOS.testTearDown()
+    >>> PLONE_INTEGRATION_TESTING.testTearDown()
+    >>> z2.INTEGRATION_TESTING.testTearDown()
+    >>> z2.STARTUP.testTearDown()
+    >>> zca.LAYER_CLEANUP.testTearDown()
+
+Our persistent changes from the layer should remain, but those made in a test
+should not.
+
+    >>> queryUtility(Interface, name="dummy1")
+    <object object at ...>
+    
+    >>> with helpers.ploneSite() as portal:
+    ...     print portal.title
+    ...     print portal['portal_quickinstaller'].isProductInstalled('plonetheme.classic')
+    ...     print portal['portal_skins'].getDefaultSkin()
+    ...     'folder1' in portal.objectIds()
+    New title
+    True
+    Sunburst Theme
+    False
+
+We'll now tear down just the HELPER_DEMOS layer. At this point, we should
+still have a Plone site, but none of the persistent or component architecture
+changes from our layer.
+
+    >>> runner.tear_down_unneeded(options, [l for l in setupLayers if l is not HELPER_DEMOS], setupLayers)
+    Tear down HelperDemos in ... seconds.
+
+    >>> queryUtility(Interface, name="dummy1") is None
+    True
+    
+    >>> with helpers.ploneSite() as portal:
+    ...     print portal.title
+    ...     print portal['portal_quickinstaller'].isProductInstalled('plonetheme.classic')
+    ...     print portal['portal_skins'].getDefaultSkin()
+    Plone
+    False
+    Sunburst Theme
+
+Let's tear down the rest of the layers too.
+
+    >>> runner.tear_down_unneeded(options, [], setupLayers)
+    Tear down plone.app.testing.layers.PloneSite:Integration in ... seconds.
+    Tear down plone.testing.z2.IntegrationTesting in ... seconds.
+    Tear down plone.testing.z2.Startup in ... seconds.
+    Tear down plone.testing.zca.LayerCleanup in ... seconds.
+
+Plone sandbox layer helper
+--------------------------
+
+The pattern above of setting up a stacked ZODB ``DemoStorage`` and a stacked
+global component registry is very common. In fact, there is a layer base
+class which helps implement this pattern.
+    
+    >>> someGlobal = {}
+    
+    >>> class MyLayer(helpers.PloneSandboxLayer):
+    ...
+    ...     def setUpPloneSite(self, portal):
+    ...             
+    ...         # Register some components
+    ...         from zope.component import provideUtility
+    ...         from zope.interface import Interface
+    ...         provideUtility(object(), Interface, name=u"dummy1")
+    ...     
+    ...         # Make some persistent changes
+    ...         portal.title = u"New title"
+    ...         
+    ...         # Make some other global changes not stored in the ZODB or
+    ...         # the global component registry
+    ...         someGlobal['test'] = 1
+    ...     
+    ...     def tearDownPloneSite(self, portal):
+    ...         # Illustrate tear-down of some global state
+    ...         del someGlobal['test']
+
+    >>> MY_LAYER = MyLayer()
+
+Here, we have derived from ``PloneSandboxLayer`` instead of the more usual
+``Layer`` base class. This layer implements the sandboxing for us, and
+delegates to two template methods: ``setUpPloneSite()`` and
+``tearDownPloneSite()``. Both take a configured ``portal`` object as an
+argument, giving access to the Plone site root.
+
+You *must* implement ``setUpPloneSite()``. Implementing
+``tearDownPloneSite()`` is optional. If all the state modified during layer
+setup is saved in the ZODB and/or the global component registry only, the
+standard tear-down will suffice. Other state must be cleaned up explicitly.
+
+You may also wish to change the ``defaultBases`` argument. The default is to
+use ``PLONE_INTEGRATION_TESTING`` as the single default base layer.
+
+    >>> MY_LAYER.__bases__
+    (<Layer 'plone.app.testing.layers.PloneSite:Integration'>,)
+
+Let's now simulate layer setup:
+
+    >>> options = runner.get_options([], [])
+    >>> setupLayers = {}
+    >>> runner.setup_layer(options, MY_LAYER, setupLayers)
+    Set up plone.testing.zca.LayerCleanup in ... seconds.
+    Set up plone.testing.z2.Startup in ... seconds.
+    Set up plone.testing.z2.IntegrationTesting in ... seconds.
+    Set up plone.app.testing.layers.PloneSite:Integration in ... seconds.
+    Set up MyLayer in ... seconds.
+
+Again, our state should now be available.
+
+    >>> queryUtility(Interface, name="dummy1")
+    <object object at ...>
+    
+    >>> with helpers.ploneSite() as portal:
+    ...     print portal.title
+    New title
+    
+    >>> someGlobal['test']
+    1
+    
+We'll now tear down just the MY_LAYER layer. At this point, we should
+still have a Plone site, but none of the changes from our layer.
+
+    >>> runner.tear_down_unneeded(options, [l for l in setupLayers if l is not MY_LAYER], setupLayers)
+    Tear down MyLayer in ... seconds.
+
+    >>> queryUtility(Interface, name="dummy1") is None
+    True
+    
+    >>> with helpers.ploneSite() as portal:
+    ...     print portal.title
+    Plone
+    
+    >>> 'test' in someGlobal
+    False
+    
+Let's tear down the rest of the layers too.
+
+    >>> runner.tear_down_unneeded(options, [], setupLayers)
+    Tear down plone.app.testing.layers.PloneSite:Integration in ... seconds.
+    Tear down plone.testing.z2.IntegrationTesting in ... seconds.
+    Tear down plone.testing.z2.Startup in ... seconds.
+    Tear down plone.testing.zca.LayerCleanup in ... seconds.
+
+Other helpers
+-------------
+
+There are some further helpers that apply only to special cases.
+
+Many packages will add a new GenericSetup profile to the global profile
+registry. The most common way is via the ``<genericsetup:registerProfile />``
+directive, although a call to the ``registerProfile()`` function will achieve
+the same thing.
+
+If your layer loads a package (or the ZCML for a package) that registers such
+profiles, you must clean them up again, or you'll risk getting errors if the
+package is installed again in another layer. The helper
+``tearDownProfileRegistation()`` can be used for this purpose.
+
+Let's simulate setting up a profile in the registry and then tearing it down.
+
+    >>> from Products.GenericSetup.registry import _profile_registry
+    >>> _profile_registry.registerProfile('dummy1', u"Dummy profile", u"", ".", 'plone.app.testing')
+    >>> _profile_registry.registerProfile('dummy2', u"Dummy profile", u"", ".", 'plone.app.testing')
+    >>> _profile_registry.registerProfile('dummy1', u"Dummy profile", u"", ".", 'plone.testing')
+
+    >>> tuple(_profile_registry.listProfiles())
+    ('plone.app.testing:dummy1', 'plone.app.testing:dummy2', 'plone.testing:dummy1')
+    
+The tear down helper takes the product name as an argument and tears down all
+profiles for that product (only):
+
+    >>> helpers.tearDownProfileRegistation('plone.app.testing')
+    >>> tuple(_profile_registry.listProfiles())
+    ('plone.testing:dummy1',)
+
+Let's clean up the registry completely.
+
+    >>> _profile_registry.clear()
+
+Similarly, a product that uses the ``<pas:registerMultiPlugin />`` or the
+``registerMultiPlugin()`` API from ``PluggableAuthService`` may leave global
+state that needs to be cleaned up. You can use the helper
+``tearDownMultiPluginRegistration()`` for this purpose.
+
+Let's simulate registering some plugins:
+
+    >>> from Products.PluggableAuthService import PluggableAuthService
+    >>> PluggableAuthService.registerMultiPlugin("dummy_plugin1")
+    >>> PluggableAuthService.registerMultiPlugin("dummy_plugin2")
+    
+    >>> PluggableAuthService.MultiPlugins
+    ['dummy_plugin1', 'dummy_plugin2']
+    
+The tear down helper takes a plugin meta-type as an argument:
+
+    >>> helpers.tearDownMultiPluginRegistration('dummy_plugin1')
+
+    >>> PluggableAuthService.MultiPlugins
+    ['dummy_plugin2']
+
+Let's clean up the registry completely.
+    
+    >>> del PluggableAuthService.MultiPlugins[:]

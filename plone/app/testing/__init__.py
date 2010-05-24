@@ -4,7 +4,7 @@ from plone.app.testing.layers import (
         PLONE_INTEGRATION_TESTING,
         PLONE_FUNCTIONAL_TESTING,
         PLONE_ZSERVER,
-        PLONE_FTP_SERVER
+        PLONE_FTP_SERVER,
     )
 
 # Helper functions
@@ -14,7 +14,7 @@ from plone.app.testing.helpers import (
         setRoles,
         
         quickInstallProduct,
-        installProfile,
+        applyProfile,
         
         pushGlobalRegistry,
         popGlobalRegistry,
@@ -22,7 +22,9 @@ from plone.app.testing.helpers import (
         tearDownProfileRegistation,
         tearDownMultiPluginRegistration,
         
-        ploneSite
+        ploneSite,
+        
+        PloneSandboxLayer
     )
 
 # Constants
@@ -37,4 +39,10 @@ from plone.app.testing.interfaces import (
         
         SITE_OWNER_USER_NAME,
         SITE_OWNER_USER_PASSWORD
+    )
+
+# Cleanup handlers
+from plone.app.testing.cleanup import (
+        cleanUpGenericSetupRegistries,
+        cleanUpMultiPlugins,
     )

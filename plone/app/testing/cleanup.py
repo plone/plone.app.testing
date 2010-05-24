@@ -3,15 +3,23 @@
 
 from zope.testing.cleanup import addCleanUp
 
-def cleanUpProfileRegistry():
+# Make sure cleanup handlers from GenericSetup are registered
+try:
+    import Products.GenericSetup.zcml
+except ImportError:
+    pass
+
+def cleanUpGenericSetupRegistries():
     try:
-        from Products.GenericSetup.registry import _profile_registry
+        from Products.GenericSetup import registry
     except ImportError:
         pass
     else:
-        _profile_registry.clear()
+        registry._import_step_registry.clear()
+        registry._export_step_registry.clear()
+        registry._profile_registry.clear()
 
-addCleanUp(cleanUpProfileRegistry)
+addCleanUp(cleanUpGenericSetupRegistries)
 
 def cleanUpMultiPlugins():
     try:
@@ -22,3 +30,4 @@ def cleanUpMultiPlugins():
         del MultiPlugins[:]
 
 addCleanUp(cleanUpMultiPlugins)
+del addCleanUp

@@ -3,8 +3,9 @@
 
 import contextlib
 
-from plone.testing import z2, zca
+from plone.testing import z2, zodb, zca, Layer
 
+from plone.app.testing import layers
 from plone.app.testing.interfaces import (
         PLONE_SITE_ID,
         SITE_OWNER_USER_NAME
@@ -80,10 +81,14 @@ def quickInstallProduct(portal, productName, reinstall=False):
     is installed already.
     """
     
-    from AccessControl import getSecurityManager, setSecurityManager
-    sm = getSecurityManager()
+    from Acquisition import aq_parent
+    from AccessControl import getSecurityManager
+    from AccessControl.SecurityManagement import setSecurityManager
     
-    login(portal, SITE_OWNER_USER_NAME)
+    sm = getSecurityManager()
+    app = aq_parent(portal)
+    
+    z2.login(app['acl_users'], SITE_OWNER_USER_NAME)
     
     try:
         quickinstaller = portal['portal_quickinstaller']
@@ -100,15 +105,19 @@ def quickInstallProduct(portal, productName, reinstall=False):
     finally:
         setSecurityManager(sm)
 
-def installProfile(portal, profileName):
+def applyProfile(portal, profileName):
     """Install an extension profile into the portal. The profile name
     should be a package name and a profile name, e.g. 'my.product:default'.
     """
     
-    from AccessControl import getSecurityManager, setSecurityManager
-    sm = getSecurityManager()
+    from Acquisition import aq_parent
+    from AccessControl import getSecurityManager
+    from AccessControl.SecurityManagement import setSecurityManager
     
-    login(portal, SITE_OWNER_USER_NAME)
+    sm = getSecurityManager()
+    app = aq_parent(portal)
+    
+    z2.login(app['acl_users'], SITE_OWNER_USER_NAME)
     
     try:
         setupTool = portal['portal_setup']
@@ -137,13 +146,17 @@ def pushGlobalRegistry(portal, new=None, name=None):
     new global registry as its base.
     """
     
+    from zope.site.hooks import setSite, getSite, setHooks
+    site = getSite()
+    
     current = zca.pushGlobalRegistry(new=new)
     
-    from five.localsitemanager import update_sitemanager_bases
-    update_sitemanager_bases(portal)
+    if site is not None:
+        setHooks()
+        setSite(site)
     
     return current
-    
+
 def popGlobalRegistry(portal):
     """Restore the global component registry form the top of the stack, as
     set with ``pushGlobalRegistry()``.
@@ -152,10 +165,40 @@ def popGlobalRegistry(portal):
     new global registry as its base.
     """
     
+    # First, check if the component site has the global site manager in its
+    # bases. If so, that site manager is about to disappear, so set its
+    # base(s) as the new base(s) for the local site manager.
+    
+    from zope.component import getGlobalSiteManager
+    globalSiteManager = getGlobalSiteManager()
+    
+    gsmBases = globalSiteManager.__bases__
+    
+    from zope.site.hooks import setSite, getSite, setHooks
+    site = getSite()
+    
+    localSiteManager = portal.getSiteManager()
+    
+    bases = []
+    changed = False
+    for base in localSiteManager.__bases__:
+        if base is globalSiteManager:
+            bases.extend(gsmBases)
+            changed = True
+        else:
+            bases.append(base)
+    
+    if changed:
+        localSiteManager.__bases__ = tuple(bases)
+    
+    # Now pop the registry. We need to do it in this somewhat convoluted way
+    # to avoid the risk of unpickling errors
+    
     previous = zca.popGlobalRegistry()
     
-    from five.localsitemanager import update_sitemanager_bases
-    update_sitemanager_bases(portal)
+    if site is not None:
+        setHooks()
+        setSite(site)
     
     return previous
 
@@ -177,5 +220,91 @@ def ploneSite(db=None, connection=None, environ=None):
     closed).
     """
     
+    from zope.site.hooks import setSite, getSite, setHooks
+    setHooks()
+    
+    site = getSite()
+    
     with z2.zopeApp(db, connection, environ) as app:
-        yield app[PLONE_SITE_ID]
+        portal = app[PLONE_SITE_ID]
+        
+        setSite(portal)
+        
+        try:
+            yield portal
+        finally:
+            if site is not portal:
+                setSite(site)
+
+# Layer base class 
+
+class PloneSandboxLayer(Layer):
+    """Layer base class managing the common pattern of having a stacked ZODB
+    ``DemoStorage`` and a stacked global component registry for the layer.
+    
+    Base classes must override and implemented ``setUpPloneSite()``. They
+    may also implement ``tearDownPloneSite()``, and can optionally change
+    the ``defaultBases`` tuple.
+    """
+    
+    # The default list of bases. Consider setting to PLONE_FUNCTIONAL_TESTING
+    # for functional testing.
+
+    defaultBases = (layers.PLONE_INTEGRATION_TESTING,)
+
+    # Hooks
+    
+    def setUpPloneSite(self, portal):
+        """Set up the Plone site.
+        
+        ``portal`` is the Plone site. Provided no exception is raised, changes
+        to this site will be committed (into a newly stacked ``DemoStorage``).
+        
+        Concrete layer classes should implement this method at a minimum.
+        """
+        
+        raise NotImplementedError("The setUpPloneSite() must be implemented by a concrete layer")
+    
+    def tearDownPloneSite(self, portal):
+        """Tear down the Plone site.
+        
+        Implementing this is optional. If the changes made during the
+        ``setUpPloneSite()`` method were confined to the ZODB and the global
+        component regsitry, those changes will be torn down automatically.
+        """
+        
+        pass
+    
+    # Boilerplate
+    
+    def setUp(self):
+        
+        # Push a new database storage so that database changes
+        # commited during layer setup can be easily torn down
+        self['zodbDB'] = zodb.stackDemoStorage(self.get('zodbDB'), name='HelperDemos')
+        
+        with ploneSite() as portal:
+            
+            # Push a new component registry so that ZCML registations 
+            # and other global component registry changes are sandboxed
+            pushGlobalRegistry(portal)
+            
+            # Call template method - must be implemented by subclasses
+            self.setUpPloneSite(portal)
+    
+    def tearDown(self):
+        
+        with ploneSite() as portal:
+            
+            # Call template method - may be implemented by subclasses
+            self.tearDownPloneSite(portal)
+            
+            # Pop the component registry, thus removing component
+            # architecture registrations
+            popGlobalRegistry(portal)
+        
+        # Pop the demo storage, thus restoring the database to the
+        # previous state
+        self['zodbDB'].close()
+        del self['zodbDB']
+    
