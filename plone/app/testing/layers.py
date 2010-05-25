@@ -13,8 +13,8 @@ from plone.app.testing.interfaces import (
         TEST_USER_PASSWORD,
         TEST_USER_ROLES,
         
-        SITE_OWNER_USER_NAME,
-        SITE_OWNER_USER_PASSWORD
+        SITE_OWNER_NAME,
+        SITE_OWNER_PASSWORD
     )
 
 class PloneSite(Layer):
@@ -227,13 +227,13 @@ class PloneSite(Layer):
         # Create the owner user and "log in" so that the site object gets
         # the right ownership information
         app['acl_users'].userFolderAddUser(
-                SITE_OWNER_USER_NAME,
-                SITE_OWNER_USER_PASSWORD,
+                SITE_OWNER_NAME,
+                SITE_OWNER_PASSWORD,
                 ['Manager'],
                 []
             )
         
-        z2.login(app['acl_users'], SITE_OWNER_USER_NAME)
+        z2.login(app['acl_users'], SITE_OWNER_NAME)
         
         # Create the site with the default set of extension profiles
         from Products.CMFPlone.factory import addPloneSite

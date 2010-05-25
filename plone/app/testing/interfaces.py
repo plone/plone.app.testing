@@ -9,5 +9,5 @@ TEST_USER_NAME = 'test_user_1_'
 TEST_USER_PASSWORD = 'secret'
 TEST_USER_ROLES = ['Member',]
 
-SITE_OWNER_USER_NAME = 'admin'
-SITE_OWNER_USER_PASSWORD = 'secret'
+SITE_OWNER_NAME = 'admin'
+SITE_OWNER_PASSWORD = 'secret'

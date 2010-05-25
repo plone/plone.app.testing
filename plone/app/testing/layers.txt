@@ -47,17 +47,17 @@ Let's set up the layers and inspect the state.
     Set up plone.app.testing.layers.PloneSite:Integration in ... seconds.
     
 The application root's ``acl_users`` folder will have one user, whose name and
-password are found in the constants ``SITE_OWNER_USER_NAME`` and
-``SITE_OWNER_USER_PASSWORD``, in ``plone.app.testing.interfaces``. This user
+password are found in the constants ``SITE_OWNER_NAME`` and
+``SITE_OWNER_PASSWORD``, in ``plone.app.testing.interfaces``. This user
 has the ``Manager`` role, and is the owner of the site object. You should not
 normally use this for testing, unless you need to manipulate the site itself.
 
     >>> from plone.testing import z2
-    >>> from plone.app.testing.interfaces import SITE_OWNER_USER_NAME
+    >>> from plone.app.testing.interfaces import SITE_OWNER_NAME
 
     >>> with z2.zopeApp() as app:
-    ...     print app['acl_users'].getUser(SITE_OWNER_USER_NAME)
-    ...     print app['acl_users'].getUser(SITE_OWNER_USER_NAME).getRolesInContext(app)
+    ...     print app['acl_users'].getUser(SITE_OWNER_NAME)
+    ...     print app['acl_users'].getUser(SITE_OWNER_NAME).getRolesInContext(app)
     admin
     ['Manager', 'Authenticated']
 
@@ -179,11 +179,11 @@ Let's setup the layer and verify the same fixture as we did above for
     Set up plone.app.testing.layers.PloneSite:Functional in ... seconds.
 
     >>> from plone.testing import z2
-    >>> from plone.app.testing.interfaces import SITE_OWNER_USER_NAME
+    >>> from plone.app.testing.interfaces import SITE_OWNER_NAME
 
     >>> with z2.zopeApp() as app:
-    ...     print app['acl_users'].getUser(SITE_OWNER_USER_NAME)
-    ...     print app['acl_users'].getUser(SITE_OWNER_USER_NAME).getRolesInContext(app)
+    ...     print app['acl_users'].getUser(SITE_OWNER_NAME)
+    ...     print app['acl_users'].getUser(SITE_OWNER_NAME).getRolesInContext(app)
     admin
     ['Manager', 'Authenticated']
 
@@ -427,10 +427,10 @@ other thread.
     >>> ftpClient.connect(host, port, timeout=5)
     '220 localhost FTP server (...) ready.'
     
-    >>> from plone.app.testing.interfaces import SITE_OWNER_USER_NAME
-    >>> from plone.app.testing.interfaces import SITE_OWNER_USER_PASSWORD
+    >>> from plone.app.testing.interfaces import SITE_OWNER_NAME
+    >>> from plone.app.testing.interfaces import SITE_OWNER_PASSWORD
 
-    >>> ftpClient.login(SITE_OWNER_USER_NAME, SITE_OWNER_USER_PASSWORD)
+    >>> ftpClient.login(SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
     '230 Login successful.'
 
     >>> ftpClient.cwd(folder_path)

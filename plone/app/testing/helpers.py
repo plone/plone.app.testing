@@ -8,7 +8,7 @@ from plone.testing import z2, zodb, zca, Layer
 from plone.app.testing import layers
 from plone.app.testing.interfaces import (
         PLONE_SITE_ID,
-        SITE_OWNER_USER_NAME
+        SITE_OWNER_NAME
     )
 
 # User management
@@ -88,7 +88,7 @@ def quickInstallProduct(portal, productName, reinstall=False):
     sm = getSecurityManager()
     app = aq_parent(portal)
     
-    z2.login(app['acl_users'], SITE_OWNER_USER_NAME)
+    z2.login(app['acl_users'], SITE_OWNER_NAME)
     
     try:
         quickinstaller = portal['portal_quickinstaller']
@@ -117,7 +117,7 @@ def applyProfile(portal, profileName):
     sm = getSecurityManager()
     app = aq_parent(portal)
     
-    z2.login(app['acl_users'], SITE_OWNER_USER_NAME)
+    z2.login(app['acl_users'], SITE_OWNER_NAME)
     
     try:
         setupTool = portal['portal_setup']
