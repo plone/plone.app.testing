@@ -467,7 +467,10 @@ Global state cleanup
         
         _import_step_registry.unregisterStep('import-step-id')
         _export_step_registry.unregisterStep('export-step-id')
-
+    
+    **Also note:** If you use the ``PloneSandboxLayer`` layer base class,
+    this will snapshot the registries and tear them down for you.
+    
 ``tearDownMultiPluginRegistration(pluginName)``
     PluggableAuthService "MultiPlugins" are kept in a global registry. If
     you have registered a plugin, e.g. using the ``registerMultiPlugin()``
@@ -517,8 +520,8 @@ content or changing some settings.
 
 On tear-down, you will then want to:
 
-1. Remove any GenericSetup profiles that were loaded during setup from the
-   global registry.
+1. Remove any GenericSetup profiles and import/export steps that were loaded
+   into the global registries during setup.
 
 2. Pop the global component registry to unregister components loaded via ZCML.
 
@@ -528,7 +531,7 @@ If you have made other changes on setup that are not covered by this broad
 tear-down, you'll also want to tear those down explicitly here.
 
 Stacking a demo storage and component registry and snapshotting the
-GenericSetup profile registry is the easiest way to avoid fixtures bleeding
+GenericSetup profile registry is the safest way to avoid fixtures bleeding
 between tests. However, it can be tricky to ensure that everything happens in
 the right order.
 

@@ -98,8 +98,15 @@ class PloneSite(Layer):
         # Stack a new DemoStorage on top of the one from z2.STARTUP.
         self['zodbDB'] = zodb.stackDemoStorage(self.get('zodbDB'), name='PloneSite')
         
+        # Keep track of the GenericSetup registries so that we can snapshot
+        # the changes
         from Products.GenericSetup.registry import _profile_registry
-        preSetupProfiles = _profile_registry._profile_ids[:]
+        from Products.GenericSetup.registry import _import_step_registry
+        from Products.GenericSetup.registry import _export_step_registry
+        
+        preSetupProfiles    = list(_profile_registry._profile_ids)
+        preSetupImportSteps = list(_import_step_registry.listSteps())
+        preSetupExportSteps = list(_export_step_registry.listSteps())
         
         self.setUpZCML()
         
@@ -108,8 +115,9 @@ class PloneSite(Layer):
             self.setUpProducts(app)
             self.setUpDefaultContent(app)
         
-        self.snapshotProfileRegistry(preSetupProfiles)
-        
+        # Record the changes to the GenericSetup registries
+        self.snapshotProfileRegistry(preSetupProfiles, preSetupImportSteps, preSetupExportSteps)
+    
     def tearDown(self):
         
         # Tear down products
@@ -124,17 +132,30 @@ class PloneSite(Layer):
         self['zodbDB'].close()
         del self['zodbDB']
     
-    def snapshotProfileRegistry(self, preSetupProfiles):
+    def snapshotProfileRegistry(self, preSetupProfiles, preSetupImportSteps, preSetupExportSteps):
         """Save a snapshot of all profiles that were added during setup, by
         comparing to the list of profiles passed in.
         """
         
         self._addedProfiles = set()
+        self._addedImportSteps = set()
+        self._addedExportSteps = set()
         
         from Products.GenericSetup.registry import _profile_registry
+        from Products.GenericSetup.registry import _import_step_registry
+        from Products.GenericSetup.registry import _export_step_registry
+        
         for profileId in _profile_registry._profile_ids:
             if profileId not in preSetupProfiles:
                 self._addedProfiles.add(profileId)
+        
+        for stepId in _import_step_registry.listSteps():
+            if stepId not in preSetupImportSteps:
+                self._addedImportSteps.add(stepId)
+        
+        for stepId in _export_step_registry.listSteps():
+            if stepId not in preSetupExportSteps:
+                self._addedExportSteps.add(stepId)
         
     def tearDownProfileRegistry(self):
         """Delete all profiles that were added during setup, as stored by
@@ -142,12 +163,22 @@ class PloneSite(Layer):
         """
         
         from Products.GenericSetup.registry import _profile_registry
+        from Products.GenericSetup.registry import _import_step_registry
+        from Products.GenericSetup.registry import _export_step_registry
         
         for profileId in self._addedProfiles:
             if profileId in _profile_registry._profile_ids:
                 _profile_registry._profile_ids.remove(profileId)
             if profileId in _profile_registry._profile_info:
                 del _profile_registry._profile_info[profileId]
+        
+        for stepId in self._addedImportSteps:
+            if stepId in _import_step_registry.listSteps():
+                _import_step_registry.unregisterStep(stepId)
+        
+        for stepId in self._addedExportSteps:
+            if stepId in _export_step_registry.listSteps():
+                _export_step_registry.unregisterStep(stepId)
     
     def setUpZCML(self):
         """Stack a new global registry and load ZCML configuration of Plone

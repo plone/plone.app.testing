@@ -281,7 +281,7 @@ class PloneSandboxLayer(Layer):
         
         # Push a new database storage so that database changes
         # commited during layer setup can be easily torn down
-        self['zodbDB'] = zodb.stackDemoStorage(self.get('zodbDB'), name='HelperDemos')
+        self['zodbDB'] = zodb.stackDemoStorage(self.get('zodbDB'), name=self.__name__)
         
         with ploneSite() as portal:
             
@@ -293,13 +293,18 @@ class PloneSandboxLayer(Layer):
             # the custom configuration
             
             from Products.GenericSetup.registry import _profile_registry
-            preSetupProfiles = _profile_registry._profile_ids[:]
+            from Products.GenericSetup.registry import _import_step_registry
+            from Products.GenericSetup.registry import _export_step_registry
+            
+            preSetupProfiles    = list(_profile_registry._profile_ids)
+            preSetupImportSteps = list(_import_step_registry.listSteps())
+            preSetupExportSteps = list(_export_step_registry.listSteps())
             
             # Call template method - must be implemented by subclasses
             self.setUpPloneSite(portal)
         
         # Keep track of profiles that were added during setup
-        self.snapshotProfileRegistry(preSetupProfiles)
+        self.snapshotProfileRegistry(preSetupProfiles, preSetupImportSteps, preSetupExportSteps)
     
     def tearDown(self):
         
@@ -322,17 +327,30 @@ class PloneSandboxLayer(Layer):
     
     # Helpers
     
-    def snapshotProfileRegistry(self, preSetupProfiles):
+    def snapshotProfileRegistry(self, preSetupProfiles, preSetupImportSteps, preSetupExportSteps):
         """Save a snapshot of all profiles that were added during setup, by
         comparing to the list of profiles passed in.
         """
         
         self._addedProfiles = set()
+        self._addedImportSteps = set()
+        self._addedExportSteps = set()
         
         from Products.GenericSetup.registry import _profile_registry
+        from Products.GenericSetup.registry import _import_step_registry
+        from Products.GenericSetup.registry import _export_step_registry
+        
         for profileId in _profile_registry._profile_ids:
             if profileId not in preSetupProfiles:
                 self._addedProfiles.add(profileId)
+        
+        for stepId in _import_step_registry.listSteps():
+            if stepId not in preSetupImportSteps:
+                self._addedImportSteps.add(stepId)
+        
+        for stepId in _export_step_registry.listSteps():
+            if stepId not in preSetupExportSteps:
+                self._addedExportSteps.add(stepId)
         
     def tearDownProfileRegistry(self):
         """Delete all profiles that were added during setup, as stored by
@@ -340,9 +358,19 @@ class PloneSandboxLayer(Layer):
         """
         
         from Products.GenericSetup.registry import _profile_registry
+        from Products.GenericSetup.registry import _import_step_registry
+        from Products.GenericSetup.registry import _export_step_registry
         
         for profileId in self._addedProfiles:
             if profileId in _profile_registry._profile_ids:
                 _profile_registry._profile_ids.remove(profileId)
             if profileId in _profile_registry._profile_info:
                 del _profile_registry._profile_info[profileId]
+        
+        for stepId in self._addedImportSteps:
+            if stepId in _import_step_registry.listSteps():
+                _import_step_registry.unregisterStep(stepId)
+
+        for stepId in self._addedExportSteps:
+            if stepId in _export_step_registry.listSteps():
+                _export_step_registry.unregisterStep(stepId)
