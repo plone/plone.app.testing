@@ -33,7 +33,10 @@ setup(name='plone.app.testing',
       ],
       extras_require = {
         'test': [
-                
+                'Products.GenericSetup',
+                'Products.PluggableAuthService',
+                'ZODB3',
+                'Zope2',
             ],
       },
       entry_points="""

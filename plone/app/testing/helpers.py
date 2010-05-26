@@ -249,9 +249,9 @@ class PloneSandboxLayer(Layer):
     
     # The default list of bases. Consider setting to PLONE_FUNCTIONAL_TESTING
     # for functional testing.
-
+    
     defaultBases = (layers.PLONE_INTEGRATION_TESTING,)
-
+    
     # Hooks
     
     def setUpPloneSite(self, portal):
@@ -289,8 +289,17 @@ class PloneSandboxLayer(Layer):
             # and other global component registry changes are sandboxed
             pushGlobalRegistry(portal)
             
+            # Snapshot the GenericSetup profiles registry before loading
+            # the custom configuration
+            
+            from Products.GenericSetup.registry import _profile_registry
+            preSetupProfiles = _profile_registry._profile_ids[:]
+            
             # Call template method - must be implemented by subclasses
             self.setUpPloneSite(portal)
+        
+        # Keep track of profiles that were added during setup
+        self.snapshotProfileRegistry(preSetupProfiles)
     
     def tearDown(self):
         
@@ -302,9 +311,38 @@ class PloneSandboxLayer(Layer):
             # Pop the component registry, thus removing component
             # architecture registrations
             popGlobalRegistry(portal)
+            
+            # Remove global profile registrations
+            self.tearDownProfileRegistry()
         
         # Pop the demo storage, thus restoring the database to the
         # previous state
         self['zodbDB'].close()
         del self['zodbDB']
     
+    # Helpers
+    
+    def snapshotProfileRegistry(self, preSetupProfiles):
+        """Save a snapshot of all profiles that were added during setup, by
+        comparing to the list of profiles passed in.
+        """
+        
+        self._addedProfiles = set()
+        
+        from Products.GenericSetup.registry import _profile_registry
+        for profileId in _profile_registry._profile_ids:
+            if profileId not in preSetupProfiles:
+                self._addedProfiles.add(profileId)
+        
+    def tearDownProfileRegistry(self):
+        """Delete all profiles that were added during setup, as stored by
+        ``snapshotProfileRegistry()``.
+        """
+        
+        from Products.GenericSetup.registry import _profile_registry
+        
+        for profileId in self._addedProfiles:
+            if profileId in _profile_registry._profile_ids:
+                _profile_registry._profile_ids.remove(profileId)
+            if profileId in _profile_registry._profile_info:
+                del _profile_registry._profile_info[profileId]
