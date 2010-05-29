@@ -642,6 +642,489 @@ Given this layer, we could write a test (e.g. in ``tests.py``) like::
 Please see `plone.testing`_ for more information about how to write and run
 tests and assertions.
 
+Common test patterns
+====================
+
+`plone.testing`_'s documentation contains details about the fundamental
+techniques for writing tests of various kinds. In a Plone context, however,
+some patterns tend to crop up time and again. Below, we will attempt to
+catalog some of the more commonly used patterns via short code samples.
+
+The examples in this section are all intended to be part of a test method.
+Some may also be useful in layer set-up/tear-down. We have used ``unittest``
+syntax here, although most of these examples could equally be adopted to
+doctests.
+
+We will assume that you are using the ``PLONE_INTEGRATION_TESTING`` or
+``PLONE_FUNCTIONAL_TESTING`` layer, or a derivative. We will also assume
+that the variables ``app``, ``portal`` and ``request`` are defined from the
+relative layer resources, e.g. with::
+
+    app = self.layer['app']
+    portal = self.layer['portal']
+    request = self.layer['request']
+
+Note that in a doctest set up using the ``layered()`` function from
+``plone.testing``, ``layer`` is in the global namespace, so you would do e.g.
+``portal = layer['portal']``.
+
+We will also assume the following imports have been made::
+
+    import unittest2 as unittest
+    
+    from plone.app.testing import helpers
+    from plone.app.testing import TEST_USER_NAME
+
+Note that the helper functions can also be imported directly from
+``plone.app.testing``, but it is easier to illustrate which methods are being
+used by being explicit, e.g. ``helpers.login()`` is the function
+``plone.app.testing.helpers.login()``.
+
+Where other imports are required, they are shown alongside the code example.
+
+Basic content management
+------------------------
+
+To create a content item of type 'Folder' with the id 'f1' in the root of
+the portal::
+
+    portal.invokeFactory('Folder', 'f1', title=u"Folder 1")
+
+The ``title`` argument is optional. Other basic properties, like
+``description``, can be set as well.
+
+Note that this may fail with an ``Unauthorized`` exception, since the test
+user won't normally have permissions to add content in the portal root.
+You can set the roles of the test user to ensure that he has the necessary
+permissions::
+    
+    helpers.setRoles(portal, TEST_USER_NAME, ['Manager'])
+    portal.invokeFactory('Folder', 'f1', title=u"Folder 1")
+
+To obtain an instance of this object::
+
+    f1 = portal['f1']
+
+To check an attribute of this object::
+
+    self.assertEqual(f1.Title(), u"Folder 1")
+
+The object can also be modified::
+
+    f1.setTitle(u"Some title")
+
+If you need those changes to show up in the ``portal_catalog``::
+
+    f1.reindexObject()
+
+To add another item inside the folder::
+
+    f1.invokeFactory('Document', 'd1', title=u"Document 1")
+    d1 = f1['d1']
+
+To check if an object is in a container::
+
+    self.assertTrue('f1' in portal)
+
+To delete an object from a container:
+
+    del portal['f1']
+
+Searching
+---------
+
+To obtain the ``portal_catalog`` tool::
+
+    from Products.CMFCore.utils import getToolByName
+    
+    catalog = getToolByName(portal, 'portal_catalog')
+
+To search the catalog::
+
+    results = catalog(portal_type="Document")
+
+Keyword arguments are search parameters. The result is a lazy list. You can
+call ``len()`` on it to get the number of search results, or iterate through
+it. The items in the list are catalog brains. They have attributes that
+correspond to the "metadata" columns configured for the catalog, e.g.
+``Title``, ``Description``, etc. Note that these are simple attributes (not
+methods), and contain the value of the corresponding attribute or method from
+the source object at the time the object was cataloged (i.e. they are not
+necessarily up to date).
+
+To get the path of a given item in the search results::
+
+    for brain in results:
+        path = brain.getPath()
+
+To get an absolute URL::
+
+    for brain in results:
+        url = brain.getURL()
+
+To get the original object::
+
+    for brain in results:
+        obj = brain.getObject()
+
+To re-index an object so that its catalog information is up to date::
+
+    item.reindexObject()
+
+User management
+---------------
+
+To create a new user::
+
+    portal['acl_users'].userFolderAddUser('user1', 'secret', ['Member'], [])
+
+The arguments are the username (which will also be the user id), the password,
+a list of roles, and a list of domains (rarely used).
+
+To make a particular user active in the integration testing environment::
+
+    helpers.login(portal, 'user1')
+
+To log out (become anonymous)::
+
+    helpers.logout()
+
+To obtain the current user::
+
+    from AccessControl import getSecurityManager
+    
+    user = getSecurityManager().getUser()
+
+To obtain a user by name::
+    
+    user = portal['acl_user'].getUser('user1')
+
+Or by user id (id and username are often the same in tests, but are often
+different in real-world scenarios)::
+
+    user = portal['acl_user'].getUserById('user1')
+
+To get the user's user name::
+
+    userName = user.getUserName()
+
+To get the user's id::
+
+    userId = user.getId()
+
+Permissions and roles
+---------------------
+
+To get a user's roles in a particular context (taking local roles into
+account)::
+    
+    from AccessControl import getSecurityManager
+    
+    user = getSecurityManager().getUser()
+    roles = user.getRolesInContext(portal)
+    
+    self.assertEquals(roles, ['Member'])
+
+To change a user's roles::
+
+    helpers.setRoles(portal, TEST_USER_NAME, ['Member', 'Manager'])
+
+To grant local roles to a user in the folder f1::
+
+    f1.manage_setLocalRoles(TEST_USER_NAME, ['Reviewer'])
+
+To check the local roles of a given user in the folder 'f1'::
+
+    localRoles = f1.get_local_roles_for_userid(TEST_USER_NAME)
+    self.assertEqual(localRoles, ['Reviewer'])
+
+To grant the 'View' permission to the roles 'Member' and 'Manager' in the
+portal root without acquiring additional roles from its parents::
+
+    portal.manage_permission('View', ['Member', 'Manager'], acquire=False)
+
+This can also be invoked on a folder or individual content item.
+
+To assert which roles have a given the permission 'View' in the context of the
+portal::
+
+    roles = [r['name'] for r in portal.rolesOfPermission('View') if r['selected']]
+    self.assertEqual(roles, ['Member', 'Manager'])
+
+To assert which permissions have been granted to the 'Reviewer' role in the
+context of the folder f1::
+
+    permissions = [p['name'] for p in f1.permissionsOfRole('Reviewer') if p['selected']]
+    self.assertEqual(permissions, ['Review portal content'])
+
+To add a new role::
+
+    portal._addRole('Tester')
+
+To assert the roles available in a given context::
+    
+    roles = portal.valid_roles()
+    self.assertTrue('Tester' in roles)
+
+Workflow
+--------
+
+To get the default workflow chain::
+    
+    from Products.CMFCore.utils import getToolByName
+    
+    workflowTool = getToolByName(portal, 'portal_workflow)
+    
+    defaultChain = workflowTool.getDefaultChain()
+    self.assertEqual(defaultChain, ('my_workflow',))
+
+To set the default workflow chain::
+    
+    workflowTool.setDefaultChain('my_workflow')
+
+To set a multi-workflow chain, separate workflows by spaces or commas.
+
+To get the workflow chain for the portal type 'Document':
+
+    chains = dict(workflowTool.listChainOverrides())
+    defaultChain = workflowTool.getDefaultChain()
+    documentChain = chains.get('Document', defaultChain)
+    
+    self.assertEqual(documentChain, ('my_other_workflow',))
+
+To get the current workflow chain for the content object f1::
+    
+    chain = workflowTool.getChainFor(f1)
+
+To set the workflow chain for the 'Document' type::
+    
+    workflowTool.setChainForPortalTypes(('Document',), 'my_workflow')
+
+You can pass multiple type names to set multiple chains at once. To set a
+multi-workflow chain, separate workflow names by commas. To indicate that a
+type should use the default workflow, use the special chain name '(Default)'.
+
+To update all permissions after changing the workflow::
+    
+    workflowTool.updateRoleMappings()
+
+To check the current workflow state of the content object f1::
+    
+    state = workflowTool.getInfoFor(f1, 'review_state')
+    self.assertEqual(state, 'published')
+
+To change the workflow state of the content object f1 by invoking the
+transaction 'publish'::
+    
+    workflowTool.doActionFor(f1, 'publish')
+
+Note that this performs an explicit permission check, so if the current user
+doesn't have permission to perform this workflow action, you may get an error
+indicating the action is not available. If so, use ``login()`` or
+``setRoles()`` to ensure the current user is able to change the workflow
+state.
+
+Installing products and extension profiles
+------------------------------------------
+
+To install an add-on product into the Plone site::
+    
+    TODO
+
+To apply a particular extension profile::
+    
+    TODO
+
+Note that both of these assume the product's ZCML has been loaded. See the
+layer examples above for more details on how to do that.
+
+When writing a product that has an installation extension profile, it is often
+desirable to write tests that inspect the state of the site after the profile
+has been applied. Some of the more common such tests are shown below.
+
+To verify that a product has been installed (e.g. via ``metadata.xml``)::
+    
+    TODO
+
+To verify that a particular content type has been installed (e.g. via
+``types.xml``)::
+
+    TODO
+
+To verify that a new catalog index has been installed (e.g. via
+``catalog.xml``)::
+
+    TODO
+
+To verify that a new catalog metadata column has been added (e.g. via
+``catalog.xml``)::
+
+    TODO
+
+To verify that a new workflow has been installed (e.g. via
+``workflows.xml``)::
+
+    TODO
+    
+To verify that a new workflow has been assigned to a type (e.g. via
+``workflows.xml``)::
+    
+    TODO
+    
+To verify that a new workflow has been set as the default (e.g. via
+``workflows.xml``)::
+
+    TODO
+
+To test the value of a property in the ``portal_properties`` tool (e.g. set
+via ``propertiestool.xml``):::
+    
+    TODO
+
+To verify that a stylesheet has been installed in the ``portal_css`` tool
+(e.g. via ``cssregistry.xml``)::
+
+    TODO
+
+To verify that a JavaScript resource has been installed in the
+``portal_javascripts`` tool (e.g. via ``jsregistry.xml``)::
+
+    TODO
+
+To verify that a new role has been added (e.g. via ``rolemap.xml``)::
+
+    TODO
+
+To verify that a permission has been granted to a given set of roles (e.g. via
+``rolemap.xml``)::
+
+    TODO
+
+Traversal
+---------
+
+To traverse to a view, page template or other resource::
+
+    TODO
+
+This performs an explicit security check. If you don't want that, you can
+use::
+    
+    TODO
+
+Note that this traversal will not take ``IPublishTraverse`` adapters into
+account.
+
+To look up a view manually::
+
+    TODO
+
+To simulate an ``IPublishTraverse`` adapter call::
+
+    TODO
+
+Invoking views
+--------------
+
+To obtain an instance of a view or template::
+
+    TODO
+
+To simulate a form submission or query string parameters::
+
+    TODO
+
+To invoke a view and obtain the results::
+
+    TOOD
+
+To inspect the state of the request::
+
+    TODO
+
+To inspect response headers::
+
+    TODO
+
+Simulating browser interaction
+------------------------------
+
+End-to-end functional tests can use `zope.testbrowser`_ to simulate user
+interaction. This acts as a web browser, connecting to Zope via a special
+channel, making requests and obtaining responses.
+
+  **Note:** zope.testbrowser runs entirely in Python, and does not simulate
+  a JavaScript engine.
+
+Note that to use ``zope.testbrowser``, you need to use one of the functional
+testing layers, e.g. ``PLONE_FUNCTIONAL_TESTING``. If you want to create some
+initial content, you can do so either in a layer, or in the test before
+invoking the test browser client. In the latter case, you need to commit
+the transaction before it becomes available, e.g.::
+
+    # Make some changes
+    helper.setRoles(portal, TEST_USER_NAME, ['Manager'])
+    portal.invokeFactory('Folder', 'f1', title=u"Folder 1")
+    helper.setRoles(portal, TEST_USER_NAME, ['Member'])
+    
+    # Commit so that the test browser sees these changes
+    import transaction
+    transaction.commit()
+
+To obtain a new test browser client::
+
+    TODO
+
+To open a given URL::
+
+    TODO
+
+To inspect the response::
+
+    TODO
+
+To inspect headers::
+
+    TODO
+
+To inspect the error log (in case of an unexpected error)::
+
+    TODO
+
+To follow a link::
+    
+    TODO
+
+To set a form control value::
+
+    TODO
+
+To submit a form by clicking a button::
+
+    TODO
+
+To simulate HTTP BASIC authentication (i.e. remain logged in for all
+requests):
+
+    TODO
+
+To simulate logging in via the login form:
+
+    TODO
+
+To simulate logging out::
+
+    TODO
+
+Debugging tip: to save the current response to an HTML file::
+
+    TODO
+    
+You can now open this file and use tools like Firebug to inspect the structure
+of the page.
+
+Please see the `zope.testbrowser`_ documentation for more examples.
+
 Comparison with ZopeTestCase/PloneTestCase
 ==========================================
 
