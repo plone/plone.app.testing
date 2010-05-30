@@ -308,7 +308,7 @@ thread, with a separate security manager, so calls to ``helpers.login()`` and
     
     >>> portal = layers.PLONE_ZSERVER['portal'] # would normally be self.layer['portal']
     >>> helpers.setRoles(portal, TEST_USER_NAME, ['Manager'])
-    >>> portal.invokeFactory('Folder', 'folder1')
+    >>> portal.invokeFactory('Folder', 'folder1', title=u"Folder 1")
     'folder1'
 
 Note that we need to commit the transaction before it will show up in the
@@ -325,7 +325,7 @@ We can now look for this new object through the server.
     >>> import urllib2
     >>> conn = urllib2.urlopen(portal_url + '/folder1', timeout=5)
     >>> responseBody = conn.read()
-    >>> "<title>folder1 &mdash; Plone</title>" in responseBody
+    >>> "Folder 1" in responseBody
     True
     >>> conn.close()
 
