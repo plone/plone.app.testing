@@ -757,7 +757,7 @@ To get the path of a given item in the search results::
 
 To get an absolute URL::
 
-    self.assertEquals(resuls[0].getPath(), portal.absolute_url() + '/f1/d1')
+    self.assertEquals(resuls[0].getURL(), portal.absolute_url() + '/f1/d1')
 
 To get the original object::
 
@@ -840,11 +840,11 @@ Pass a different user name to change the roles of another user.
 
 To grant local roles to a user in the folder f1::
 
-    f1.manage_setLocalRoles(TEST_USER_NAME, ['Reviewer'])
+    f1.manage_setLocalRoles(TEST_USER_NAME, ('Reviewer',))
 
 To check the local roles of a given user in the folder 'f1'::
 
-    self.assertEqual(f1.get_local_roles_for_userid(TEST_USER_NAME), ['Reviewer'])
+    self.assertEqual(f1.get_local_roles_for_userid(TEST_USER_NAME), ('Reviewer',))
 
 To grant the 'View' permission to the roles 'Member' and 'Manager' in the
 portal root without acquiring additional roles from its parents::
@@ -860,10 +860,10 @@ portal::
     self.assertEqual(roles, ['Member', 'Manager'])
 
 To assert which permissions have been granted to the 'Reviewer' role in the
-context of the folder f1::
+context of the portal::
 
-    permissions = [p['name'] for p in f1.permissionsOfRole('Reviewer') if p['selected']]
-    self.assertEqual(permissions, ['Review portal content'])
+    permissions = [p['name'] for p in portal.permissionsOfRole('Reviewer') if p['selected']]
+    self.assertTrue('Review portal content' in permissions)
 
 To add a new role::
 
@@ -874,30 +874,36 @@ or locally (using ``manage_setLocalRoles()``).
 
 To assert which roles are available in a given context::
     
-    roles = portal.valid_roles()
-    self.assertTrue('Tester' in roles)
+    self.assertTrue('Tester' in portal.valid_roles())
 
 Workflow
 --------
 
-To get the default workflow chain::
+To set the default workflow chain::
     
     from Products.CMFCore.utils import getToolByName
     
-    workflowTool = getToolByName(portal, 'portal_workflow)
+    workflowTool = getToolByName(portal, 'portal_workflow')
     
-    defaultChain = workflowTool.getDefaultChain()
-    self.assertEqual(defaultChain, ('my_workflow',))
+    workflowTool.setDefaultChain('my_workflow')
 
 In Plone, most chains contain only one workflow, but the ``portal_workflow``
 tool supports longer chains, where an item is subject to more than one
 workflow simultaneously.
 
-To set the default workflow chain::
-    
-    workflowTool.setDefaultChain('my_workflow')
-
 To set a multi-workflow chain, separate workflow names by commas.
+
+To get the default workflow chain::
+    
+    self.assertEqual(workflowTool.getDefaultChain(), ('my_workflow',))
+
+To set the workflow chain for the 'Document' type::
+    
+    workflowTool.setChainForPortalTypes(('Document',), 'my_workflow')
+
+You can pass multiple type names to set multiple chains at once. To set a
+multi-workflow chain, separate workflow names by commas. To indicate that a
+type should use the default workflow, use the special chain name '(Default)'.
 
 To get the workflow chain for the portal type 'Document':
 
@@ -909,23 +915,11 @@ To get the workflow chain for the portal type 'Document':
 
 To get the current workflow chain for the content object f1::
     
-    chain = workflowTool.getChainFor(f1)
-
-To set the workflow chain for the 'Document' type::
-    
-    workflowTool.setChainForPortalTypes(('Document',), 'my_workflow')
-
-You can pass multiple type names to set multiple chains at once. To set a
-multi-workflow chain, separate workflow names by commas. To indicate that a
-type should use the default workflow, use the special chain name '(Default)'.
+    self.assertEqual(workflowTool.getChainFor(f1), ('my_workflow',))
 
 To update all permissions after changing the workflow::
     
     workflowTool.updateRoleMappings()
-
-To check the current workflow state of the content object f1::
-    
-    self.assertEqual(workflowTool.getInfoFor(f1, 'review_state'), 'published')
 
 To change the workflow state of the content object f1 by invoking the
 transaction 'publish'::
@@ -937,6 +931,10 @@ doesn't have permission to perform this workflow action, you may get an error
 indicating the action is not available. If so, use ``login()`` or
 ``setRoles()`` to ensure the current user is able to change the workflow
 state.
+
+To check the current workflow state of the content object f1::
+    
+    self.assertEqual(workflowTool.getInfoFor(f1, 'review_state'), 'published')
 
 Properties
 ----------
@@ -997,7 +995,7 @@ To verify that a product has been installed (e.g. as a dependency via
     
     from Products.CMFCore.utils import getToolByName
     
-    quickinstaller = getToolByName(portal, 'portal_quickinstaller')    
+    quickinstaller = getToolByName(portal, 'portal_quickinstaller')
     self.assertTrue(quickinstaller.isProductInstalled('my.product'))
 
 To verify that a particular content type has been installed (e.g. via
@@ -1060,7 +1058,7 @@ To verify that a JavaScript resource has been installed in the
 
 To verify that a new role has been added (e.g. via ``rolemap.xml``)::
 
-    self.assertTrue('NewRole' in portal.valid_roles)
+    self.assertTrue('NewRole' in portal.valid_roles())
 
 To verify that a permission has been granted to a given set of roles (e.g. via
 ``rolemap.xml``)::
@@ -1071,24 +1069,25 @@ To verify that a permission has been granted to a given set of roles (e.g. via
 Traversal
 ---------
 
-To traverse to a view, page template or other resource::
+To traverse to a view, page template or other resource, use
+``restrictedTraverse()`` with a relative path::
 
-    resource = portal.restrictedTraverse('f1/@@view')
+    resource = portal.restrictedTraverse('f1/@@folder_contents')
 
 The return value is a view object, page template object, or other resource.
 It may be invoked to obtain an actual response (see below).
 
-``unrestrictedTraverse()`` performs an explicit security check, and so may
+``restrictedTraverse()`` performs an explicit security check, and so may
 raise ``Unauthorized`` if the current test user does not have permission to
 view the given resource. If you don't want that, you can use::
     
-    resource = portal.unrestrictedTraverse('f1/@@view')
+    resource = portal.unrestrictedTraverse('f1/@@folder_contents')
 
 You can call this on a folder or other content item as well, to traverse from
 that starting point, e.g. this is equivalent to the first example above::
 
     f1 = portal['f1']
-    resource = f1.restrictedTraverse('@@view')
+    resource = f1.restrictedTraverse('@@folder_contents')
 
 Note that this traversal will not take ``IPublishTraverse`` adapters into
 account, and you cannot pass query string parameters. In fact,
@@ -1100,10 +1099,9 @@ To look up a view manually::
 
     from zope.component import getMultiAdapter
     
-    view = getMultiAdapter((f1, request), name=u"view")
+    view = getMultiAdapter((f1, request), name=u"folder_contents")
 
-Note that the name here should not include the ``@@`` prefix. Also note that
-the result is not acquisition wrapped when using this method.
+Note that the name here should not include the ``@@`` prefix.
 
 To simulate an ``IPublishTraverse`` adapter call, presuming the view
 implements ``IPublishTraverse``::
@@ -1111,7 +1109,9 @@ implements ``IPublishTraverse``::
     next = view.IPublishTraverse(request, u"some-name")
 
 Or, if the ``IPublishTraverse`` adapter is separate from the view::
-
+    
+    from zope.publisher.interfaces import IPublishTraverse
+    
     publishTraverse = getMultiAdapter((f1, request), IPublishTraverse)
     next = view.IPublishTraverse(request, u"some-name")
 
@@ -1131,10 +1131,17 @@ of ``age:int``).
 
 To invoke a view and obtain the response body as a string::
     
-    view = f1.restrictedTraverse('@@view')
+    view = f1.restrictedTraverse('@@folder_contents')
     body = view()
     
     self.assertFalse(u"An unexpected error occurred" in body)
+
+Please note that this approach is not perfect. In particular, the request
+is will not have the right URL or path information. If your view depends on
+this, you can fake it by setting the relevant keys in the request, e.g.::
+
+    request.set('URL', f1.absolute_url() + '/@@folder_contents')
+    request.set('ACTUAL_URL', f1.absolute_url() + '/@@folder_contents')
 
 To inspect the state of the request (e.g. after a view has been invoked)::
 
