@@ -1183,9 +1183,9 @@ commit the transaction before it becomes available, e.g.::
 
 To obtain a new test browser client::
 
-    from Products.Five.testbrowser import Browser
+    from plone.testing.z2 import Browser
     
-    browser = Browser()
+    browser = Browser(app)
 
 To open a given URL::
 
@@ -1198,7 +1198,7 @@ To inspect the response::
 
 To inspect response headers::
 
-    self.assertEqual(browser.headers['content-type'], 'text/hml')
+    self.assertEqual(browser.headers['content-type'], 'text/html; charset=utf-8')
 
 To follow a link::
     
@@ -1249,7 +1249,7 @@ To simulate logging in via the login form:
 
 To simulate logging out::
 
-    browser.open(portalURL + '/logged_out)
+    browser.open(portalURL + '/logout')
 
 Debugging tips
 ~~~~~~~~~~~~~~
