@@ -586,7 +586,7 @@ the package, i.e. ``my.product.testing``::
             xmlconfig.file('configure.zcml', my.product, context=self['configurationContext'])
             
             # Install into Plone site using quickinstaller tool
-            quickInstallProduct('my.product')
+            quickInstallProduct(portal, 'my.product')
             
     MY_PRODUCT_INTEGRATION_TESTING = MyProduct()
 
