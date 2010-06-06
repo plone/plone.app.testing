@@ -17,6 +17,14 @@ from plone.app.testing.interfaces import (
         SITE_OWNER_PASSWORD
     )
 
+try:
+    # XXX: This sucks. We need to import PTS to allow it to monkeypatch
+    # zope.i18n pretty much as soon as possible, otherwise we'll get pickling
+    # errors in certain difficult-to-predict situations.
+    import Products.PlacelessTranslationService
+except ImportError:
+    pass
+
 class PloneSite(Layer):
     """This layer sets up a basic Plone site, with:
     
@@ -38,52 +46,53 @@ class PloneSite(Layer):
     
     # Products that will be installed, plus options
     products = (
-            ('Products.GenericSetup'             , {'loadZCML': True},),
-            ('Products.DCWorkflow'               , {'loadZCML': True}, ),
-            ('Products.ZCTextIndex'              , {'loadZCML': True}, ),
+            ('Products.GenericSetup'                , {'loadZCML': True},),
+            ('Products.DCWorkflow'                  , {'loadZCML': True}, ),
+            ('Products.ZCTextIndex'                 , {'loadZCML': True}, ),
+                                                    
+            ('Products.CMFActionIcons'              , {'loadZCML': True}, ),
+            ('Products.CMFUid'                      , {'loadZCML': True}, ),
+            ('Products.CMFCalendar'                 , {'loadZCML': True}, ),
+                                                    
+            ('Products.CMFCore'                     , {'loadZCML': True},),
+            ('Products.CMFDefault'                  , {'loadZCML': True}, ),
+                                                    
+            ('Products.PluggableAuthService'        , {'loadZCML': True}, ),
+            ('Products.PluginRegistry'              , {'loadZCML': True}, ),
+            ('Products.PlonePAS'                    , {'loadZCML': True}, ),
+                                                    
+            ('Products.CMFQuickInstallerTool'       , {'loadZCML': True}, ),
+            ('Products.CMFFormController'           , {'loadZCML': True}, ),
+            ('Products.CMFDynamicViewFTI'           , {'loadZCML': True}, ),
+                                                    
+            ('Products.Archetypes'                  , {'loadZCML': True}, ),
+            ('Products.MimetypesRegistry'           , {'loadZCML': True}, ),
+            ('Products.PortalTransforms'            , {'loadZCML': True}, ),
+                                                    
+            ('Products.ATContentTypes'              , {'loadZCML': True}, ),
+            ('Products.ATReferenceBrowserWidget'    , {'loadZCML': True}, ),
+                                                    
+            ('Products.ExternalEditor'              , {'loadZCML': True}, ),
+            ('Products.ExtendedPathIndex'           , {'loadZCML': True}, ),
+            ('Products.ResourceRegistries'          , {'loadZCML': True}, ),
+            ('Products.SecureMailHost'              , {'loadZCML': True}, ),
+                                                    
+            ('Products.PasswordResetTool'           , {'loadZCML': True}, ),
+                                                    
+            ('Products.CMFPlacefulWorkflow'         , {'loadZCML': True}, ),
+            ('Products.kupu'                        , {'loadZCML': True}, ),
+            ('Products.TinyMCE'                     , {'loadZCML': True}, ),
+                                                    
+            ('Products.CMFEditions'                 , {'loadZCML': True}, ),
+            ('Products.CMFDiffTool'                 , {'loadZCML': True}, ),
             
-            ('Products.CMFActionIcons'           , {'loadZCML': True}, ),
-            ('Products.CMFUid'                   , {'loadZCML': True}, ),
-            ('Products.CMFCalendar'              , {'loadZCML': True}, ),
-            
-            ('Products.CMFCore'                  , {'loadZCML': True},),
-            ('Products.CMFDefault'               , {'loadZCML': True}, ),
-            
-            ('Products.PluggableAuthService'     , {'loadZCML': True}, ),
-            ('Products.PluginRegistry'           , {'loadZCML': True}, ),
-            ('Products.PlonePAS'                 , {'loadZCML': True}, ),
-            
-            ('Products.CMFQuickInstallerTool'    , {'loadZCML': True}, ),
-            ('Products.CMFFormController'        , {'loadZCML': True}, ),
-            ('Products.CMFDynamicViewFTI'        , {'loadZCML': True}, ),
-            
-            ('Products.Archetypes'               , {'loadZCML': True}, ),
-            ('Products.MimetypesRegistry'        , {'loadZCML': True}, ),
-            ('Products.PortalTransforms'         , {'loadZCML': True}, ),
-            
-            ('Products.ATContentTypes'           , {'loadZCML': True}, ),
-            ('Products.ATReferenceBrowserWidget' , {'loadZCML': True}, ),
-            
-            ('Products.ExternalEditor'           , {'loadZCML': True}, ),
-            ('Products.ExtendedPathIndex'        , {'loadZCML': True}, ),
-            ('Products.ResourceRegistries'       , {'loadZCML': True}, ),
-            ('Products.SecureMailHost'           , {'loadZCML': True}, ),
-            
-            ('Products.PasswordResetTool'        , {'loadZCML': True}, ),
-            
-            ('Products.CMFPlacefulWorkflow'      , {'loadZCML': True}, ),
-            ('Products.kupu'                     , {'loadZCML': True}, ),
-            ('Products.TinyMCE'                  , {'loadZCML': True}, ),
-            
-            ('Products.CMFEditions'              , {'loadZCML': True}, ),
-            ('Products.CMFDiffTool'              , {'loadZCML': True}, ),
-            
-            ('Products.PloneLanguageTool'        , {'loadZCML': True}, ),
-            
-            ('plonetheme.classic'                , {'loadZCML': True}, ),
-            ('plonetheme.sunburst'               , {'loadZCML': True}, ),
-            
-            ('Products.CMFPlone'                 , {'loadZCML': True}, ),
+            ('Products.PlacelessTranslationService' , {'loadZCML': True}, ),
+            ('Products.PloneLanguageTool'           , {'loadZCML': True}, ),
+                                                    
+            ('plonetheme.classic'                   , {'loadZCML': True}, ),
+            ('plonetheme.sunburst'                  , {'loadZCML': True}, ),
+                                                    
+            ('Products.CMFPlone'                    , {'loadZCML': True}, ),
         )
     
     # Extension profiles to be installed with site setup

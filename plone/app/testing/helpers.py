@@ -149,7 +149,12 @@ def pushGlobalRegistry(portal, new=None, name=None):
     from zope.site.hooks import setSite, getSite, setHooks
     site = getSite()
     
+    localSiteManager = portal.getSiteManager()
+    
     current = zca.pushGlobalRegistry(new=new)
+    
+    if current not in localSiteManager.__bases__:
+        localSiteManager.__bases__ = (current,) + tuple(localSiteManager.__bases__)
     
     if site is not None:
         setHooks()
