@@ -198,7 +198,7 @@ changes from our layer.
     ...     print portal.title
     ...     print portal['portal_quickinstaller'].isProductInstalled('plonetheme.classic')
     ...     print portal['portal_skins'].getDefaultSkin()
-    Plone
+    Plone site
     False
     Sunburst Theme
 
@@ -319,7 +319,7 @@ still have a Plone site, but none of the changes from our layer.
     
     >>> with helpers.ploneSite() as portal:
     ...     print portal.title
-    Plone
+    Plone site
     
     >>> 'test' in someGlobal
     False

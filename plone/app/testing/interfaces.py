@@ -2,7 +2,7 @@
 # plone.app.testing directly
 
 PLONE_SITE_ID = 'plone'
-PLONE_SITE_TITLE = u"Plone"
+PLONE_SITE_TITLE = u"Plone site"
 DEFAULT_LANGUAGE = 'en'
 
 TEST_USER_NAME = 'test_user_1_'
