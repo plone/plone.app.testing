@@ -17,14 +17,6 @@ from plone.app.testing.interfaces import (
         SITE_OWNER_PASSWORD
     )
 
-try:
-    # XXX: This sucks. We need to import PTS to allow it to monkeypatch
-    # zope.i18n pretty much as soon as possible, otherwise we'll get pickling
-    # errors in certain difficult-to-predict situations.
-    import Products.PlacelessTranslationService
-except ImportError:
-    pass
-
 class PloneSite(Layer):
     """This layer sets up a basic Plone site, with:
     

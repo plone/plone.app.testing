@@ -221,17 +221,19 @@ class which helps implement this pattern.
     
     >>> class MyLayer(helpers.PloneSandboxLayer):
     ...
-    ...     def setUpPloneSite(self, portal):
-    ...             
-    ...         # Register some components
+    ...     def setUpZope(self, app, configurationContext):
+    ...         
+    ...         # We'd often load ZCML here, using the passed-in
+    ...         # configurationContext as the configuration context.
+    ...         
+    ...         # Of course, we can also register some components using the
+    ...         # zope.component API directly
     ...         from zope.component import provideUtility
     ...         from zope.interface import Interface
     ...         provideUtility(object(), Interface, name=u"dummy1")
-    ...     
-    ...         # Make some persistent changes
-    ...         portal.title = u"New title"
-    ...         
-    ...         # Add some entries to the GenericSetup global registries
+    ...
+    ...         # We'll also add some entries to the GenericSetup global
+    ...         # registries.
     ...         from Products.GenericSetup.registry import _profile_registry
     ...         from Products.GenericSetup.registry import _import_step_registry
     ...         from Products.GenericSetup.registry import _export_step_registry
@@ -240,28 +242,46 @@ class which helps implement this pattern.
     ...         _import_step_registry.registerStep('import1', version=1, handler='plone.app.testing.tests.dummy', title=u"Dummy import step", description=u"")
     ...         _export_step_registry.registerStep('export1', handler='plone.app.testing.tests.dummy', title=u"Dummy import step", description=u"")
     ...         
+    ...         # Finally, this is a good place to load Zope products, 
+    ...         # using the plone.testing.z2.installProduct() helper.
     ...         # Make some other global changes not stored in the ZODB or
+    ...         
     ...         # the global component registry
     ...         someGlobal['test'] = 1
-    ...     
-    ...     def tearDownPloneSite(self, portal):
+    ...
+    ...     def tearDownZope(self, app):
     ...         # Illustrate tear-down of some global state
     ...         del someGlobal['test']
+    ...
+    ...     def setUpPloneSite(self, portal):
+    ...     
+    ...         # We can make persistent changes here
+    ...         portal.title = u"New title"
 
     >>> MY_LAYER = MyLayer()
 
 Here, we have derived from ``PloneSandboxLayer`` instead of the more usual
 ``Layer`` base class. This layer implements the sandboxing of the ZODB, global
 component registry, and GenericSetup profile and import/export step registries
-for us, and delegates to two template methods: ``setUpPloneSite()`` and
-``tearDownPloneSite()``. Both take a configured ``portal`` object as an
-argument, giving access to the Plone site root.
+for us, and delegates to four template methods, all of them optional: 
 
-You *must* implement ``setUpPloneSite()``. Implementing
-``tearDownPloneSite()`` is optional. If all the state modified during layer
-setup is saved in the ZODB, the global component registry and/or the global
-GenericSetup profile/import/export step registries only, the standard
-tear-down will suffice. Other state must be cleaned up explicitly.
+* ``setUpZope()``, called with the Zope app root and the ZCML configuration
+  context as arguments. This is a good place to load ZCML, manipulate global
+  registries, or install Zope 2-style products using the ``installProduct()``
+  helper method.
+* ``setUpPloneSite()``, called with the Plone site object as an argument. This
+  is a good place to set up persistent aspects of the test fixture, such as
+  installing products into Plone using the ``quickInstallProduct`` helper or
+  adding default content.
+* ``tearDownZope()``, called with the Zope app root as an argument. This is
+  a good place to tear down global state and uninstall products using the
+  ``uninstallProduct()`` helper. Note that global components (e.g. loaded via
+  ZCML) are torn down automatically, as are changes to the global GenericSetup
+  registries.
+* ``tearDownPloneSite()``, called with the Plone site object as an argument.
+  This is not very commonly needed, because persistent changes to the Plone
+  site are torn down automatically by popping ZODB ``DemoStorage`` created
+  during set-up. However, it is there if you need it.
 
 You may also wish to change the ``defaultBases`` argument. The default is to
 use ``PLONE_INTEGRATION_TESTING`` as the single default base layer.

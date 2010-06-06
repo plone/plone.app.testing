@@ -233,14 +233,19 @@ Plone site context manager
     Inside the block, the local component site is set to the Plone site root,
     so that local component lookups should work.
     
+    **Warning:** Do not attempt to load ZCML files inside a ``ploneSite``
+    block. Because the local site is set to the Plone site, you may end up
+    accidentally registering components in the local site manager, which can
+    cause pickling errors later.
+    
     **Note:** You should not use this in a test, or in a ``testSetUp()`` or
     ``testTearDown()`` method of a layer based on one of the layer in this
     package. Use the ``portal`` resource instead.
     
     **Also note:** If you are writing a layer setting up a Plone site fixture,
     you may want to use the ``PloneSandboxLayer`` layer base class, and
-    implement the ``setUpPloneSite()`` and/or ``tearDownPloneSite()`` methods
-    instead, both of which are passed the portal as an argument. See below.
+    implement the ``setUpZope()``, ``setUpPloneSite()``, ``tearDownZope()``
+    and/or ``tearDownPloneSite()`` methods instead. See below.
 
 User management
 ---------------
@@ -537,28 +542,41 @@ the right order.
 
 To make things easier, you can use the ``PloneSandboxLayer`` layer base class.
 This extends ``plone.testing.Layer`` and implements ``setUp()`` and
-``tearDown()`` for you. You simply have to override one or both of the
+``tearDown()`` for you. You simply have to override one or more of the
 following methods:
+
+``setUpZope(self, app, configurationContext)``
+    This is called during setup. ``app`` is the Zope application root.
+    ``configurationContext`` is the ZCML configuration context. Use this to
+    load ZCML, install products using the helper
+    ``plone.testing.z2.installProduct()``, or manipulate other global state.
 
 ``setUpPloneSite(self, portal)``
     This is called during setup. ``portal`` is the Plone site root as
-    configured by the ``ploneSite()`` context manager. This is the place to
-    perform any custom setup.
-    
-    Implementing this method is mandatory.
+    configured by the ``ploneSite()`` context manager. Use this to make
+    persistent changes inside the Plone site, such as installing products
+    using the ``quickInstallProduct()`` or ``applyProfile()`` helpers, or
+    setting up default content.
 
-``tearDownPloneSite(self, portal)``
+``tearDownZope(self, app)``
     This is called during tear-down, before the global component registry and
     stacked ``DemoStorage`` are popped. Use this to tear down any additional
     global state.
     
-    Implementing this method is optional. It may be useful e.g. if you want to
-    use ``tearDownMultiPluginRegistration()`` to tear down a custom PAS plugin
-    registration.
+    **Note:** Global component registrations and GenericSetup profile registry
+    manipulations are automatically torn down. PAS multi-plugin registrations
+    and product installations are not, so you should use the
+    ``tearDownMultiPluginRegistration()`` or ``uninstallProduct()`` helpers
+    if any PAS plugins or products were installed during ``setUpZope()``.
+
+``tearDownPloneSite(self, portal)``
+    This is called during tear-down, before the global component registry and
+    stacked ``DemoStorage`` are popped. During this method, the local
+    component site hook is set, giving you access to local components.
     
-    **Note:** Because the layer snapshots the ``GenericSetup`` profile
-    registry, it is not necessary to use ``tearDownProfileRegistation()`` to
-    tear down GenericSetup profile registrations
+    **Note:** Persistent changes to the ZODB are automatically torn down by
+    virtue of a stacked ``DemoStorage``. Thus, this method is less commonly
+    used than the others described here.
 
 Let's show a more comprehensive example of what such a layer may look like.
 Imagine we have a product ``my.product``. It has a ``configure.zcml`` file
@@ -573,21 +591,38 @@ the package, i.e. ``my.product.testing``::
     from plone.app.testing import quickInstallProduct
     from plone.app.testing import PLONE_INTEGRATION_TESTING
     
+    from plone.testing import z2
+    
     from zope.configuration import xmlconfig
     
     class MyProduct(PloneSandboxLayer):
     
         defaultBases = (PLONE_INTEGRATION_TESTING,)
         
-        def setUpPloneSite(self, portal):
-            
+        def setUpZope(self, app, configurationContext):
             # Load ZCML
             import my.product
-            xmlconfig.file('configure.zcml', my.product, context=self['configurationContext'])
+            xmlconfig.file('configure.zcml', my.product, context=configurationContext)
             
+            # Install product and call its initialize() function
+            z2.installProduct(app, 'my.product')
+            
+            # Note: you can skip this if my.product is not a Zope 2-style
+            # product, # i.e. it is not in the Products.* namespace and it
+            # does not have # a <five:registerPackage /> directive in its
+            # configure.zcml.
+            
+        def setUpPloneSite(self, portal):
             # Install into Plone site using quickinstaller tool
             quickInstallProduct(portal, 'my.product')
+        
+        def tearDownZope(self, app):
+            # Uninstall product
+            z2.uninstallProduct(app, 'my.product')
             
+            # Note: Again, you can skip this if my.product is not a Zope 2-
+            # style product
+    
     MY_PRODUCT_INTEGRATION_TESTING = MyProduct()
 
 Of course, we could do a lot more here. For example, let's say the product

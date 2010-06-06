@@ -259,6 +259,28 @@ class PloneSandboxLayer(Layer):
     
     # Hooks
     
+    def setUpZope(self, app, configurationContext):
+        """Set up Zope.
+        
+        ``app`` is the Zope application root.
+        
+        ``configurationContext`` is the ZCML configuration context.
+        
+        This is the most appropriate place to load ZCML or install Zope 2-
+        style products, using the ``plone.testing.z2.installProduct`` helper.
+        """
+        pass
+    
+    def tearDownZope(self, app):
+        """Tear down Zope.
+        
+        ``app`` is the Zope application root.
+        
+        This is the most appropriate place to uninstall Zope 2-style products
+        using the ``plone.testing.z2.uninstallProduct`` helper.
+        """
+        pass
+    
     def setUpPloneSite(self, portal):
         """Set up the Plone site.
         
@@ -267,8 +289,7 @@ class PloneSandboxLayer(Layer):
         
         Concrete layer classes should implement this method at a minimum.
         """
-        
-        raise NotImplementedError("The setUpPloneSite() must be implemented by a concrete layer")
+        pass
     
     def tearDownPloneSite(self, portal):
         """Tear down the Plone site.
@@ -288,7 +309,15 @@ class PloneSandboxLayer(Layer):
         # commited during layer setup can be easily torn down
         self['zodbDB'] = zodb.stackDemoStorage(self.get('zodbDB'), name=self.__name__)
         
-        with ploneSite() as portal:
+        with z2.zopeApp() as app:
+            
+            portal = app[PLONE_SITE_ID]
+            
+            from zope.site.hooks import setSite, setHooks
+            setHooks()
+            
+            # Make sure there's no local site manager while we load ZCML
+            setSite(None)
             
             # Push a new component registry so that ZCML registations 
             # and other global component registry changes are sandboxed
@@ -305,18 +334,32 @@ class PloneSandboxLayer(Layer):
             preSetupImportSteps = list(_import_step_registry.listSteps())
             preSetupExportSteps = list(_export_step_registry.listSteps())
             
-            # Call template method - must be implemented by subclasses
+            # Allow subclass to load ZCML and products
+            configurationContext = self['configurationContext']
+            self.setUpZope(app, configurationContext)
+            
+            # Allow subclass to configure a persistent fixture
+            setSite(portal)
             self.setUpPloneSite(portal)
+            setSite(None)
         
         # Keep track of profiles that were added during setup
         self.snapshotProfileRegistry(preSetupProfiles, preSetupImportSteps, preSetupExportSteps)
     
     def tearDown(self):
         
-        with ploneSite() as portal:
+        with z2.zopeApp() as app:
             
-            # Call template method - may be implemented by subclasses
+            portal = app[PLONE_SITE_ID]
+            
+            from zope.site.hooks import setSite, setHooks
+            setHooks()
+            setSite(portal)
+            
+            # Allow subclass to tear down persistent fixture
             self.tearDownPloneSite(portal)
+            
+            setSite(None)
             
             # Pop the component registry, thus removing component
             # architecture registrations
@@ -324,6 +367,9 @@ class PloneSandboxLayer(Layer):
             
             # Remove global profile registrations
             self.tearDownProfileRegistry()
+        
+            # Allow subclass to tear down products
+            self.tearDownZope(app)
         
         # Pop the demo storage, thus restoring the database to the
         # previous state
