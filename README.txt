@@ -608,8 +608,8 @@ the package, i.e. ``my.product.testing``::
             z2.installProduct(app, 'my.product')
             
             # Note: you can skip this if my.product is not a Zope 2-style
-            # product, # i.e. it is not in the Products.* namespace and it
-            # does not have # a <five:registerPackage /> directive in its
+            # product, i.e. it is not in the Products.* namespace and it
+            # does not have a <five:registerPackage /> directive in its
             # configure.zcml.
             
         def setUpPloneSite(self, portal):
