@@ -669,7 +669,7 @@ Given this layer, we could write a test (e.g. in ``tests.py``) like::
         def test_page_dublin_core_title(self):
             portal = self.layer['portal']
             
-            page1 = portal['page-1]
+            page1 = portal['page-1']
             page1.title = u"Some title"
             
             self.assertEqual(page1.Title(), u"Some title")
