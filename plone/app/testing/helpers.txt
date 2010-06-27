@@ -21,7 +21,11 @@ will perform the following setup:
    ensures that any persistent changes performed in this layer can be torn
    down completely, simply by popping the demo storage.
 
-2. Push a new global component registry. This allows us to register components
+2. Stack a new ZCML configuration context. This keeps separate the information
+   about which ZCML files were loaded, in case other, independent layers want 
+   to load those same files after this layer has been torn down.
+
+3. Push a new global component registry. This allows us to register components
    (e.g. by loading ZCML or using the test API from ``zope.component``) and
    tear down those registration easily by popping the component registry.
    We pass the portal so that the local component site manager can be
@@ -31,17 +35,19 @@ will perform the following setup:
    which will ensure that the portal is properly set up and commit our changes
    on exiting the ``with`` block.
 
-3. Make some persistent changes, to illustrate how these are torn down when
+4. Make some persistent changes, to illustrate how these are torn down when
    we pop the ZODB ``DemoStorage``.
 
-4. Install a product using the ``portal_quickinstaller`` tool.
+5. Install a product using the ``portal_quickinstaller`` tool.
 
-5. Apply a named extension profile.
+6. Apply a named extension profile.
 
 On tear-down, we only need to pop the ``DemoStorage`` (to roll back all
-persistent changes) and the stacked component registry (to roll back all
-global component registrations). Of course, if our setup had changed any other
-global or external state, we would need to tear that down as well.
+persistent changes), the configuration context (to "forget" which files were
+loaded and so allow them to be loaded again in other layers), and the stacked
+component registry (to roll back all global component registrations). Of
+course, if our setup had changed any other global or external state, we would
+need to tear that down as well.
     
     >>> from plone.testing import Layer
     >>> from plone.testing import zca, z2, zodb
@@ -56,6 +62,10 @@ global or external state, we would need to tear that down as well.
     ...         # Push a new database storage so that database changes
     ...         # commited during layer setup can be easily torn down
     ...         self['zodbDB'] = zodb.stackDemoStorage(self.get('zodbDB'), name='HelperDemos')
+    ...         
+    ...         # Push a new configuration context so that it's possible to re-import
+    ...         # ZCML files after tear-down
+    ...         self['configurationContext'] = zca.stackConfigurationContext(self.get('configurationContext'))
     ...         
     ...         with helpers.ploneSite() as portal:
     ...             
@@ -84,6 +94,9 @@ global or external state, we would need to tear that down as well.
     ...         with helpers.ploneSite() as portal:
     ...             helpers.popGlobalRegistry(portal)
     ...         
+    ...         # Pop the configuration context
+    ...         del self['configurationContext']
+    ...
     ...         # Pop the demo storage, thus restoring the database to the
     ...         # previous state
     ...         self['zodbDB'].close()
@@ -213,9 +226,9 @@ Let's tear down the rest of the layers too.
 Plone sandbox layer helper
 --------------------------
 
-The pattern above of setting up a stacked ZODB ``DemoStorage`` and a stacked
-global component registry is very common. In fact, there is a layer base
-class which helps implement this pattern.
+The pattern above of setting up a stacked ZODB ``DemoStorage``, configuration
+context and global component registry is very common. In fact, there is a
+layer base class which helps implement this pattern.
     
     >>> someGlobal = {}
     

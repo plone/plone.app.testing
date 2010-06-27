@@ -187,11 +187,12 @@ class PloneSite(Layer):
         ``disable-autoinclude`` ZCML feature so that Plone does not attempt to
         auto-load ZCML using ``z3c.autoinclude``.
         """
+        
         # Create a new global registry
         zca.pushGlobalRegistry()
         
         from zope.configuration import xmlconfig
-        context = self['configurationContext']
+        self['configurationContext'] = context = zca.stackConfigurationContext(self.get('configurationContext'))
         
         # Turn off z3c.autoinclude
         
@@ -229,7 +230,10 @@ class PloneSite(Layer):
         """
         # Pop the global registry
         zca.popGlobalRegistry()
-    
+        
+        # Zap the stacked configuration context
+        del self['configurationContext']
+        
     def setUpProducts(self, app):
         """Install all old-style products listed in the the ``products`` tuple
         of this class.

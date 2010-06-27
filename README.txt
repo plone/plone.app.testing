@@ -322,6 +322,33 @@ User management
 Product and profile installation
 --------------------------------
 
+``applyProfile(portal, profileName)``
+    Install a GenericSetup profile (usually an extension profile) by name,
+    using the ``portal_setup`` tool. The name is normally made up of a package
+    name and a profile name. Do not use the ``profile-`` prefix.
+    
+    For example::
+    
+        from plone.testing import Layer
+        
+        from plone.app.testing import ploneSite
+        from plone.app.testing import applyProfile
+        
+        ...
+        
+        class MyLayer(Layer):
+        
+            ...
+            
+            def setUp(self):
+                
+                ...
+                
+                with ploneSite() as portal:
+                    applyProfile(portal, 'my.product:default')
+                    
+                    ...
+
 ``quickInstallProduct(portal, productName, reinstall=False)``
     Use this function to install a particular product into the given Plone
     site, using the ``portal_quickinstaller`` tool. If ``reinstall`` is
@@ -349,33 +376,6 @@ Product and profile installation
                 
                 with ploneSite() as portal:
                     quickInstallProduct(portal, 'my.product')
-                    
-                    ...
-
-``applyProfile(portal, profileName)``
-    Install a GenericSetup profile (usually an extension profile) by name,
-    using the ``portal_setup`` tool. The name is normally made up of a package
-    name and a profile name. Do not use the ``profile-`` prefix.
-    
-    For example::
-    
-        from plone.testing import Layer
-        
-        from plone.app.testing import ploneSite
-        from plone.app.testing import applyProfile
-        
-        ...
-        
-        class MyLayer(Layer):
-        
-            ...
-            
-            def setUp(self):
-                
-                ...
-                
-                with ploneSite() as portal:
-                    applyProfile(portal, 'my.product:default')
                     
                     ...
 
@@ -511,14 +511,18 @@ will often want to do the following on setup:
    ensures that any persistent changes performed during layer setup can be
    torn down completely, simply by popping the demo storage.
 
-2. Push a new global component registry. This allows you to register
+2. Stack a new ZCML configuration context. This keeps separate the information
+   about which ZCML files were loaded, in case other, independent layers want 
+   to load those same files after this layer has been torn down.
+
+3. Push a new global component registry. This allows you to register
    components (e.g. by loading ZCML or using the test API from
    ``zope.component``) and tear down those registration easily by popping the
    component registry.
 
-3. Load your product's ZCML configuration
+4. Load your product's ZCML configuration
 
-4. Install the product into the test fixture Plone site
+5. Install the product into the test fixture Plone site
 
 Of course, you may wish to make other changes to, such as creating some base
 content or changing some settings.
@@ -530,7 +534,9 @@ On tear-down, you will then want to:
 
 2. Pop the global component registry to unregister components loaded via ZCML.
 
-3. Pop the ``DemoStorage`` to undo any persistent changes.
+3. Pop the configuration context resource to restore its state.
+
+4. Pop the ``DemoStorage`` to undo any persistent changes.
 
 If you have made other changes on setup that are not covered by this broad
 tear-down, you'll also want to tear those down explicitly here.
@@ -547,15 +553,15 @@ following methods:
 
 ``setUpZope(self, app, configurationContext)``
     This is called during setup. ``app`` is the Zope application root.
-    ``configurationContext`` is the ZCML configuration context. Use this to
-    load ZCML, install products using the helper
+    ``configurationContext`` is a newly stacked ZCML configuration context.
+    Use this to load ZCML, install products using the helper
     ``plone.testing.z2.installProduct()``, or manipulate other global state.
 
 ``setUpPloneSite(self, portal)``
     This is called during setup. ``portal`` is the Plone site root as
     configured by the ``ploneSite()`` context manager. Use this to make
     persistent changes inside the Plone site, such as installing products
-    using the ``quickInstallProduct()`` or ``applyProfile()`` helpers, or
+    using the ``applyProfile()`` or ``quickInstallProduct()`` helpers, or
     setting up default content.
 
 ``tearDownZope(self, app)``
@@ -588,7 +594,7 @@ The layer would conventionally live in a module ``testing.py`` at the root of
 the package, i.e. ``my.product.testing``::
 
     from plone.app.testing import PloneSandboxLayer
-    from plone.app.testing import quickInstallProduct
+    from plone.app.testing import applyProfile
     from plone.app.testing import PLONE_INTEGRATION_TESTING
     
     from plone.testing import z2
@@ -613,8 +619,8 @@ the package, i.e. ``my.product.testing``::
             # configure.zcml.
             
         def setUpPloneSite(self, portal):
-            # Install into Plone site using quickinstaller tool
-            quickInstallProduct(portal, 'my.product')
+            # Install into Plone site using portal_setup
+            applyProfile(portal, 'my.product:default')
         
         def tearDownZope(self, app):
             # Uninstall product
@@ -1000,6 +1006,14 @@ To assert the value of a property in a property sheet in the
 Installing products and extension profiles
 ------------------------------------------
 
+To apply a particular extension profile::
+    
+    from plone.app.testing import applyProfile
+    
+    applyProfile(portal, 'my.product:default')
+
+This is the preferred method of installing a product's configuration.
+
 To install an add-on product into the Plone site using the
 ``portal_quickinstaller`` tool::
     
@@ -1010,12 +1024,6 @@ To install an add-on product into the Plone site using the
 To re-install a product using the quick-installer::
 
     quickInstallProduct(portal, 'my.product', reinstall=True)
-
-To apply a particular extension profile::
-    
-    from plone.app.testing import applyProfile
-    
-    applyProfile(portal, 'my.product:default')
 
 Note that both of these assume the product's ZCML has been loaded, which is
 usually done during layer setup. See the layer examples above for more details

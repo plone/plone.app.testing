@@ -309,6 +309,10 @@ class PloneSandboxLayer(Layer):
         # commited during layer setup can be easily torn down
         self['zodbDB'] = zodb.stackDemoStorage(self.get('zodbDB'), name=self.__name__)
         
+        # Push a new configuration context so that it's possible to re-import
+        # ZCML files after tear-down
+        self['configurationContext'] = configurationContext = zca.stackConfigurationContext(self.get('configurationContext'))
+        
         with z2.zopeApp() as app:
             
             portal = app[PLONE_SITE_ID]
@@ -335,7 +339,6 @@ class PloneSandboxLayer(Layer):
             preSetupExportSteps = list(_export_step_registry.listSteps())
             
             # Allow subclass to load ZCML and products
-            configurationContext = self['configurationContext']
             self.setUpZope(app, configurationContext)
             
             # Allow subclass to configure a persistent fixture
@@ -370,6 +373,9 @@ class PloneSandboxLayer(Layer):
         
             # Allow subclass to tear down products
             self.tearDownZope(app)
+        
+        # Zap the configuration context
+        del self['configurationContext']
         
         # Pop the demo storage, thus restoring the database to the
         # previous state
