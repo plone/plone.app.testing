@@ -154,7 +154,7 @@ def pushGlobalRegistry(portal, new=None, name=None):
     current = zca.pushGlobalRegistry(new=new)
     
     if current not in localSiteManager.__bases__:
-        localSiteManager.__bases__ = (current,) + tuple(localSiteManager.__bases__)
+        localSiteManager.__bases__ = (current,)
     
     if site is not None:
         setHooks()
