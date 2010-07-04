@@ -45,7 +45,7 @@ In ``setup.py``, add or modify the ``extras_require`` option, like so::
             ]
     },
 
-This will also include ``plone.testing``, with the ``[z2]]``, ``[zca]`` and
+This will also include ``plone.testing``, with the ``[z2]``, ``[zca]`` and
 ``[zodb]`` extras (which ``plone.app.testing`` itself relies on).
 
 Please see the `plone.testing`_ documentation for more details about how to
