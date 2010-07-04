@@ -54,11 +54,12 @@ add a test runner to your buildout, and how to write and run tests.
 Layer reference
 ===============
 
-This package contains a layer class, ``plone.app.testing.layers.PloneSite``,
-which sets up a Plone site fixture. It is combined with other layers from
-`plone.testing`_ to provide a number of layer instances. It is important to
-realise that these layers all have the same fundamental fixture: they just
-manage test setup and tear-down differently.
+This package contains a layer class,
+``plone.app.testing.layers.PloneFixture``, which sets up a Plone site fixture.
+It is combined with other layers from `plone.testing`_ to provide a number of
+layer instances. It is important to realise that these layers all have the
+same fundamental fixture: they just manage test setup and tear-down
+differently.
 
 When set up, the fixture will:
 
@@ -118,46 +119,115 @@ base layers, made available during tests:
 ``portal``
    The Plone site root.
 
-Plone site - integration testing
---------------------------------
+Plone site fixture
+------------------
+
++------------+--------------------------------------------------+
+| Layer:     | ``plone.app.testing.PLONE_FIXTURE``              |
++------------+--------------------------------------------------+
+| Class:     | ``plone.app.testing.layers.PloneFixture``        |
++------------+--------------------------------------------------+
+| Bases:     | ``plone.testing.z2.STARTUP``                     |
++------------+--------------------------------------------------+
+| Resources: |                                                  |
++------------+--------------------------------------------------+
+
+This layer sets up the Plone site fixture on top of the ``z2.STARTUP``
+fixture.
+
+You should not use this layer directly, as it does not provide any test
+lifecycle or transaction management. Instead, you should use a layer 
+created with either the ``IntegrationTesting`` or ``FunctionalTesting``
+classes, as outlined below.
+
+Integration and functional testing test lifecycles
+--------------------------------------------------
+
+``plone.app.testing`` comes with two layer classes, ``IntegrationTesting``
+and ``FunctionalTesting``, which derive from the corresponding layer classes
+in ``plone.testing.z2``.
+
+These classes set up the ``app``, ``request`` and ``portal`` resources, and
+reset the fixture (including various global caches) between each test run.
+
+As with the classes in ``plone.testing``, the ``IntegrationTesting`` class
+will create a new transaction for each test and roll it back on test tear-
+down, which is efficient for integration testing, whilst ``FunctionalTesting``
+will create a stacked ``DemoStorage`` for each test and pop it on test tear-
+down, making it possible to exercise code that performs an explicit commit
+(e.g. via tests that use ``zope.testbrowser``).
+
+When creating a custom fixture, the usual pattern is to create a new layer
+class that has ``PLONE_FIXTURE`` as its default base, instantiating that as a
+separate "fixture" layer. This layer is not to be used in tests directly,
+since it won't have test/transaction lifecycle management, but represents a
+shared fixture, potentially for both functional and integration testing. It
+is also the point of extension for other layers that follow the same pattern.
+
+Once this fixture has been defined, "end-user" layers can be defined using
+the ``IntegrationTesting`` and ``FunctionalTesting`` classes. For example::
+
+    from plone.testing import Layer
+    from plone.app.testing import PLONE_FIXTURE
+    from plone.app.testing import IntegrationTesting, FunctionalTesting
+
+    class MyFixture(Layer):
+        default_bases = (PLONE_FIXTURE,)
+        
+        ...
+    
+    MY_FIXTURE = MyFixture()
+    
+    MY_INTEGRATION_TESTING = IntegrationTesting(bases=(MY_FIXTURE,), name="MyFixture:Integration")
+    MY_FUNCTIONAL_TESTING = FunctionalTesting(bases=(MY_FIXTURE,), name="MyFixture:Functional")
+
+See the ``PloneLayerSandbox`` helper below for a more comprehensive example.
+
+Plone integration testing
+-------------------------
 
 +------------+--------------------------------------------------+
 | Layer:     | ``plone.app.testing.PLONE_INTEGRATION_TESTING``  |
 +------------+--------------------------------------------------+
-| Class:     | ``plone.app.testing.layers.PloneSite``           |
+| Class:     | ``plone.app.testing.layers.IntegrationTesting``  |
 +------------+--------------------------------------------------+
-| Bases:     | ``plone.testing.z2.INTEGRATION_TESTING``         |
+| Bases:     | ``plone.app.testing.PLONE_FIXTURE``              |
 +------------+--------------------------------------------------+
 | Resources: | ``portal`` (test setup only)                     |
 +------------+--------------------------------------------------+
 
-This is the layer you are likely to use most often. It sets up a transaction
-for each test, which is rolled back after each test.
+This layer can be used for integration testing against the basic
+``PLONE_FIXTURE`` layer.
 
-See the description of the ``z2.INTEGRATION_TESTING`` layer in
-`plone.testing`_ for details.
+You can use this directly in your tests if you do not need to set up any
+other shared fixture.
 
-Plone site - functional testing
--------------------------------
+However, you would normally not extend this layer - see above.
+
+
+Plone functional testing
+------------------------
 
 +------------+--------------------------------------------------+
 | Layer:     | ``plone.app.testing.PLONE_FUNCTIONAL_TESTING``   |
 +------------+--------------------------------------------------+
-| Class:     | ``plone.app.testing.layers.PloneSite``           |
+| Class:     | ``plone.app.testing.layers.FunctionalTesting``   |
 +------------+--------------------------------------------------+
-| Bases:     | ``plone.testing.z2.FUNCTIONAL_TESTING``          |
+| Bases:     | ``plone.app.testing.PLONE_FIXTURE``              |
 +------------+--------------------------------------------------+
 | Resources: | ``portal`` (test setup only)                     |
 +------------+--------------------------------------------------+
 
-This is layer is intended for functional testing, e.g. using
-`zope.testbrowser`.
+This layer can be used for functional testing against the basic
+``PLONE_FIXTURE`` layer, for example using ``zope.testbrowser``.
 
-See the description of the ``z2.FUNCTIONAL_TESTING`` layer in `plone.testing`_
-for details.
+You can use this directly in your tests if you do not need to set up any
+other shared fixture.
 
-Plone site - ZServer
---------------------
+Again, you would normally not extend this layer - see above.
+
+Plone ZServer
+-------------
 
 +------------+--------------------------------------------------+
 | Layer:     | ``plone.app.testing.PLONE_ZSERVER``              |
@@ -172,27 +242,45 @@ Plone site - ZServer
 This is layer is intended for functional testing using a live, running HTTP
 server, e.g. using Selenium or Windmill.
 
-See the description of the ``z2.ZSERVER`` layer in `plone.testing`_
-for details.
+Again, you would not normally extend this layer. To create a custom layer
+that has a running ZServer, you can use the same pattern as this one, e.g.::
 
-Plone site - FTP server
------------------------
+    from plone.testing import Layer
+    from plone.testing import z2
+    from plone.app.testing import PLONE_FIXTURE
+    from plone.app.testing import FunctionalTesting
+    
+    class MyFixture(Layer):
+        defaultBases = (PLONE_FIXTURE,)
+        
+        ...
+    
+    MY_FIXTURE = MyFixture()
+    MY_ZSERVER = FunctionalTesting(bases=(MY_FIXTURE, z2.ZSERVER_FIXTURE), name='MyFixture:ZServer')
+
+See the description of the ``z2.ZSERVER`` layer in `plone.testing`_
+for further details.
+
+Plone FTP server
+----------------
 
 +------------+--------------------------------------------------+
 | Layer:     | ``plone.app.testing.PLONE_FTP_SERVER``           |
 +------------+--------------------------------------------------+
-| Class:     | ``plone.testing.z2.ZServer``                     |
+| Class:     | ``plone.app.testing.layers.FunctionalTesting``   |
 +------------+--------------------------------------------------+
-| Bases:     | ``plone.app.testing.PLONE_FUNCTIONAL_TESTING``   |
+| Bases:     | ``plone.app.testing.PLONE_FIXTURE``              |
+|            | ``plone.testing.z2.ZSERVER_FIXTURE``             |
 +------------+--------------------------------------------------+
 | Resources: | ``portal`` (test setup only)                     |
 +------------+--------------------------------------------------+
 
-This is layer is intended for functional testing using a live, running HTTP
-server, e.g. using Selenium or Windmill.
+This is layer is intended for functional testing using a live FTP server.
+
+It is semantically equivalent to the ``PLONE_ZSERVER`` layer.
 
 See the description of the ``z2.FTP_SERVER`` layer in `plone.testing`_
-for details.
+for further details.
 
 Helper functions
 ================
@@ -595,7 +683,8 @@ the package, i.e. ``my.product.testing``::
 
     from plone.app.testing import PloneSandboxLayer
     from plone.app.testing import applyProfile
-    from plone.app.testing import PLONE_INTEGRATION_TESTING
+    from plone.app.testing import PLONE_FIXTURE
+    from plone.app.testing import IntegrationTesting
     
     from plone.testing import z2
     
@@ -603,7 +692,7 @@ the package, i.e. ``my.product.testing``::
     
     class MyProduct(PloneSandboxLayer):
     
-        defaultBases = (PLONE_INTEGRATION_TESTING,)
+        defaultBases = (PLONE_FIXTURE,)
         
         def setUpZope(self, app, configurationContext):
             # Load ZCML
@@ -629,11 +718,22 @@ the package, i.e. ``my.product.testing``::
             # Note: Again, you can skip this if my.product is not a Zope 2-
             # style product
     
-    MY_PRODUCT_INTEGRATION_TESTING = MyProduct()
+    MY_PRODUCT_FIXTURE = MyProduct()
+    MY_PRODUCT_INTEGRATION_TESTING = IntegrationTesting(bases=(MY_PRODUCT_FIXTURE,), name="MyProduct:Integration")
 
-Of course, we could do a lot more here. For example, let's say the product
-had a content type 'my.product.page' and we wanted to create some test
-content. We could do that with::
+Here, ``MY_PRODUCT_FIXTURE`` is the "fixture" base layer. Other layers can
+use this as a base if they want to build on this fixture, but it would not
+be used in tests directly. For that, we have crated an ``IntegrationTesting``
+instance, ``MY_PRODUCT_INTEGRATION_TESTING``.
+
+Of course, we could have created a ``FunctionalTesting`` instance as
+well, e.g.::
+
+    MY_PRODUCT_FUNCTIONAL_TESTING = FunctionalTesting(bases=(MY_PRODUCT_FIXTURE,), name="MyProduct:Functional")
+
+Of course, we could do a lot more in the layer setup. For example, let's say
+the product had a content type 'my.product.page' and we wanted to create some
+test content. We could do that with::
 
     from plone.app.testing import TEST_USER_NAME
     from plone.app.testing import setRoles
@@ -695,10 +795,12 @@ The examples in this section are all intended to be used in tests. Some may
 also be useful in layer set-up/tear-down. We have used ``unittest`` syntax
 here, although most of these examples could equally be adopted to doctests.
 
-We will assume that you are using the ``PLONE_INTEGRATION_TESTING`` or
-``PLONE_FUNCTIONAL_TESTING`` layer, or a derivative. We will also assume
-that the variables ``app``, ``portal`` and ``request`` are defined from the
-relative layer resources, e.g. with::
+We will assume that you are using a layer that has ``PLONE_FIXTURE`` as a base
+(whether directly or indirectly) and uses the ``IntegrationTesting`` or
+``FunctionalTesting`` classes as shown above.
+
+We will also assume that the variables ``app``, ``portal`` and ``request`` are
+defined from the relative layer resources, e.g. with::
 
     app = self.layer['app']
     portal = self.layer['portal']
@@ -1207,10 +1309,12 @@ channel, making requests and obtaining responses.
   a JavaScript engine.
 
 Note that to use ``zope.testbrowser``, you need to use one of the functional
-testing layers, e.g. ``PLONE_FUNCTIONAL_TESTING``. If you want to create some
-initial content, you can do so either in a layer, or in the test itself,
-before invoking the test browser client. In the latter case, you need to
-commit the transaction before it becomes available, e.g.::
+testing layers, e.g. ``PLONE_FUNCTIONAL_TESTING``, or another layer
+instantiated with the ``FunctionalTesting`` class.
+
+If you want to create some initial content, you can do so either in a layer,
+or in the test itself, before invoking the test browser client. In the latter
+case, you need to commit the transaction before it becomes available, e.g.::
     
     from plone.app.testing import setRoles
     from plone.app.testing import TEST_USER_NAME

@@ -17,24 +17,16 @@ from plone.app.testing.interfaces import (
         SITE_OWNER_PASSWORD
     )
 
-class PloneSite(Layer):
+class PloneFixture(Layer):
     """This layer sets up a basic Plone site, with:
     
     * No content
     * No default workflow
     * One user, as found in the constant ``TEST_USER_NAME``, with the password
       ``TEST_USER_PASSWORD``, and a single role, ``Member``.
-    * A resource ``portal``, which is the portal itself
     """
     
-    # Note: We don't set the default bases, since we have two "equal" versions
-    # in INTEGRATION_TESTING and FUNCTIONAL_TESTING, both instantiated below
-    defaultBases = ()
-    
-    def __init__(self, bases=None, name=None, module=None):
-        if not bases:
-            raise ValueError("PloneSite layer must be instantiated with explicit bases")
-        super(PloneSite, self).__init__(bases, name, module)
+    defaultBases = (z2.STARTUP,)
     
     # Products that will be installed, plus options
     products = (
@@ -97,7 +89,7 @@ class PloneSite(Layer):
     def setUp(self):
         
         # Stack a new DemoStorage on top of the one from z2.STARTUP.
-        self['zodbDB'] = zodb.stackDemoStorage(self.get('zodbDB'), name='PloneSite')
+        self['zodbDB'] = zodb.stackDemoStorage(self.get('zodbDB'), name='PloneFixture')
         
         # Keep track of the GenericSetup registries so that we can snapshot
         # the changes
@@ -301,16 +293,34 @@ class PloneSite(Layer):
         
         # Log out again
         z2.logout()
+
+# Plone fixture layer instance. Should not be used on its own, but as a base
+# for other layers.
+
+PLONE_FIXTURE = PloneFixture()
+
+class PloneTestLifecycle(object):
+    """Mixin class for Plone test lifecycle. This exposes the ``portal``
+    resource and resets the environment between each test.
     
-    # Test lifecycle
+    This class is used as a mixing for the IntegrationTesting and
+    FunctionalTesting classes below, which also mix in the z2 versions of
+    the same.
+    """
+    
+    defaultBases = (PLONE_FIXTURE,)
     
     def testSetUp(self):
+        super(PloneTestLifecycle, self).testSetUp()
+        
         self['portal'] = portal = self['app'][PLONE_SITE_ID]
         self.setUpEnvironment(portal)
     
     def testTearDown(self):
         self.tearDownEnvironment(self['portal'])
         del self['portal']
+        
+        super(PloneTestLifecycle, self).testTearDown()
     
     def setUpEnvironment(self, portal):
         """Set up the local component site, reset skin data and log in as
@@ -351,11 +361,23 @@ class PloneSite(Layer):
         # Unset the local component site
         from zope.site.hooks import setSite
         setSite(None)
-    
 
+class IntegrationTesting(PloneTestLifecycle, z2.IntegrationTesting):
+    """Plone version of the integration testing layer
+    """
+
+class FunctionalTesting(PloneTestLifecycle, z2.FunctionalTesting):
+    """Plone version of the functional testing layer
+    """
+
+#
 # Layer instances
+#
 
-PLONE_INTEGRATION_TESTING = PloneSite(bases=(z2.INTEGRATION_TESTING,), name='PloneSite:Integration')
-PLONE_FUNCTIONAL_TESTING  = PloneSite(bases=(z2.FUNCTIONAL_TESTING,), name='PloneSite:Functional')
-PLONE_ZSERVER             = z2.ZServer(bases=(PLONE_FUNCTIONAL_TESTING,), name='PloneZServer')
-PLONE_FTP_SERVER          = z2.FTPServer(bases=(PLONE_FUNCTIONAL_TESTING,), name='PloneFTPServer')
+# Note: PLONE_FIXTURE is defined above
+
+PLONE_INTEGRATION_TESTING = IntegrationTesting(bases=(PLONE_FIXTURE,), name='Plone:Integration')
+PLONE_FUNCTIONAL_TESTING  = FunctionalTesting(bases=(PLONE_FIXTURE,), name='Plone:Functional')
+
+PLONE_ZSERVER             = FunctionalTesting(bases=(PLONE_FIXTURE, z2.ZSERVER_FIXTURE), name='Plone:ZServer')
+PLONE_FTP_SERVER          = FunctionalTesting(bases=(PLONE_FIXTURE, z2.FTP_SERVER_FIXTURE), name='Plone:FTPServer')

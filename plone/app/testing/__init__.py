@@ -1,8 +1,14 @@
 # Layers
 from plone.app.testing.layers import (
-        PloneSite,
+        PloneFixture,
+        IntegrationTesting,
+        FunctionalTesting,
+        
+        PLONE_FIXTURE,
+        
         PLONE_INTEGRATION_TESTING,
         PLONE_FUNCTIONAL_TESTING,
+        
         PLONE_ZSERVER,
         PLONE_FTP_SERVER,
     )

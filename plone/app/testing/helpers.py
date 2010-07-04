@@ -217,7 +217,7 @@ def ploneSite(db=None, connection=None, environ=None):
     This is based on the ``z2.zopeApp()`` context manager. See the module
      ``plone.testing.z2`` for details.
     
-    Do not use this in a test. Use the 'portal' resource from the PloneSite
+    Do not use this in a test. Use the 'portal' resource from the PloneFixture
     layer instead!
     
     Pass a ZODB handle as ``db`` to use a specificdatabase. Alternatively,
@@ -252,10 +252,9 @@ class PloneSandboxLayer(Layer):
     the ``defaultBases`` tuple.
     """
     
-    # The default list of bases. Consider setting to PLONE_FUNCTIONAL_TESTING
-    # for functional testing.
+    # The default list of bases.
     
-    defaultBases = (layers.PLONE_INTEGRATION_TESTING,)
+    defaultBases = (layers.PLONE_FIXTURE,)
     
     # Hooks
     
