@@ -181,7 +181,7 @@ the ``IntegrationTesting`` and ``FunctionalTesting`` classes. For example::
     MY_INTEGRATION_TESTING = IntegrationTesting(bases=(MY_FIXTURE,), name="MyFixture:Integration")
     MY_FUNCTIONAL_TESTING = FunctionalTesting(bases=(MY_FIXTURE,), name="MyFixture:Functional")
 
-See the ``PloneLayerSandbox`` helper below for a more comprehensive example.
+See the ``PloneSandboxLayer`` layer below for a more comprehensive example.
 
 Plone integration testing
 -------------------------
