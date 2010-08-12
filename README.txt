@@ -736,6 +736,7 @@ the product had a content type 'my.product.page' and we wanted to create some
 test content. We could do that with::
 
     from plone.app.testing import TEST_USER_NAME
+    from plone.app.testing import login
     from plone.app.testing import setRoles
     
     ...
@@ -744,10 +745,10 @@ test content. We could do that with::
             
             ...
             
-            z2.setRoles(portal, TEST_USER_NAME, ['Manager'])
-            z2.login(portal, TEST_USER_NAME)
+            setRoles(portal, TEST_USER_NAME, ['Manager'])
+            login(portal, TEST_USER_NAME)
             portal.invokeFactory('my.product.page', 'page-1', title=u"Page 1")
-            z2.setRoles(portal, TEST_USER_NAME, ['Member'])
+            setRoles(portal, TEST_USER_NAME, ['Member'])
     
     ...
     
