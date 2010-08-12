@@ -1493,7 +1493,7 @@ differences to bear in mind.
             layer = PLONE_INTEGRATION_TESTING
             
             def setUp(self):
-                self.portal = self.layer['portal']
+                portal = self.layer['portal']
                 
                 setRoles(portal, TEST_USER_NAME, ['Manager'])
                 portal.invokeFactory('Folder', 'test-folder')
