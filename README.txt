@@ -1048,7 +1048,7 @@ You can pass multiple type names to set multiple chains at once. To set a
 multi-workflow chain, separate workflow names by commas. To indicate that a
 type should use the default workflow, use the special chain name '(Default)'.
 
-To get the workflow chain for the portal type 'Document':
+To get the workflow chain for the portal type 'Document'::
 
     chains = dict(workflowTool.listChainOverrides())
     defaultChain = workflowTool.getDefaultChain()
