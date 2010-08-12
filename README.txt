@@ -893,15 +893,15 @@ To make assertions against the search results::
     results = list(results)
     
     # Check the first (and in this case only) result in the list
-    self.assertEquals(results[0].Title, u"Document 1")
+    self.assertEqual(results[0].Title, u"Document 1")
 
 To get the path of a given item in the search results::
     
-    self.assertEquals(resuls[0].getPath(), portal.absolute_url_path() + '/f1/d1')
+    self.assertEqual(resuls[0].getPath(), portal.absolute_url_path() + '/f1/d1')
 
 To get an absolute URL::
 
-    self.assertEquals(resuls[0].getURL(), portal.absolute_url() + '/f1/d1')
+    self.assertEqual(resuls[0].getURL(), portal.absolute_url() + '/f1/d1')
 
 To get the original object::
 
@@ -971,7 +971,7 @@ account)::
     
     user = getSecurityManager().getUser()
     
-    self.assertEquals(user.getRolesInContext(portal), ['Member'])
+    self.assertEqual(user.getRolesInContext(portal), ['Member'])
 
 To change the test user's roles::
 
@@ -1089,7 +1089,7 @@ To set the value of a property on the portal root::
 
 To assert the value of a property on the portal root::
 
-    self.assertEquals(portal.getProperty('title'), u"My title")
+    self.assertEqual(portal.getProperty('title'), u"My title")
 
 To change the value of a property in a property sheet in the
 ``portal_properties`` tool::
@@ -1104,7 +1104,7 @@ To change the value of a property in a property sheet in the
 To assert the value of a property in a property sheet in the
 ``portal_properties`` tool::
 
-    self.assertEquals(siteProperties.getProperty('many_users'), True)
+    self.assertEqual(siteProperties.getProperty('many_users'), True)
 
 Installing products and extension profiles
 ------------------------------------------
@@ -1186,7 +1186,7 @@ via ``propertiestool.xml``):::
     propertiesTool = getToolByName(portal, 'portal_properties')
     siteProperties = propertiesTool['site_properties']
     
-    self.assertEquals(siteProperties.getProperty('some_property'), "some value")
+    self.assertEqual(siteProperties.getProperty('some_property'), "some value")
 
 To verify that a stylesheet has been installed in the ``portal_css`` tool
 (e.g. via ``cssregistry.xml``)::
@@ -1358,7 +1358,7 @@ This gets a link by its text. To get a link by HTML id::
 
 To verify the current URL::
 
-    self.assertEquals(portalURL + '/edit', browser.url)
+    self.assertEqual(portalURL + '/edit', browser.url)
 
 To set a form control value::
 
@@ -1455,7 +1455,7 @@ differences to bear in mind.
   test code simpler and more explicit.
 
 * ``ZopeTestCase`` has an ``installProduct()`` function and a corresponding
-  ``instalPackage()`` function. `plone.testing`_ has only an
+  ``installPackage()`` function. `plone.testing`_ has only an
   ``installProduct()``, which can configure any kind of Zope 2 product (i.e.
   packages in the ``Products.*`` namespace, old-style products in a special
   ``Products`` folder, or packages in any namespace that have had their ZCML
