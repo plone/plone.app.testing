@@ -1496,11 +1496,11 @@ differences to bear in mind.
             def setUp(self):
                 portal = self.layer['portal']
                 
-                setRoles(portal, TEST_USER_NAME, ['Manager'])
-                portal.invokeFactory('Folder', 'test-folder')
-                setRoles(portal, TEST_USER_NAME, ['Member'])
+                setRoles(self.portal, TEST_USER_NAME, ['Manager'])
+                self.portal.invokeFactory('Folder', 'test-folder')
+                setRoles(self.portal, TEST_USER_NAME, ['Member'])
                 
-                self.folder = portal['test-folder']
+                self.folder = self.portal['test-folder']
             
   You could of course do this type of setup in your own layer and expose it
   as a resource instead.
