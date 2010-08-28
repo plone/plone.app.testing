@@ -134,7 +134,7 @@ def applyProfile(portal, profileName):
 
 def pushGlobalRegistry(portal, new=None, name=None):
     """Set a new global component registry that uses the current registry as
-    a a base. If you use this, you *must* call ``popGlobalRegistry()`` to
+    a base. If you use this, you *must* call ``popGlobalRegistry()`` to
     restore the original state.
     
     If ``new`` is not given, a new registry is created. If given, you must
