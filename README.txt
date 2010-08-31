@@ -1489,7 +1489,7 @@ differences to bear in mind.
         from plone.app.testing import TEST_USER_NAME, setRoles
         from plone.app.testing import PLONE_INTEGRATION_TESTING
         
-        class MyTest(unnitest.TestCase):
+        class MyTest(unitest.TestCase):
             
             layer = PLONE_INTEGRATION_TESTING
             
