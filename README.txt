@@ -1505,6 +1505,23 @@ differences to bear in mind.
   You could of course do this type of setup in your own layer and expose it
   as a resource instead.
 
+* To use `zope.testbrowser`_ with ``PloneTestCase``, you should use its 
+  ``FunctionalTestCase`` as a base class, and then use the following pattern::
+  
+        from Products.Five.testbrowser import Browser
+        browser = Browser()
+  
+  The equivalent pattern in ``plone.app.testing`` is to use the
+  ``FunctionalTesting`` test lifecycle layer (see example above), and then
+  use::
+  
+        from plone.testing.z2 import Browser
+        browser = Browser(self.layer['app'])
+  
+  Also note that if you have made changes to the fixture prior to calling
+  ``browser.open()``, they will *not* be visible until you perform an
+  explicit commit. See the ``zope.testbrowser`` examples above for details.
+
 .. _plone.testing: http://pypi.python.org/pypi/plone.testing
 .. _zope.testing: http://pypi.python.org/pypi/zope.testing
 .. _z3c.autoinclude: http://pypi.python.org/pypi/z3c.autoinclude

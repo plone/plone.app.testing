@@ -76,8 +76,11 @@ class PloneFixture(Layer):
             ('plonetheme.classic'                   , {'loadZCML': True}, ),
             ('plonetheme.sunburst'                  , {'loadZCML': True}, ),
 
-            ('Products.CMFPlone'                    , {'loadZCML': True}, ),
             ('plone.app.blob'                       , {'loadZCML': True}, ),
+            ('plone.app.imaging'                    , {'loadZCML': True}, ),
+
+            ('Products.CMFPlone'                    , {'loadZCML': True}, ),
+
         )
 
     # Extension profiles to be installed with site setup
@@ -188,7 +191,7 @@ class PloneFixture(Layer):
         self['configurationContext'] = context = zca.stackConfigurationContext(self.get('configurationContext'))
 
         # Turn off z3c.autoinclude
-
+        
         xmlconfig.string("""\
 <configure xmlns="http://namespaces.zope.org/zope" xmlns:meta="http://namespaces.zope.org/meta">
     <meta:provides feature="disable-autoinclude" />
