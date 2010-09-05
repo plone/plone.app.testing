@@ -389,7 +389,7 @@ User management
 ``setRoles(portal, userName, roles)``
     Set the roles for the given user. ``roles`` is a list of roles.
     
-    For example:
+    For example::
     
         import unittest2 as unittest
         
@@ -1382,13 +1382,13 @@ name::
     browser.getControl(name='form.button.Save').click()
 
 To simulate HTTP BASIC authentication and remain logged in for all
-requests:
+requests::
     
     from plone.app.testing import TEST_USER_NAME, TEST_USER_PASSWORD
     
     browser.addHeader('Authorization', 'Basic %s:%s' % (TEST_USER_NAME, TEST_USER_PASSWORD,))
 
-To simulate logging in via the login form:
+To simulate logging in via the login form::
 
     browser.open(portalURL + '/login_form')
     browser.getControl(name='__ac_name').value = TEST_USER_NAME
