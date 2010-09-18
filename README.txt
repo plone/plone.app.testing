@@ -101,6 +101,8 @@ to describe this environment:
 +----------------------+--------------------------------------------------+
 | DEFAULT_LANGUAGE     | The default language of the Plone site ('en')    |
 +----------------------+--------------------------------------------------+
+| TEST_USER_ID         | The id of the test user                          |
++----------------------+--------------------------------------------------+
 | TEST_USER_NAME       | The username of the test user                    |
 +----------------------+--------------------------------------------------+
 | TEST_USER_PASSWORD   | The password of the test user                    |
@@ -386,7 +388,7 @@ User management
                 
                 ...
 
-``setRoles(portal, userName, roles)``
+``setRoles(portal, userId, roles)``
     Set the roles for the given user. ``roles`` is a list of roles.
     
     For example::
@@ -394,7 +396,7 @@ User management
         import unittest2 as unittest
         
         from plone.app.testing import PLONE_INTEGRATION_TESTING
-        from plone.app.testing import TEST_USER_NAME
+        from plone.app.testing import TEST_USER_ID
         from plone.app.testing import setRoles
         
         ...
@@ -405,7 +407,7 @@ User management
         
             def test_something(self):
                 portal = self.layer['portal']
-                setRoles(portal, TEST_USER_NAME, ['Manager'])
+                setRoles(portal, TEST_USER_ID, ['Manager'])
 
 Product and profile installation
 --------------------------------
@@ -735,6 +737,7 @@ Of course, we could do a lot more in the layer setup. For example, let's say
 the product had a content type 'my.product.page' and we wanted to create some
 test content. We could do that with::
 
+    from plone.app.testing import TEST_USER_ID
     from plone.app.testing import TEST_USER_NAME
     from plone.app.testing import login
     from plone.app.testing import setRoles
@@ -745,10 +748,10 @@ test content. We could do that with::
             
             ...
             
-            setRoles(portal, TEST_USER_NAME, ['Manager'])
+            setRoles(portal, TEST_USER_ID, ['Manager'])
             login(portal, TEST_USER_NAME)
             portal.invokeFactory('my.product.page', 'page-1', title=u"Page 1")
-            setRoles(portal, TEST_USER_NAME, ['Member'])
+            setRoles(portal, TEST_USER_ID, ['Member'])
     
     ...
     
@@ -833,9 +836,9 @@ set the roles of the test user to ensure that he has the necessary
 permissions::
     
     from plone.app.testing import setRoles
-    from plone.app.testing import TEST_USER_NAME
+    from plone.app.testing import TEST_USER_ID
     
-    setRoles(portal, TEST_USER_NAME, ['Manager'])
+    setRoles(portal, TEST_USER_ID, ['Manager'])
     portal.invokeFactory('Folder', 'f1', title=u"Folder 1")
 
 To obtain this object, acquisition-wrapped in its parent::
@@ -926,7 +929,7 @@ The arguments are the username (which will also be the user id), the password,
 a list of roles, and a list of domains (rarely used).
 
 To make a particular user active ("logged in") in the integration testing
-environment::
+environment use the ``login`` method and pass it the username::
 
     from plone.app.testing import login
     
@@ -948,8 +951,8 @@ To obtain a user by name::
     
     user = acl_users.getUser('user1')
 
-Or by user id (id and username are often the same in tests, but are often
-different in real-world scenarios)::
+Or by user id (id and username are often the same, but can differ in real-world
+scenarios)::
 
     user = acl_users.getUserById('user1')
 
@@ -976,19 +979,19 @@ account)::
 To change the test user's roles::
 
     from plone.app.testing import setRoles
-    from plone.app.testing import TEST_USER_NAME
+    from plone.app.testing import TEST_USER_ID
 
-    setRoles(portal, TEST_USER_NAME, ['Member', 'Manager'])
+    setRoles(portal, TEST_USER_ID, ['Member', 'Manager'])
 
 Pass a different user name to change the roles of another user.
 
 To grant local roles to a user in the folder f1::
 
-    f1.manage_setLocalRoles(TEST_USER_NAME, ('Reviewer',))
+    f1.manage_setLocalRoles(TEST_USER_ID, ('Reviewer',))
 
 To check the local roles of a given user in the folder 'f1'::
 
-    self.assertEqual(f1.get_local_roles_for_userid(TEST_USER_NAME), ('Reviewer',))
+    self.assertEqual(f1.get_local_roles_for_userid(TEST_USER_ID), ('Reviewer',))
 
 To grant the 'View' permission to the roles 'Member' and 'Manager' in the
 portal root without acquiring additional roles from its parents::
@@ -1318,12 +1321,12 @@ or in the test itself, before invoking the test browser client. In the latter
 case, you need to commit the transaction before it becomes available, e.g.::
     
     from plone.app.testing import setRoles
-    from plone.app.testing import TEST_USER_NAME
+    from plone.app.testing import TEST_USER_ID
     
     # Make some changes
-    setRoles(portal, TEST_USER_NAME, ['Manager'])
+    setRoles(portal, TEST_USER_ID, ['Manager'])
     portal.invokeFactory('Folder', 'f1', title=u"Folder 1")
-    setRoles(portal, TEST_USER_NAME, ['Member'])
+    setRoles(portal, TEST_USER_ID, ['Member'])
     
     # Commit so that the test browser sees these changes
     import transaction
@@ -1486,7 +1489,7 @@ differences to bear in mind.
   ``PloneTestCase``, you can do::
       
         import unittest2 as unittest
-        from plone.app.testing import TEST_USER_NAME, setRoles
+        from plone.app.testing import TEST_USER_ID, setRoles
         from plone.app.testing import PLONE_INTEGRATION_TESTING
         
         class MyTest(unitest.TestCase):
@@ -1496,9 +1499,9 @@ differences to bear in mind.
             def setUp(self):
                 self.portal = self.layer['portal']
                 
-                setRoles(self.portal, TEST_USER_NAME, ['Manager'])
+                setRoles(self.portal, TEST_USER_ID, ['Manager'])
                 self.portal.invokeFactory('Folder', 'test-folder')
-                setRoles(self.portal, TEST_USER_NAME, ['Member'])
+                setRoles(self.portal, TEST_USER_ID, ['Member'])
                 
                 self.folder = self.portal['test-folder']
             

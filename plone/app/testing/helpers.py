@@ -25,12 +25,12 @@ def logout():
     
     z2.logout()
 
-def setRoles(portal, userName, roles):
+def setRoles(portal, userId, roles):
     """Set the given user's roles to a tuple of roles.
     """
     
     userFolder = portal['acl_users']
-    z2.setRoles(userFolder, userName, roles)
+    z2.setRoles(userFolder, userId, roles)
 
 # Product management - helpers to tear down state
 

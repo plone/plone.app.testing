@@ -40,6 +40,7 @@ from plone.app.testing.interfaces import (
         DEFAULT_LANGUAGE,
         
         TEST_USER_NAME,
+        TEST_USER_ID,
         TEST_USER_PASSWORD,
         TEST_USER_ROLES,
         

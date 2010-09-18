@@ -156,6 +156,7 @@ the ``ploneSite()`` context manager as shown above.
 
     >>> from AccessControl import getSecurityManager
     >>> from plone.app.testing import TEST_USER_NAME
+    >>> from plone.app.testing import TEST_USER_ID
 
     >>> portal = HELPER_DEMOS_INTEGRATION_TESTING['portal'] # would normally be self.layer['portal']
 
@@ -163,8 +164,10 @@ the ``ploneSite()`` context manager as shown above.
     ['Member', 'Authenticated']
 
     >>> getSecurityManager().getUser().getUserName() == TEST_USER_NAME
-    True    
-    >>> helpers.setRoles(portal, TEST_USER_NAME, ['Manager'])
+    True
+    >>> getSecurityManager().getUser().getId() == TEST_USER_ID
+    True
+    >>> helpers.setRoles(portal, TEST_USER_ID, ['Manager'])
     >>> getSecurityManager().getUser().getRolesInContext(portal)
     ['Manager', 'Authenticated']
 
