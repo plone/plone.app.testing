@@ -110,7 +110,7 @@ class PloneFixture(Layer):
         self.setUpZCML()
 
         # Set up products and the default content
-        with z2.zopeApp() as app:
+        for app in z2.zopeApp():
             self.setUpProducts(app)
             self.setUpDefaultContent(app)
 
@@ -120,7 +120,7 @@ class PloneFixture(Layer):
     def tearDown(self):
 
         # Tear down products
-        with z2.zopeApp() as app:
+        for app in z2.zopeApp():
             # note: content tear-down happens by squashing the ZODB
             self.tearDownProducts(app)
 
@@ -193,7 +193,7 @@ class PloneFixture(Layer):
         self['configurationContext'] = context = zca.stackConfigurationContext(self.get('configurationContext'))
 
         # Turn off z3c.autoinclude
-        
+
         xmlconfig.string("""\
 <configure xmlns="http://namespaces.zope.org/zope" xmlns:meta="http://namespaces.zope.org/meta">
     <meta:provides feature="disable-autoinclude" />
@@ -281,8 +281,8 @@ class PloneFixture(Layer):
         from Products.CMFPlone.factory import addPloneSite
         addPloneSite(app, PLONE_SITE_ID,
                 title=PLONE_SITE_TITLE,
-                setup_content=False,
-                default_language=DEFAULT_LANGUAGE,
+                #setup_content=False,
+                #default_language=DEFAULT_LANGUAGE,
                 extension_ids=self.extensionProfiles,
             )
 
@@ -337,7 +337,10 @@ class PloneTestLifecycle(object):
         """
 
         # Set up the local site manager
-        from zope.site.hooks import setSite
+        try:
+            from zope.site.hooks import setSite
+        except ImportError:
+            from zope.app.component.hooks import setSite
         setSite(portal)
 
         # Reset skin data
@@ -368,7 +371,10 @@ class PloneTestLifecycle(object):
             cache.invalidateAll()
 
         # Unset the local component site
-        from zope.site.hooks import setSite
+        try:
+            from zope.site.hooks import setSite
+        except ImportError:
+            from zope.app.component.hooks import setSite
         setSite(None)
 
 class IntegrationTesting(PloneTestLifecycle, z2.IntegrationTesting):
