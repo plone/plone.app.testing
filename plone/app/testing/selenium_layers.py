@@ -1,6 +1,5 @@
 import os
 import transaction
-import unittest2 as unittest
 
 from plone.app.testing import PloneSandboxLayer
 from plone.app.testing import FunctionalTesting
@@ -27,13 +26,7 @@ SELENIUM_TESTING = FunctionalTesting(
     bases=(SELENIUM_FIXTURE,), name="SeleniumTesting:Functional")
 
 
-class SeleniumTestCase(unittest.TestCase):
-    layer = SELENIUM_TESTING
-
-    def setUp(self):
-        self.selenium = self.layer['selenium']
-
-    def open(self, url):
-        # ensure we have a clean starting point
-        transaction.commit()
-        self.selenium.get(url)
+def open(selenium, url):
+    # ensure we have a clean starting point
+    transaction.commit()
+    selenium.get(url)

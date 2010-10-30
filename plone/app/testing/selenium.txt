@@ -68,12 +68,23 @@ instance, do not affect the server thread.
     'folder1'
 
 Note that we need to commit the transaction before it will show up in the
-other thread.  The SeleniumTestCase.open() method does this for you.
+other thread.  This is important whenever your interactions with the
+selenium browser are going to require retrieving content from the
+server when that content needs to reflect changes you've made in your
+test. For example, if some browser action invokes some AJAX code which
+refreshes a part of the page from ZODB content, that refreshed content
+will only reflect recent changes if you did transaction.commit()
+before executing the browser action that triggered the AJAX.  The
+plone.app.testing.selenium_layers.open() method does this for you when
+opening a new URL, but there are many more ways to cause content
+changes that pull from the ZODB when doing JavaScript testing so in
+all other cases you are responsible to call transaction.commit()
+yourself.
 
-    >>> case = layers.SeleniumTestCase(methodName="open")
-    >>> case.setUp()
-    >>> case.open(portal.folder1.absolute_url())
-    >>> case.selenium.get_title()
+    >>> from plone.app.testing.selenium_layers import open
+    >>> selenium = layers.SELENIUM_TESTING['selenium']
+    >>> open(selenium, portal.folder1.absolute_url())
+    >>> selenium.get_title()
     u'folder1 \u2014 Plone site'
 
 Test tear-down does nothing beyond what the base layers do.
@@ -104,11 +115,11 @@ When the layer is torn down, the Selenium browser is closed.
     Tear down plone.testing.z2.Startup in ... seconds.
     Tear down plone.testing.zca.LayerCleanup in ... seconds.
 
-    >>> if getattr(case.selenium, '_server', None) is None:
+    >>> if getattr(selenium, '_server', None) is None:
     ...     import urllib2
     ...     urllib2.urlopen('http://XXX')
     ... else:
     ...     from selenium.remote.webdriver import WebDriver
-    ...     WebDriver._execute(case.selenium, 'quit')
+    ...     WebDriver._execute(selenium, 'quit')
     Traceback (most recent call last):
     URLError: ...
