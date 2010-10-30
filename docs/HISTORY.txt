@@ -4,6 +4,9 @@ Changelog
 1.0 - unreleased
 ----------------
 
+- Add a layer and test case for running selenium tests.
+  [rossp]
+
 - Give the default test user differing user id and login name. This helps reveal
   problems with userid vs login name errors, an overly common error.
   [wichert]
