@@ -104,7 +104,11 @@ When the layer is torn down, the Selenium browser is closed.
     Tear down plone.testing.z2.Startup in ... seconds.
     Tear down plone.testing.zca.LayerCleanup in ... seconds.
 
-    >>> from selenium.remote.webdriver import WebDriver as RemoteWebDriver
-    >>> RemoteWebDriver._execute(case.selenium, 'quit')
+    >>> if getattr(case.selenium, '_server', None) is None:
+    ...     import urllib2
+    ...     urllib2.urlopen('http://XXX')
+    ... else:
+    ...     from selenium.remote.webdriver import WebDriver
+    ...     WebDriver._execute(case.selenium, 'quit')
     Traceback (most recent call last):
-    URLError: <urlopen error [Errno 111] Connection refused>
+    URLError: ...
