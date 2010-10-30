@@ -13,5 +13,6 @@ def test_suite():
         doctest.DocFileSuite('cleanup.txt', optionflags=OPTIONFLAGS),
         doctest.DocFileSuite('layers.txt',  optionflags=OPTIONFLAGS),
         doctest.DocFileSuite('helpers.txt', optionflags=OPTIONFLAGS),
+        doctest.DocFileSuite('selenium.txt', optionflags=OPTIONFLAGS),
     ])
     return suite

@@ -1,0 +1,107 @@
+Selenium testing layer
+----------------------
+
+There is a layer used to set up test fixtures for running Selenium
+tests against a Plone site. It is importable from
+``plone.app.testing.selenium_layers``.
+
+Note that if using the "-D" pdb debugger testrunner flag for failures
+in this test before the layer is torn down, the testrunner process
+will not exit even with interrupt. Exit by backgrounding the process
+and then kill the backgrouned process.
+
+    >>> from plone.app.testing import selenium_layers as layers
+
+For testing, we need a testrunner
+
+    >>> from zope.testing.testrunner import runner
+
+The ``SELENIUM_TESTING`` layer instantiates the ``FunctionalTesting`` class
+with one base: ``SELENIUM_FIXTURE``, as shown above.
+
+    >>> "%s.%s" % (layers.SELENIUM_TESTING.__module__, layers.SELENIUM_TESTING.__name__,)
+    'plone.app.testing.selenium_layers.SeleniumTesting:Functional'
+
+    >>> layers.SELENIUM_TESTING.__bases__
+    (<Layer 'plone.app.testing.selenium_layers.SeleniumLayer'>,)
+
+    >>> options = runner.get_options([], [])
+    >>> setupLayers = {}
+    >>> runner.setup_layer(options, layers.SELENIUM_TESTING, setupLayers)
+    Set up plone.testing.zca.LayerCleanup in ... seconds.
+    Set up plone.testing.z2.Startup in ... seconds.
+    Set up plone.app.testing.layers.PloneFixture in ... seconds.
+    Set up plone.app.testing.selenium_layers.SeleniumTesting:Functional in ... seconds.
+
+After layer setup, the resources ``host`` and ``port`` are available, and
+indicate where Zope is running.
+
+    >>> host = layers.SELENIUM_TESTING['host']
+    >>> host
+    'localhost'
+    
+    >>> port = layers.SELENIUM_TESTING['port']
+    >>> port
+    55001
+    
+Let's now simulate a test. Test setup does nothing beyond what the base layers
+do.
+
+    >>> from plone.testing import z2, zca
+    >>> zca.LAYER_CLEANUP.testSetUp()
+    >>> z2.STARTUP.testSetUp()
+    >>> layers.SELENIUM_FIXTURE.testSetUp()
+    >>> layers.SELENIUM_TESTING.testSetUp()
+    
+It is common in a test to use the Python API to change the state of
+the server (e.g. create some content or change a setting) and then use
+the Selenium browser to look at the results. Bear in mind that the
+server is running in a separate thread, with a separate security
+manager, so calls to ``helpers.login()`` and ``helpers.logout()``, for
+instance, do not affect the server thread.
+    
+    >>> from plone.app.testing import helpers
+    >>> from plone.app.testing.interfaces import TEST_USER_ID
+    >>> portal = layers.SELENIUM_TESTING['portal'] # would normally be self.layer['portal']
+    >>> helpers.setRoles(portal, TEST_USER_ID, ['Manager'])
+    >>> portal.invokeFactory('Folder', 'folder1')
+    'folder1'
+
+Note that we need to commit the transaction before it will show up in the
+other thread.  The SeleniumTestCase.open() method does this for you.
+
+    >>> case = layers.SeleniumTestCase(methodName="open")
+    >>> case.setUp()
+    >>> case.open(portal.folder1.absolute_url())
+    >>> case.selenium.get_title()
+    u'folder1 \u2014 Plone site'
+
+Test tear-down does nothing beyond what the base layers do.
+    
+    >>> layers.SELENIUM_TESTING.testTearDown()
+    >>> layers.SELENIUM_FIXTURE.testTearDown()
+    >>> z2.STARTUP.testTearDown()
+    >>> zca.LAYER_CLEANUP.testTearDown()
+
+    >>> 'portal' in layers.SELENIUM_TESTING
+    False
+
+    >>> 'app' in layers.SELENIUM_TESTING
+    False
+    
+    >>> 'request' in layers.SELENIUM_TESTING
+    False
+    
+    >>> with helpers.ploneSite() as portal:
+    ...     print 'folder1' in portal.objectIds()
+    False
+
+When the layer is torn down, the Selenium browser is closed.
+
+    >>> runner.tear_down_unneeded(options, [], setupLayers)
+    Tear down plone.app.testing.selenium_layers.SeleniumTesting:Functional in ... seconds.
+    Tear down plone.app.testing.layers.PloneFixture in ... seconds.
+    Tear down plone.testing.z2.Startup in ... seconds.
+    Tear down plone.testing.zca.LayerCleanup in ... seconds.
+
+    >>> case.selenium.sessionId
