@@ -7,13 +7,11 @@ from plone.app.testing import PloneSandboxLayer
 from plone.app.testing import PLONE_SITE_ID
 from plone.app.testing import FunctionalTesting
 from plone.app.testing.layers import PLONE_FIXTURE
-from plone.testing.z2 import ZServer
-
-ZSERVER_FIXTURE = ZServer()
+from plone.testing import z2
 
 
 class SeleniumLayer(PloneSandboxLayer):
-    defaultBases = (ZSERVER_FIXTURE, PLONE_FIXTURE)
+    defaultBases = (z2.ZSERVER_FIXTURE, PLONE_FIXTURE)
 
     # Connection parameters
     seleniumHost = os.environ.get('SELENIUM_HOST', 'localhost')
