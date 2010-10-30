@@ -12,10 +12,13 @@ class SeleniumLayer(PloneSandboxLayer):
 
     def setUpPloneSite(self, portal):
         # Start up Selenium
-        driver = os.environ.get('SELENIUM_DRIVER', 'firefox')
+        driver = os.environ.get('SELENIUM_DRIVER', '') or 'firefox'
         webdriver = __import__(
             'selenium.%s.webdriver' % driver, fromlist=['WebDriver'])
-        self['selenium'] = webdriver.WebDriver()
+        args = [arg.strip() for arg in
+                os.environ.get('SELENIUM_ARGS', '').split()
+                if arg.strip()]
+        self['selenium'] = webdriver.WebDriver(*args)
 
     def tearDownPloneSite(self, portal):
         self['selenium'].quit()
