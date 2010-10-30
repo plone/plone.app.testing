@@ -4,6 +4,7 @@ import transaction
 from plone.app.testing import PloneSandboxLayer
 from plone.app.testing import FunctionalTesting
 from plone.app.testing.layers import PLONE_FIXTURE
+from plone.app.testing import TEST_USER_NAME, TEST_USER_PASSWORD
 from plone.testing import z2
 
 
@@ -33,3 +34,15 @@ def open(selenium, url):
     # ensure we have a clean starting point
     transaction.commit()
     selenium.get(url)
+
+def login(selenium, portal, username=False, password=False):
+    
+    if not username:
+        username = TEST_USER_NAME
+    if not password:
+        password = TEST_USER_PASSWORD
+    
+    selenium.get(portal.absolute_url() + '/login_form')
+    selenium.find_element_by_name('__ac_name').send_keys(username)
+    selenium.find_element_by_name('__ac_password').send_keys(password)
+    selenium.find_element_by_name('submit').click()

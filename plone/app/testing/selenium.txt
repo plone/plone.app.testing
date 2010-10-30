@@ -87,6 +87,13 @@ yourself.
     >>> selenium.get_title()
     u'folder1 \u2014 Plone site'
 
+Now we also test logging-in to Plone. 
+
+    >>> from plone.app.testing.selenium_layers import login
+    >>> login(selenium, portal)
+    >>> selenium.find_element_by_tag_name('h1').get_text()
+    u'You are now logged in'
+
 Test tear-down does nothing beyond what the base layers do.
     
     >>> layers.SELENIUM_TESTING.testTearDown()
