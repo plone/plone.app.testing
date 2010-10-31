@@ -373,7 +373,7 @@ When the server is torn down, the ZServer thread is stopped.
     >>> conn = urllib2.urlopen(portal_url + '/folder1', timeout=5)
     Traceback (most recent call last):
     ...
-    URLError: <urlopen error [Errno 61] Connection refused>
+    URLError: <urlopen error [Errno ...] Connection refused>
 
 FTP server with Plone site
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -438,7 +438,7 @@ other thread.
     >>> import ftplib
     >>> ftpClient = ftplib.FTP()
     >>> ftpClient.connect(host, port, timeout=5)
-    '220 localhost FTP server (...) ready.'
+    '220 ... FTP server (...) ready.'
     
     >>> from plone.app.testing.interfaces import SITE_OWNER_NAME
     >>> from plone.app.testing.interfaces import SITE_OWNER_PASSWORD
@@ -490,4 +490,4 @@ When the server is torn down, the FTP server thread is stopped.
     >>> ftpClient.connect(host, port, timeout=5)
     Traceback (most recent call last):
     ...
-    error: [Errno 61] Connection refused
+    error: [Errno ...] Connection refused
