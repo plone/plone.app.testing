@@ -10,7 +10,8 @@ from plone.testing import z2, zodb, zca, Layer
 from plone.app.testing import layers
 from plone.app.testing.interfaces import (
         PLONE_SITE_ID,
-        SITE_OWNER_NAME
+        SITE_OWNER_NAME,
+        TEST_USER_NAME,
     )
 
 # User management
@@ -236,10 +237,12 @@ def ploneSite(db=None, connection=None, environ=None):
         portal = app[PLONE_SITE_ID]
         
         setSite(portal)
+        login(portal, TEST_USER_NAME)
         
         try:
             yield portal
         finally:
+            logout()
             if site is not portal:
                 setSite(site)
 
@@ -314,9 +317,7 @@ class PloneSandboxLayer(Layer):
         # ZCML files after tear-down
         self['configurationContext'] = configurationContext = zca.stackConfigurationContext(self.get('configurationContext'))
         
-        with z2.zopeApp() as app:
-            
-            portal = app[PLONE_SITE_ID]
+        with ploneSite() as portal:
             
             from zope.site.hooks import setSite, setHooks
             setHooks()
@@ -340,7 +341,7 @@ class PloneSandboxLayer(Layer):
             preSetupExportSteps = list(_export_step_registry.listSteps())
             
             # Allow subclass to load ZCML and products
-            self.setUpZope(app, configurationContext)
+            self.setUpZope(portal.getPhysicalRoot(), configurationContext)
             
             # Allow subclass to configure a persistent fixture
             setSite(portal)
