@@ -32,7 +32,7 @@ shown above.
     >>> setupLayers = {}
     >>> runner.setup_layer(
     ...     options, layers.SELENIUM_PLONE_FUNCTIONAL_TESTING, setupLayers)
-    Set up plone.app.testing.selenium_layers.SeleniumLayer in 4.834 seconds.
+    Set up plone.app.testing.selenium_layers.SeleniumLayer in ... seconds.
     Set up plone.testing.zca.LayerCleanup in ... seconds.
     Set up plone.testing.z2.Startup in ... seconds.
     Set up plone.app.testing.layers.PloneFixture in ... seconds.
