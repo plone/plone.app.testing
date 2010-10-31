@@ -684,13 +684,10 @@ The layer would conventionally live in a module ``testing.py`` at the root of
 the package, i.e. ``my.product.testing``::
 
     from plone.app.testing import PloneSandboxLayer
-    from plone.app.testing import applyProfile
     from plone.app.testing import PLONE_FIXTURE
     from plone.app.testing import IntegrationTesting
     
     from plone.testing import z2
-    
-    from zope.configuration import xmlconfig
     
     class MyProduct(PloneSandboxLayer):
     
@@ -699,7 +696,7 @@ the package, i.e. ``my.product.testing``::
         def setUpZope(self, app, configurationContext):
             # Load ZCML
             import my.product
-            xmlconfig.file('configure.zcml', my.product, context=configurationContext)
+            self.loadZCML(package=my.product)
             
             # Install product and call its initialize() function
             z2.installProduct(app, 'my.product')
@@ -711,7 +708,7 @@ the package, i.e. ``my.product.testing``::
             
         def setUpPloneSite(self, portal):
             # Install into Plone site using portal_setup
-            applyProfile(portal, 'my.product:default')
+            self.applyProfile('my.product:default')
         
         def tearDownZope(self, app):
             # Uninstall product

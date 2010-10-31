@@ -3,6 +3,8 @@
 
 import contextlib
 
+from zope.configuration import xmlconfig
+
 from plone.testing import z2, zodb, zca, Layer
 
 from plone.app.testing import layers
@@ -382,6 +384,12 @@ class PloneSandboxLayer(Layer):
         del self['zodbDB']
     
     # Helpers
+    def addProfile(self, profileName):
+        return applyProfile(self['portal'], profileName)        
+
+    def loadZCML(self, name='configure.zcml', **kw):
+        kw.setdefault('context', self['configurationContext'])
+        return xmlconfig.file(name, **kw)
     
     def snapshotProfileRegistry(self, preSetupProfiles, preSetupImportSteps, preSetupExportSteps):
         """Save a snapshot of all profiles that were added during setup, by
