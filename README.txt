@@ -614,7 +614,7 @@ will often want to do the following on setup:
 
 5. Install the product into the test fixture Plone site
 
-Of course, you may wish to make other changes to, such as creating some base
+Of course, you may wish to make other changes too, such as creating some base
 content or changing some settings.
 
 On tear-down, you will then want to:
