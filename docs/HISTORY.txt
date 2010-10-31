@@ -4,6 +4,10 @@ Changelog
 1.0 - unreleased
 ----------------
 
+- Make some module imports helper methods on the already policy-heavy
+  helper class per optilude's suggestion.
+  [rossp]
+
 - Add a layer and test case for running selenium tests.
   [rossp]
 
