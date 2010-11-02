@@ -4,6 +4,9 @@ Changelog
 1.0 - unreleased
 ----------------
 
+- Fixed distribution dependency declarations.
+  [hannosch]
+
 - Correct license to GPL version 2 only.
   [hannosch]
 

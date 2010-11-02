@@ -27,19 +27,28 @@ setup(name='plone.app.testing',
       install_requires=[
           'setuptools',
           'zope.configuration',
+          'zope.component',
           'zope.dottedname',
           'zope.site',
+          'zope.testing',
           'five.localsitemanager',
+          'plone.memoize',
           'plone.testing [zca,zodb,z2]',
+          # 'Acquisition', # Zope 2.13+
+          # 'AccessControl', # Zope 2.13+
           'Plone',
+          'Products.GenericSetup',
+          'Zope2',
       ],
       extras_require = {
         'test': [
-                'Products.GenericSetup',
+                'Products.CMFCore',
                 'Products.PluggableAuthService',
-                'ZODB3',
-                'Zope2',
                 'selenium',
+                'transaction',
+                'unittest2',
+                'zope.interface',
+                'zope.publisher',
             ],
       },
       )
