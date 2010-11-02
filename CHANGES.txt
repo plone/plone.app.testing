@@ -21,13 +21,13 @@ Changelog
   problems with userid vs login name errors, an overly common error.
   [wichert]
 
-1.0a2 (2010-09-05)
+1.0a2 - 2010-09-05
 ------------------
 
 - Make sure plone.app.imaging is installed properly during layer setup.
   [optilude]
 
-1.0a1 (2010-08-01)
+1.0a1 - 2010-08-01
 ------------------
 
 - Initial release
