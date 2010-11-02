@@ -5,19 +5,22 @@ version = '1.0a2'
 
 setup(name='plone.app.testing',
       version=version,
-      description="Testing itools for Plone-the-application, based on plone.testing",
+      description="Testing tools for Plone-the-application, based on plone.testing.",
       long_description=open("README.txt").read() + "\n" +
                        open(os.path.join("docs", "HISTORY.txt")).read(),
-      # Get more strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
       classifiers=[
+        "Environment :: Web Environment",
         "Framework :: Plone",
+        "License :: OSI Approved :: GNU General Public License (GPL)",
+        "Operating System :: OS Independent",
         "Programming Language :: Python",
+        "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
         ],
       keywords='',
-      author='Martin Aspeli',
+      author='Plone Foundation',
       author_email='plone-developers@lists.sourceforge.net',
       url='http://pypi.python.org/pypi/plone.app.testing',
-      license='GPL',
+      license='GPL version 2',
       packages=find_packages(exclude=['ez_setup']),
       namespace_packages=['plone', 'plone.app'],
       include_package_data=True,
@@ -40,6 +43,4 @@ setup(name='plone.app.testing',
                 'selenium',
             ],
       },
-      entry_points="""
-      """,
       )

@@ -4,6 +4,9 @@ Changelog
 1.0 - unreleased
 ----------------
 
+- Correct license to GPL version 2 only.
+  [hannosch]
+
 - Make some module imports helper methods on the already policy-heavy
   helper class per optilude's suggestion.
   [rossp]
