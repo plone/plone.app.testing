@@ -1,5 +1,4 @@
 from setuptools import setup, find_packages
-import os
 
 version = '1.0a2'
 
@@ -7,7 +6,7 @@ setup(name='plone.app.testing',
       version=version,
       description="Testing tools for Plone-the-application, based on plone.testing.",
       long_description=open("README.txt").read() + "\n" +
-                       open(os.path.join("docs", "HISTORY.txt")).read(),
+                       open("CHANGES.txt").read(),
       classifiers=[
         "Environment :: Web Environment",
         "Framework :: Plone",
