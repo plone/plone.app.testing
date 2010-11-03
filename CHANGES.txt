@@ -4,6 +4,9 @@ Changelog
 1.0a3 - unreleased
 ------------------
 
+- Added a warning not to use 'default' Firefox profile for selenium tests.
+  [zupo]
+
 - Fixed distribution dependency declarations.
   [hannosch]
 
