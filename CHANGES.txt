@@ -4,6 +4,9 @@ Changelog
 1.0a3 - unreleased
 ------------------
 
+- Allow top-level import of PloneTestLifecycle.
+  [stefan]
+
 - Added a warning not to use 'default' Firefox profile for selenium tests.
   [zupo]
 
