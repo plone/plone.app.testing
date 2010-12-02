@@ -7,7 +7,6 @@ from plone.testing import zodb, zca, z2
 from plone.app.testing.interfaces import (
         PLONE_SITE_ID,
         PLONE_SITE_TITLE,
-        DEFAULT_LANGUAGE,
 
         TEST_USER_ID,
         TEST_USER_NAME,
@@ -67,7 +66,6 @@ class PloneFixture(Layer):
 
             ('Products.CMFPlacefulWorkflow'         , {'loadZCML': True}, ),
             ('Products.kupu'                        , {'loadZCML': True}, ),
-            ('Products.TinyMCE'                     , {'loadZCML': True}, ),
 
             ('Products.CMFEditions'                 , {'loadZCML': True}, ),
             ('Products.CMFDiffTool'                 , {'loadZCML': True}, ),
@@ -75,19 +73,13 @@ class PloneFixture(Layer):
             ('Products.PlacelessTranslationService' , {'loadZCML': True}, ),
             ('Products.PloneLanguageTool'           , {'loadZCML': True}, ),
 
-            ('plonetheme.classic'                   , {'loadZCML': True}, ),
-            ('plonetheme.sunburst'                  , {'loadZCML': True}, ),
-
-            ('plone.app.blob'                       , {'loadZCML': True}, ),
-            ('plone.app.imaging'                    , {'loadZCML': True}, ),
-
+            ('Products.statusmessages'              , {'loadZCML': True}, ),
             ('Products.CMFPlone'                    , {'loadZCML': True}, ),
 
         )
 
     # Extension profiles to be installed with site setup
     extensionProfiles = (
-            'plonetheme.sunburst:default',
         )
 
     # Layer lifecycle
@@ -102,12 +94,17 @@ class PloneFixture(Layer):
         from Products.GenericSetup.registry import _profile_registry
         from Products.GenericSetup.registry import _import_step_registry
         from Products.GenericSetup.registry import _export_step_registry
+        from Products.GenericSetup.zcml import _profile_regs
 
         preSetupProfiles    = list(_profile_registry._profile_ids)
         preSetupImportSteps = list(_import_step_registry.listSteps())
         preSetupExportSteps = list(_export_step_registry.listSteps())
+        preSetupZcmlProfileRegs = list(_profile_regs)
 
         self.setUpZCML()
+
+        from zope.app.component.hooks import setHooks
+        setHooks()
 
         # Set up products and the default content
         for app in z2.zopeApp():
@@ -115,7 +112,8 @@ class PloneFixture(Layer):
             self.setUpDefaultContent(app)
 
         # Record the changes to the GenericSetup registries
-        self.snapshotProfileRegistry(preSetupProfiles, preSetupImportSteps, preSetupExportSteps)
+        self.snapshotProfileRegistry(preSetupProfiles, preSetupImportSteps,
+            preSetupExportSteps, preSetupZcmlProfileRegs)
 
     def tearDown(self):
 
@@ -124,6 +122,9 @@ class PloneFixture(Layer):
             # note: content tear-down happens by squashing the ZODB
             self.tearDownProducts(app)
 
+        from zope.app.component.hooks import resetHooks
+        resetHooks()
+
         self.tearDownZCML()
         self.tearDownProfileRegistry()
 
@@ -131,7 +132,8 @@ class PloneFixture(Layer):
         self['zodbDB'].close()
         del self['zodbDB']
 
-    def snapshotProfileRegistry(self, preSetupProfiles, preSetupImportSteps, preSetupExportSteps):
+    def snapshotProfileRegistry(self, preSetupProfiles, preSetupImportSteps,
+        preSetupExportSteps, preSetupZcmlProfileRegs):
         """Save a snapshot of all profiles that were added during setup, by
         comparing to the list of profiles passed in.
         """
@@ -139,10 +141,12 @@ class PloneFixture(Layer):
         self._addedProfiles = set()
         self._addedImportSteps = set()
         self._addedExportSteps = set()
+        self._addedZcmlProfileRegs = set()
 
         from Products.GenericSetup.registry import _profile_registry
         from Products.GenericSetup.registry import _import_step_registry
         from Products.GenericSetup.registry import _export_step_registry
+        from Products.GenericSetup.zcml import _profile_regs
 
         for profileId in _profile_registry._profile_ids:
             if profileId not in preSetupProfiles:
@@ -156,6 +160,10 @@ class PloneFixture(Layer):
             if stepId not in preSetupExportSteps:
                 self._addedExportSteps.add(stepId)
 
+        for profileId in _profile_regs:
+            if profileId not in preSetupZcmlProfileRegs:
+                self._addedZcmlProfileRegs.add(profileId)
+
     def tearDownProfileRegistry(self):
         """Delete all profiles that were added during setup, as stored by
         ``snapshotProfileRegistry()``.
@@ -164,6 +172,7 @@ class PloneFixture(Layer):
         from Products.GenericSetup.registry import _profile_registry
         from Products.GenericSetup.registry import _import_step_registry
         from Products.GenericSetup.registry import _export_step_registry
+        from Products.GenericSetup.zcml import _profile_regs
 
         for profileId in self._addedProfiles:
             if profileId in _profile_registry._profile_ids:
@@ -178,6 +187,10 @@ class PloneFixture(Layer):
         for stepId in self._addedExportSteps:
             if stepId in _export_step_registry.listSteps():
                 _export_step_registry.unregisterStep(stepId)
+
+        for profileId in self._addedZcmlProfileRegs:
+            if profileId in _profile_regs:
+                _profile_regs.remove(profileId)
 
     def setUpZCML(self):
         """Stack a new global registry and load ZCML configuration of Plone
@@ -281,8 +294,6 @@ class PloneFixture(Layer):
         from Products.CMFPlone.factory import addPloneSite
         addPloneSite(app, PLONE_SITE_ID,
                 title=PLONE_SITE_TITLE,
-                #setup_content=False,
-                #default_language=DEFAULT_LANGUAGE,
                 extension_ids=self.extensionProfiles,
             )
 
@@ -337,10 +348,7 @@ class PloneTestLifecycle(object):
         """
 
         # Set up the local site manager
-        try:
-            from zope.site.hooks import setSite
-        except ImportError:
-            from zope.app.component.hooks import setSite
+        from zope.app.component.hooks import setSite
         setSite(portal)
 
         # Reset skin data
@@ -371,11 +379,9 @@ class PloneTestLifecycle(object):
             cache.invalidateAll()
 
         # Unset the local component site
-        try:
-            from zope.site.hooks import setSite
-        except ImportError:
-            from zope.app.component.hooks import setSite
+        from zope.app.component.hooks import setSite
         setSite(None)
+
 
 class IntegrationTesting(PloneTestLifecycle, z2.IntegrationTesting):
     """Plone version of the integration testing layer
