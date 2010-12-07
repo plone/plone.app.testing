@@ -2,6 +2,15 @@ from setuptools import setup, find_packages
 
 version = '1.0a3'
 
+tests_require = ['Products.CMFCore',
+                 'Products.PluggableAuthService',
+                 'selenium',
+                 'transaction',
+                 'unittest2',
+                 'zope.interface',
+                 'zope.publisher',
+                 ]
+
 setup(name='plone.app.testing',
       version=version,
       description="Testing tools for Plone-the-application, based on plone.testing.",
@@ -40,15 +49,8 @@ setup(name='plone.app.testing',
           'Products.GenericSetup',
           'Zope2',
       ],
-      extras_require = {
-        'test': [
-                'Products.CMFCore',
-                'Products.PluggableAuthService',
-                'selenium',
-                'transaction',
-                'unittest2',
-                'zope.interface',
-                'zope.publisher',
-            ],
+      tests_require=tests_require,
+      extras_require={
+        'test': tests_require,
       },
       )
