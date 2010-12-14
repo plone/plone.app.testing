@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.0a3 - unreleased
+4.0a3 (2010-12-14)
 ------------------
 
 - Allow top-level import of PloneTestLifecycle.
