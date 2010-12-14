@@ -31,6 +31,7 @@ class PloneFixture(Layer):
 
     # Products that will be installed, plus options
     products = (
+            ('Products.PythonScripts'               , {'loadZCML': False},),
             ('Products.GenericSetup'                , {'loadZCML': True},),
             ('Products.DCWorkflow'                  , {'loadZCML': True}, ),
             ('Products.ZCTextIndex'                 , {'loadZCML': True}, ),

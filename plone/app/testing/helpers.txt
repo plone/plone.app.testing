@@ -68,7 +68,7 @@ need to tear that down as well.
     ...         # ZCML files after tear-down
     ...         self['configurationContext'] = zca.stackConfigurationContext(self.get('configurationContext'))
     ...         
-    ...         with helpers.ploneSite() as portal:
+    ...         for portal in helpers.ploneSite():
     ...             
     ...             # Push a new component registry so that ZCML registations 
     ...             # and other global component registry changes are sandboxed
@@ -83,16 +83,14 @@ need to tear that down as well.
     ...             portal.title = u"New title"
     ...                 
     ...             # Install a product using portal_quickinstaller
-    ...             helpers.quickInstallProduct(portal, 'plonetheme.classic')
+    ...             helpers.quickInstallProduct(portal, 'Products.CMFPlacefulWorkflow')
     ...             
-    ...             # Apply a GenericSetup (extension) profile
-    ...             helpers.applyProfile(portal, 'plonetheme.sunburst:default')
     ...     
     ...     def tearDown(self):
     ...         
     ...         # Pop the component registry, thus removing component
     ...         # architecture registrations
-    ...         with helpers.ploneSite() as portal:
+    ...         for portal in helpers.ploneSite():
     ...             helpers.popGlobalRegistry(portal)
     ...         
     ...         # Pop the configuration context
@@ -129,18 +127,18 @@ having taken effect.
     >>> queryUtility(Interface, name="dummy1")
     <object object at ...>
     
-    >>> with helpers.ploneSite() as portal:
+    >>> for portal in helpers.ploneSite():
     ...     print portal.title
     New title
     
 We should also see our product installation in the quickinstaller tool
 and the results of the profile having been applied.
 
-    >>> with helpers.ploneSite() as portal:
-    ...     print portal['portal_quickinstaller'].isProductInstalled('plonetheme.classic')
-    ...     print portal['portal_skins'].getDefaultSkin()
+    >>> for portal in helpers.ploneSite():
+    ...     print portal['portal_quickinstaller'].isProductInstalled('Products.CMFPlacefulWorkflow')
+    ...     print portal['portal_placeful_workflow'].getProperty('max_chain_length')
     True
-    Sunburst Theme
+    1
     
 Let's now simulate a test.
 
@@ -196,14 +194,14 @@ should not.
     >>> queryUtility(Interface, name="dummy1")
     <object object at ...>
     
-    >>> with helpers.ploneSite() as portal:
+    >>> for portal in helpers.ploneSite():
     ...     print portal.title
-    ...     print portal['portal_quickinstaller'].isProductInstalled('plonetheme.classic')
-    ...     print portal['portal_skins'].getDefaultSkin()
+    ...     print portal['portal_quickinstaller'].isProductInstalled('Products.CMFPlacefulWorkflow')
+    ...     print portal['portal_placeful_workflow'].getProperty('max_chain_length')
     ...     'folder1' in portal.objectIds()
     New title
     True
-    Sunburst Theme
+    1
     False
 
 We'll now tear down just the ``HELPER_DEMOS_INTEGRATION_TESTING`` layer. At this
@@ -217,13 +215,13 @@ component architecture changes from our layer.
     >>> queryUtility(Interface, name="dummy1") is None
     True
     
-    >>> with helpers.ploneSite() as portal:
+    >>> for portal in helpers.ploneSite():
     ...     print portal.title
-    ...     print portal['portal_quickinstaller'].isProductInstalled('plonetheme.classic')
-    ...     print portal['portal_skins'].getDefaultSkin()
+    ...     print portal['portal_quickinstaller'].isProductInstalled('Products.CMFPlacefulWorkflow')
+    ...     print getattr(portal, 'portal_placeful_workflow', None)
     Plone site
     False
-    Sunburst Theme
+    None    
 
 Let's tear down the rest of the layers too.
 
@@ -328,7 +326,7 @@ Again, our state should now be available.
     >>> queryUtility(Interface, name="dummy1")
     <object object at ...>
     
-    >>> with helpers.ploneSite() as portal:
+    >>> for portal in helpers.ploneSite():
     ...     print portal.title
     New title
     
@@ -361,7 +359,7 @@ layer.
     >>> queryUtility(Interface, name="dummy1") is None
     True
     
-    >>> with helpers.ploneSite() as portal:
+    >>> for portal in helpers.ploneSite():
     ...     print portal.title
     Plone site
     

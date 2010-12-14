@@ -57,7 +57,7 @@ normally use this for testing, unless you need to manipulate the site itself.
     >>> from plone.testing import z2, zca
     >>> from plone.app.testing.interfaces import SITE_OWNER_NAME
 
-    >>> with z2.zopeApp() as app:
+    >>> for app in z2.zopeApp():
     ...     print app['acl_users'].getUser(SITE_OWNER_NAME)
     ...     print app['acl_users'].getUser(SITE_OWNER_NAME).getRolesInContext(app)
     admin
@@ -66,9 +66,9 @@ normally use this for testing, unless you need to manipulate the site itself.
 Inside the Plone site, the default theme is installed
 
     >>> from plone.app.testing import helpers
-    >>> with helpers.ploneSite() as portal:
+    >>> for portal in helpers.ploneSite():
     ...     print portal['portal_skins'].getDefaultSkin()
-    Sunburst Theme
+    Plone Default
     
 **Note:** Here, we have used the ``ploneSite`` context manager to get hold of
 the Plone site root. Like ``z2.zopeApp()``, this is intended for use during
@@ -80,7 +80,7 @@ constants ``TEST_USER_ID``, ``TEST_USER_NAME`` and ``TEST_USER_PASSWORD`` in
 the module ``plone.app.testing.interfaces``.
 
     >>> from plone.app.testing.interfaces import TEST_USER_NAME
-    >>> with helpers.ploneSite() as portal:
+    >>> for portal in helpers.ploneSite():
     ...     print portal['acl_users'].getUser(TEST_USER_NAME).getId()
     ...     print portal['acl_users'].getUser(TEST_USER_NAME).getUserName()
     ...     print portal['acl_users'].getUser(TEST_USER_NAME).getRolesInContext(portal)
@@ -90,7 +90,7 @@ the module ``plone.app.testing.interfaces``.
 
 There is no default workflow or content:
 
-    >>> with helpers.ploneSite() as portal:
+    >>> for portal in helpers.ploneSite():
     ...     print portal['portal_workflow'].getDefaultChain()
     ()
 
@@ -167,7 +167,7 @@ Let's now simulate test tear-down.
 
 At this point, our transaction has been rolled back:
 
-    >>> with helpers.ploneSite() as portal:
+    >>> for portal in helpers.ploneSite():
     ...     'd1' in portal.objectIds()
     False
 
@@ -249,7 +249,7 @@ Let's now simulate test tear-down.
 
 The previous database state should have been restored.
 
-    >>> with helpers.ploneSite() as portal:
+    >>> for portal in helpers.ploneSite():
     ...     'd1' in portal.objectIds()
     False
 
@@ -334,7 +334,7 @@ We can now look for this new object through the server.
     'http://localhost:55001/plone'
     
     >>> import urllib2
-    >>> conn = urllib2.urlopen(portal_url + '/folder1', timeout=5)
+    >>> conn = urllib2.urlopen(portal_url + '/folder1')
     >>> responseBody = conn.read()
     >>> "Folder 1" in responseBody
     True
@@ -357,7 +357,7 @@ Test tear-down does nothing beyond what the base layers do.
     >>> 'request' in layers.PLONE_ZSERVER
     False
     
-    >>> with helpers.ploneSite() as portal:
+    >>> for portal in helpers.ploneSite():
     ...     print 'folder1' in portal.objectIds()
     False
 
@@ -370,10 +370,10 @@ When the server is torn down, the ZServer thread is stopped.
     Tear down plone.testing.z2.Startup in ... seconds.
     Tear down plone.testing.zca.LayerCleanup in ... seconds.
 
-    >>> conn = urllib2.urlopen(portal_url + '/folder1', timeout=5)
+    >>> conn = urllib2.urlopen(portal_url + '/folder1')
     Traceback (most recent call last):
     ...
-    URLError: <urlopen error [Errno 61] Connection refused>
+    URLError: <urlopen error ...61...Connection refused...>
 
 FTP server with Plone site
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -437,7 +437,7 @@ other thread.
     
     >>> import ftplib
     >>> ftpClient = ftplib.FTP()
-    >>> ftpClient.connect(host, port, timeout=5)
+    >>> ftpClient.connect(host, port)
     '220 localhost FTP server (...) ready.'
     
     >>> from plone.app.testing.interfaces import SITE_OWNER_NAME
@@ -474,7 +474,7 @@ Test tear-down does nothing beyond what the base layers do.
     >>> 'request' in layers.PLONE_FTP_SERVER
     False
     
-    >>> with helpers.ploneSite() as portal:
+    >>> for portal in helpers.ploneSite():
     ...     print 'folder1' in portal.objectIds()
     False
 
@@ -487,7 +487,7 @@ When the server is torn down, the FTP server thread is stopped.
     Tear down plone.testing.z2.Startup in ... seconds.
     Tear down plone.testing.zca.LayerCleanup in ... seconds.
 
-    >>> ftpClient.connect(host, port, timeout=5)
+    >>> ftpClient.connect(host, port)
     Traceback (most recent call last):
     ...
-    error: [Errno 61] Connection refused
+    error: ...61...Connection refused...

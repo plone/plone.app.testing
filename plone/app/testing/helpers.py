@@ -145,10 +145,7 @@ def pushGlobalRegistry(portal, new=None, name=None):
     Also ensure that the persistent component registry at ``portal`` has the
     new global registry as its base.
     """
-    try:
-        from zope.site.hooks import setSite, getSite, setHooks
-    except ImportError:
-        from zope.app.component.hooks import setSite, getSite, setHooks
+    from zope.app.component.hooks import setSite, getSite, setHooks
     site = getSite()
 
     localSiteManager = portal.getSiteManager()
@@ -181,10 +178,7 @@ def popGlobalRegistry(portal):
 
     gsmBases = globalSiteManager.__bases__
 
-    try:
-        from zope.site.hooks import setSite, getSite, setHooks
-    except ImportError:
-        from zope.app.component.hooks import setSite, getSite, setHooks
+    from zope.app.component.hooks import setSite, getSite, setHooks
     site = getSite()
 
     localSiteManager = portal.getSiteManager()
@@ -230,10 +224,7 @@ def ploneSite(db=None, connection=None, environ=None):
     closed).
     """
 
-    try:
-        from zope.site.hooks import setSite, getSite, setHooks
-    except ImportError:
-        from zope.app.component.hooks import setSite, getSite, setHooks
+    from zope.app.component.hooks import setSite, getSite, setHooks
     setHooks()
 
     site = getSite()
@@ -251,6 +242,7 @@ def ploneSite(db=None, connection=None, environ=None):
             checkSite(site, portal)
 
 def checkSite(site, portal):
+    from zope.app.component.hooks import setSite
     if site is not portal:
         setSite(site)
 
@@ -330,10 +322,8 @@ class PloneSandboxLayer(Layer):
 
             portal = app[PLONE_SITE_ID]
 
-            try:
-                from zope.site.hooks import setSite, getSite, setHooks
-            except ImportError:
-                from zope.app.component.hooks import setSite, getSite, setHooks
+            from zope.app.component.hooks import setSite
+            from zope.app.component.hooks import setHooks
             setHooks()
 
             # Make sure there's no local site manager while we load ZCML
@@ -371,10 +361,7 @@ class PloneSandboxLayer(Layer):
 
             portal = app[PLONE_SITE_ID]
 
-            try:
-                from zope.site.hooks import setSite, getSite, setHooks
-            except ImportError:
-                from zope.app.component.hooks import setSite, getSite, setHooks
+            from zope.app.component.hooks import setSite, setHooks
             setHooks()
             setSite(portal)
 
