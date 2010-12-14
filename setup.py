@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = '1.0a2'
+version = '3.0a1'
 
 setup(name='plone.app.testing',
       version=version,
@@ -27,7 +27,7 @@ setup(name='plone.app.testing',
           'zope.configuration',
           'zope.dottedname',
           'five.localsitemanager',
-          'plone.testing [zca,zodb,z2]',
+          'plone.testing [zca,zodb,z2] <= 3.99',
           'Plone',
       ],
       extras_require = {
@@ -35,7 +35,6 @@ setup(name='plone.app.testing',
                 'Products.GenericSetup',
                 'Products.PluggableAuthService',
                 'ZODB3',
-                'Zope2',
             ],
       },
       entry_points="""
