@@ -1,6 +1,10 @@
 Introduction
 ============
 
+.. Note:: ``plone.app.testing`` 3.x supports only Zope 2.10 and Plone 3.x,
+   look for ``plone.app.testing`` 4.x if you need support for Zope 2.12 and
+   Plone 4.x or higher.
+
 .. contents:: Table of contents
 
 ``plone.app.testing`` provides tools for writing integration and functional
