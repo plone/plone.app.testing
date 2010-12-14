@@ -10,7 +10,8 @@ from plone.testing import z2, zodb, zca, Layer
 from plone.app.testing import layers
 from plone.app.testing.interfaces import (
         PLONE_SITE_ID,
-        SITE_OWNER_NAME
+        SITE_OWNER_NAME,
+        TEST_USER_NAME,
     )
 
 # User management
@@ -235,13 +236,20 @@ def ploneSite(db=None, connection=None, environ=None):
         portal = app[PLONE_SITE_ID]
 
         setSite(portal)
+        login(portal, TEST_USER_NAME)
+
 
         try:
             yield portal
+        # the finally is replaced by the pair except else
+        # 2.4 does not accept yield in a try...finally
         except:
+            logout()
             checkSite(site, portal)
         else:
+            logout()
             checkSite(site, portal)
+
 
 def checkSite(site, portal):
     from zope.app.component.hooks import setSite
@@ -320,9 +328,7 @@ class PloneSandboxLayer(Layer):
         # ZCML files after tear-down
         self['configurationContext'] = configurationContext = zca.stackConfigurationContext(self.get('configurationContext'))
 
-        for app in z2.zopeApp():
-
-            portal = app[PLONE_SITE_ID]
+        for portal in ploneSite():
 
             from zope.app.component.hooks import setSite
             from zope.app.component.hooks import setHooks
@@ -347,7 +353,7 @@ class PloneSandboxLayer(Layer):
             preSetupExportSteps = list(_export_step_registry.listSteps())
 
             # Allow subclass to load ZCML and products
-            self.setUpZope(app, configurationContext)
+            self.setUpZope(portal.getPhysicalRoot(), configurationContext)
 
             # Allow subclass to configure a persistent fixture
             setSite(portal)
@@ -391,13 +397,13 @@ class PloneSandboxLayer(Layer):
         del self['zodbDB']
 
     # Helpers
-    def addProfile(self, profileName):
-        return applyProfile(self['portal'], profileName)        
+    def applyProfile(self, portal, profileName):
+        return applyProfile(portal, profileName)
 
     def loadZCML(self, name='configure.zcml', **kw):
         kw.setdefault('context', self['configurationContext'])
         return xmlconfig.file(name, **kw)
-    
+
     def snapshotProfileRegistry(self, preSetupProfiles, preSetupImportSteps, preSetupExportSteps):
         """Save a snapshot of all profiles that were added during setup, by
         comparing to the list of profiles passed in.

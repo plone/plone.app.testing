@@ -1,6 +1,7 @@
 # Layers
 from plone.app.testing.layers import (
         PloneFixture,
+        PloneTestLifecycle,
         IntegrationTesting,
         FunctionalTesting,
         

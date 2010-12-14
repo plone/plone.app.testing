@@ -4,6 +4,18 @@ Changelog
 3.0a1 - unreleased
 ------------------
 
+- Allow top-level import of PloneTestLifecycle.
+  [stefan]
+
+- Added a warning not to use 'default' Firefox profile for selenium tests.
+  [zupo]
+
+- Fixed distribution dependency declarations.
+  [hannosch]
+
+- Correct license to GPL version 2 only.
+  [hannosch]
+
 - Make some module imports helper methods on the already policy-heavy
   helper class per optilude's suggestion.
   [rossp]
@@ -15,13 +27,13 @@ Changelog
   problems with userid vs login name errors, an overly common error.
   [wichert]
 
-1.0a2 (2010-09-05)
+1.0a2 - 2010-09-05
 ------------------
 
 - Make sure plone.app.imaging is installed properly during layer setup.
   [optilude]
 
-1.0a1 (2010-08-01)
+1.0a1 - 2010-08-01
 ------------------
 
 - Initial release

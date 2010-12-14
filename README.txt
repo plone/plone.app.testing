@@ -708,7 +708,7 @@ the package, i.e. ``my.product.testing``::
             
         def setUpPloneSite(self, portal):
             # Install into Plone site using portal_setup
-            self.applyProfile('my.product:default')
+            self.applyProfile(portal, 'my.product:default')
         
         def tearDownZope(self, app):
             # Uninstall product
