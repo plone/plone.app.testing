@@ -35,6 +35,7 @@ setup(name='plone.app.testing',
                 'Products.GenericSetup',
                 'Products.PluggableAuthService',
                 'ZODB3',
+                'selenium',
             ],
       },
       entry_points="""

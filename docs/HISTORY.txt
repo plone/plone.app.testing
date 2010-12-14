@@ -4,6 +4,13 @@ Changelog
 3.0a1 - unreleased
 ------------------
 
+- Make some module imports helper methods on the already policy-heavy
+  helper class per optilude's suggestion.
+  [rossp]
+
+- Add a layer and test case for running selenium tests.
+  [rossp]
+
 - Give the default test user differing user id and login name. This helps reveal
   problems with userid vs login name errors, an overly common error.
   [wichert]
