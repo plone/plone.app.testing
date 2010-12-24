@@ -45,7 +45,7 @@ setup(name='plone.app.testing',
           'plone.testing [zca,zodb,z2]',
           # 'Acquisition', # Zope 2.13+
           # 'AccessControl', # Zope 2.13+
-          'Plone',
+          'Products.CMFPlone',
           'Products.GenericSetup',
           'Zope2',
       ],
