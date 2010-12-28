@@ -29,7 +29,7 @@ Compatibility
 (It also supports Zope 2.11 but keep in mind that Plone 3.x does not officially
 support Zope 2.11.)
 
-If you look for support of Zope 2.12 and Plone 4.x, use ``plone.app.testing``
+If you look for Zope 2.12 and Plone 4.x support, use ``plone.app.testing``
 4.x.
 
 Installation and usage
