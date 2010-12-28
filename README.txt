@@ -25,9 +25,12 @@ In short, ``plone.app.testing`` includes:
 Compatibility
 -------------
 
-``plone.app.testing`` 3.x supports only Zope 2.10 and Plone 3.x,
-look for ``plone.app.testing`` 4.x if you need support for Zope 2.12 and
-Plone 4.x or higher.
+``plone.app.testing`` 3.x supports Zope 2.10 and Plone 3.x. 
+(It also supports Zope 2.11 but keep in mind that Plone 3.x does not officially
+support Zope 2.11.)
+
+If you look for support of Zope 2.12 and Plone 4.x, use ``plone.app.testing``
+4.x.
 
 Installation and usage
 ======================
