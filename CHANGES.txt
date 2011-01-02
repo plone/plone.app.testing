@@ -4,6 +4,9 @@ Changelog
 4.0a4 (unreleased)
 ------------------
 
+- Do not install ``Products.kupu`` or ``Products.CMFPlacefulWorkflow``.
+  [elro]
+
 - Depend on ``Products.CMFPlone`` instead of ``Plone``.
   [elro]
 

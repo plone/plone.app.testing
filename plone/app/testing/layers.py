@@ -65,8 +65,6 @@ class PloneFixture(Layer):
 
             ('Products.PasswordResetTool'           , {'loadZCML': True}, ),
 
-            ('Products.CMFPlacefulWorkflow'         , {'loadZCML': True}, ),
-            ('Products.kupu'                        , {'loadZCML': True}, ),
             ('Products.TinyMCE'                     , {'loadZCML': True}, ),
 
             ('Products.CMFEditions'                 , {'loadZCML': True}, ),
