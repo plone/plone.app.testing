@@ -4,6 +4,19 @@ Changelog
 4.0a4 (unreleased)
 ------------------
 
+- Automatically tear down PAS registrations via snapshotting when using
+  ``PloneSandboxLayer``. It's too difficult to do this manually when you
+  consider that plugins may be registered in ZCML via transitive dependencies.
+  There should be no backwards compatibility concern - using
+  ``tearDownMultiPlugin()`` is still supported, and it's generally safe to
+  call it once.
+  [optilude]
+
+- Try to make sure ``tearDownMultiPlugin()`` and the generic PAS plugin
+  cleanup handler do not interfere with the cleanup handler from the PAS
+  ZCML directive.
+  [optilude]
+
 - Do not install ``Products.kupu`` or ``Products.CMFPlacefulWorkflow``.
   [elro]
 

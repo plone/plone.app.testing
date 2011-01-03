@@ -71,9 +71,13 @@ def tearDownMultiPluginRegistration(pluginName):
     """
     
     from Products.PluggableAuthService import PluggableAuthService
+    from Products.PluggableAuthService import zcml
     
     if pluginName in PluggableAuthService.MultiPlugins:
         PluggableAuthService.MultiPlugins.remove(pluginName)
+    
+    if pluginName in zcml._mt_regs:
+        zcml._mt_regs.remove(pluginName)
 
 # Product management - local site
 
@@ -336,9 +340,13 @@ class PloneSandboxLayer(Layer):
             from Products.GenericSetup.registry import _import_step_registry
             from Products.GenericSetup.registry import _export_step_registry
             
-            preSetupProfiles    = list(_profile_registry._profile_ids)
-            preSetupImportSteps = list(_import_step_registry.listSteps())
-            preSetupExportSteps = list(_export_step_registry.listSteps())
+            preSetupProfiles     = list(_profile_registry._profile_ids)
+            preSetupImportSteps  = list(_import_step_registry.listSteps())
+            preSetupExportSteps  = list(_export_step_registry.listSteps())
+            
+            from Products.PluggableAuthService.PluggableAuthService import MultiPlugins
+            
+            preSetupMultiPlugins = MultiPlugins[:]
             
             # Allow subclass to load ZCML and products
             self.setUpZope(portal.getPhysicalRoot(), configurationContext)
@@ -350,7 +358,10 @@ class PloneSandboxLayer(Layer):
         
         # Keep track of profiles that were added during setup
         self.snapshotProfileRegistry(preSetupProfiles, preSetupImportSteps, preSetupExportSteps)
-    
+        
+        # Keep track of PAS plugins that were added during setup
+        self.snapshotMultiPlugins(preSetupMultiPlugins)
+        
     def tearDown(self):
         
         with z2.zopeApp() as app:
@@ -369,6 +380,9 @@ class PloneSandboxLayer(Layer):
             # Pop the component registry, thus removing component
             # architecture registrations
             popGlobalRegistry(portal)
+            
+            # Remove PAS plugins
+            self.tearDownMultiPlugins()
             
             # Remove global profile registrations
             self.tearDownProfileRegistry()
@@ -439,3 +453,25 @@ class PloneSandboxLayer(Layer):
         for stepId in self._addedExportSteps:
             if stepId in _export_step_registry.listSteps():
                 _export_step_registry.unregisterStep(stepId)
+    
+    def snapshotMultiPlugins(self, preSetupMultiPlugins):
+        """Save a snapshot of all PAS multi plugins that were added during
+        setup, by comparing to the list of plugins passed in.
+        """
+        
+        self._addedMultiPlugins = set()
+        
+        from Products.PluggableAuthService.PluggableAuthService import MultiPlugins
+        
+        for plugin in MultiPlugins:
+            if plugin not in preSetupMultiPlugins:
+                self._addedMultiPlugins.add(plugin)
+        
+    def tearDownMultiPlugins(self):
+        """Delete all PAS multi plugins that were added during setup, as
+        stored by ``snapshotMultiPlugins()``.
+        """
+        
+        for pluginName in self._addedMultiPlugins:
+            tearDownMultiPluginRegistration(pluginName)
+        
