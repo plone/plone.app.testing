@@ -4,6 +4,13 @@ Changelog
 4.0a5 (Unreleased)
 ------------------
 
+- Use the new ``plone.testing.security`` module to ensure isolation of
+  security checkers when setting up and tearing down layers based on the
+  ``PloneSandboxLayer`` helper base class. This would cause problems when
+  running multiple test suites in the same test run, in particular if one of
+  those suites were setting up ZCML that used ``five.grok``.
+  [optilude]
+
 4.0a4 (2011-01-11)
 ------------------
 
