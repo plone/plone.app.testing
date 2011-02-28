@@ -188,10 +188,10 @@ class PloneFixture(Layer):
         zca.pushGlobalRegistry()
 
         from zope.configuration import xmlconfig
-        self['configurationContext'] = context = zca.stackConfigurationContext(self.get('configurationContext'))
+        self['configurationContext'] = context = zca.pushConfigurationContext(self.get('configurationContext'))
 
         # Turn off z3c.autoinclude
-        
+
         xmlconfig.string("""\
 <configure xmlns="http://namespaces.zope.org/zope" xmlns:meta="http://namespaces.zope.org/meta">
     <meta:provides feature="disable-autoinclude" />
@@ -228,6 +228,7 @@ class PloneFixture(Layer):
         zca.popGlobalRegistry()
 
         # Zap the stacked configuration context
+        zca.popConfigurationContext()
         del self['configurationContext']
 
     def setUpProducts(self, app):
