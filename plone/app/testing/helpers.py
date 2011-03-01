@@ -319,7 +319,7 @@ class PloneSandboxLayer(Layer):
 
         # Push a new configuration context so that it's possible to re-import
         # ZCML files after tear-down
-        self['configurationContext'] = configurationContext = zca.pushConfigurationContext(self.get('configurationContext'))
+        self['configurationContext'] = configurationContext = zca.pushConfigurationContext()
 
         with ploneSite() as portal:
 

@@ -188,7 +188,7 @@ class PloneFixture(Layer):
         zca.pushGlobalRegistry()
 
         from zope.configuration import xmlconfig
-        self['configurationContext'] = context = zca.pushConfigurationContext(self.get('configurationContext'))
+        self['configurationContext'] = context = zca.pushConfigurationContext()
 
         # Turn off z3c.autoinclude
 
