@@ -1,7 +1,7 @@
 Changelog
 =========
 
-4.0a5 (Unreleased)
+4.0a5 (2011-03-02)
 ------------------
 
 - Use the new ``plone.testing.security`` module to ensure isolation of
