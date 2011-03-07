@@ -4,7 +4,7 @@ from plone.app.testing.layers import (
         PloneTestLifecycle,
         IntegrationTesting,
         FunctionalTesting,
-        
+        ExtensionProfileFixture,
         PLONE_FIXTURE,
         
         PLONE_INTEGRATION_TESTING,
