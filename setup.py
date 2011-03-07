@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-version = '4.0a5dev'
+version = '4.0a6dev'
 
 tests_require = ['Products.CMFCore',
                  'Products.PluggableAuthService',
