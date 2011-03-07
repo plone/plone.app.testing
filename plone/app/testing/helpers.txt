@@ -66,7 +66,7 @@ need to tear that down as well.
     ...         
     ...         # Push a new configuration context so that it's possible to re-import
     ...         # ZCML files after tear-down
-    ...         self['configurationContext'] = zca.pushConfigurationContext()
+    ...         self['configurationContext'] = zca.stackConfigurationContext(self.get('configurationContext'))
     ...         
     ...         with helpers.ploneSite() as portal:
     ...             
@@ -96,7 +96,6 @@ need to tear that down as well.
     ...             helpers.popGlobalRegistry(portal)
     ...         
     ...         # Pop the configuration context
-    ...         zca.popConfigurationContext()
     ...         del self['configurationContext']
     ...
     ...         # Pop the demo storage, thus restoring the database to the
