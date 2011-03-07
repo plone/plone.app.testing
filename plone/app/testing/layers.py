@@ -191,7 +191,7 @@ class PloneFixture(Layer):
         self['configurationContext'] = context = zca.stackConfigurationContext(self.get('configurationContext'))
 
         # Turn off z3c.autoinclude
-        
+
         xmlconfig.string("""\
 <configure xmlns="http://namespaces.zope.org/zope" xmlns:meta="http://namespaces.zope.org/meta">
     <meta:provides feature="disable-autoinclude" />
@@ -388,3 +388,33 @@ PLONE_FUNCTIONAL_TESTING  = FunctionalTesting(bases=(PLONE_FIXTURE,), name='Plon
 
 PLONE_ZSERVER             = FunctionalTesting(bases=(PLONE_FIXTURE, z2.ZSERVER_FIXTURE), name='Plone:ZServer')
 PLONE_FTP_SERVER          = FunctionalTesting(bases=(PLONE_FIXTURE, z2.FTP_SERVER_FIXTURE), name='Plone:FTPServer')
+
+
+class ExtensionProfileFixture(Layer):
+
+    def __init__(self, bases=None, name=None, module=None, profile_id=None):
+        super(ExtensionProfileFixture, self).__init__(bases, name, module)
+        self.profile_id = profile_id
+
+    def setUp(self):
+        name = "ExtensionProfile"
+        if not self.profile_id is None:
+            name = "%s:%s" % (name, self.profile_id)
+        self['zodbDB'] = zodb.stackDemoStorage(self.get('zodbDB'), name=name)
+        self.applyProfiles()
+
+    def tearDown(self):
+        # Close and discard the database
+        self['zodbDB'].close()
+        del self['zodbDB']
+
+    def applyProfiles(self):
+        if self.profile_id is None:
+            raise ValueError("Profile id name has not been provided.")
+        self.applyProfile(self.profile_id)
+
+    def applyProfile(self, profile_id):
+        from plone.app.testing import helpers
+
+        with helpers.ploneSite() as portal:
+            helpers.applyProfile(portal, profile_id)
