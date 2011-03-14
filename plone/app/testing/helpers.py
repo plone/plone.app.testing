@@ -523,7 +523,7 @@ class PloneWithPackageLayer(PloneSandboxLayer):
 
         Only install GenericSetup profiles
         """
-        self.applyProfiles()
+        self.applyProfiles(portal)
 
     def applyProfiles(self, portal):
         """Install default profile.
