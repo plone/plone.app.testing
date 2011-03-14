@@ -319,7 +319,11 @@ class PloneSandboxLayer(Layer):
 
         # Push a new configuration context so that it's possible to re-import
         # ZCML files after tear-down
-        self['configurationContext'] = configurationContext = zca.stackConfigurationContext(self.get('configurationContext'))
+        name = self.__name__ if self.__name__ is not None else 'not-named'
+        contextName = "PloneSandboxLayer-%s" % name
+        self['configurationContext'] = configurationContext = (
+            zca.stackConfigurationContext(self.get('configurationContext'),
+            name=contextName))
 
         with ploneSite() as portal:
 
@@ -484,3 +488,47 @@ class PloneSandboxLayer(Layer):
 
         for pluginName in self._addedMultiPlugins:
             tearDownMultiPluginRegistration(pluginName)
+
+
+class PloneWithPackageLayer(PloneSandboxLayer):
+
+    def __init__(self, bases=None, name=None, module=None, zcml_filename=None,
+        zcml_package=None, gs_profile_id=None):
+        super(ExtendedPloneSandboxLayer, self).__init__(bases, name, module)
+        self.zcml_filename = zcml_filename
+        self.zcml_package = zcml_package
+        self.gs_profile_id = gs_profile_id
+
+    def setUpZope(self, app, configurationContext):
+        """Set up Zope.
+
+        Only load ZCML files.
+        """
+        self.setUpZCMLFiles()
+
+    def setUpZCMLFiles(self):
+        """Load default ZCML.
+
+        Can be overridden to load more ZCML.
+        """
+        if self.zcml_filename is None:
+            raise ValueError("ZCML file name has not been provided.")
+        if self.zcml_package is None:
+            raise ValueError("The package that contains the ZCML file "
+                "has not been provided.")
+        self.loadZCML(self.zcml_filename, package=self.zcml_package)
+
+    def setUpPloneSite(self, portal):
+        """Set up the Plone site.
+
+        Only install GenericSetup profiles
+        """
+        self.applyProfiles()
+
+    def applyProfiles(self, portal):
+        """Install default profile.
+
+        Can be overridden to install more profiles.
+        """
+        if self.gs_profile_id is not None:
+            self.applyProfile(portal, self.gs_profile_id)
