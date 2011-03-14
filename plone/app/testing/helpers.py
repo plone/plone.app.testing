@@ -494,7 +494,7 @@ class PloneWithPackageLayer(PloneSandboxLayer):
 
     def __init__(self, bases=None, name=None, module=None, zcml_filename=None,
         zcml_package=None, gs_profile_id=None):
-        super(ExtendedPloneSandboxLayer, self).__init__(bases, name, module)
+        super(PloneWithPackageLayer, self).__init__(bases, name, module)
         self.zcml_filename = zcml_filename
         self.zcml_package = zcml_package
         self.gs_profile_id = gs_profile_id
