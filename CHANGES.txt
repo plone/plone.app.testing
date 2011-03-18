@@ -4,6 +4,10 @@ Changelog
 4.0a6 (Unreleased)
 ------------------
 
+- Corrected module path for the various selenium webdrivers using
+  selenium 2.0b2.
+  [emanlove]
+
 4.0a5 (2011-03-02)
 ------------------
 

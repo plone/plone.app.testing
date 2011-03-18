@@ -14,7 +14,7 @@ class SeleniumLayer(Layer):
         # Start up Selenium
         driver = os.environ.get('SELENIUM_DRIVER', '') or 'firefox'
         webdriver = __import__(
-            'selenium.%s.webdriver' % driver, fromlist=['WebDriver'])
+            'selenium.webdriver.%s.webdriver' % driver, fromlist=['WebDriver'])
         args = [arg.strip() for arg in
                 os.environ.get('SELENIUM_ARGS', '').split()
                 if arg.strip()]
