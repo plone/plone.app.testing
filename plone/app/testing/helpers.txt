@@ -274,7 +274,6 @@ layer base class which helps implement this pattern.
     ...         # Finally, this is a good place to load Zope products, 
     ...         # using the plone.testing.z2.installProduct() helper.
     ...         # Make some other global changes not stored in the ZODB or
-    ...         
     ...         # the global component registry
     ...         someGlobal['test'] = 1
     ...
@@ -318,7 +317,7 @@ use ``PLONE_FIXTURE`` as the single default base layer for the fixture class.
 
     >>> MY_FIXTURE.__bases__
     (<Layer 'plone.app.testing.layers.PloneFixture'>,)
-    
+
 Let's now simulate layer setup:
 
     >>> options = runner.get_options([], [])
@@ -410,38 +409,7 @@ Other helpers
 
 There are some further helpers that apply only to special cases.
 
-Many packages will add a new GenericSetup profile to the global profile
-registry. The most common way is via the ``<genericsetup:registerProfile />``
-directive, although a call to the ``registerProfile()`` function will achieve
-the same thing.
-
-If your layer loads a package (or the ZCML for a package) that registers such
-profiles, you must clean them up again, or you'll risk getting errors if the
-package is installed again in another layer. The helper
-``tearDownProfileRegistation()`` can be used for this purpose.
-
-Let's simulate setting up a profile in the registry and then tearing it down.
-
-    >>> from Products.GenericSetup.registry import _profile_registry
-    >>> _profile_registry.registerProfile('dummy1', u"Dummy profile", u"", ".", 'plone.app.testing')
-    >>> _profile_registry.registerProfile('dummy2', u"Dummy profile", u"", ".", 'plone.app.testing')
-    >>> _profile_registry.registerProfile('dummy1', u"Dummy profile", u"", ".", 'plone.testing')
-
-    >>> tuple(_profile_registry.listProfiles())
-    ('plone.app.testing:dummy1', 'plone.app.testing:dummy2', 'plone.testing:dummy1')
-    
-The tear down helper takes the product name as an argument and tears down all
-profiles for that product (only):
-
-    >>> helpers.tearDownProfileRegistation('plone.app.testing')
-    >>> tuple(_profile_registry.listProfiles())
-    ('plone.testing:dummy1',)
-
-Let's clean up the registry completely.
-
-    >>> _profile_registry.clear()
-
-Similarly, a product that uses the ``<pas:registerMultiPlugin />`` or the
+Some product that uses the ``<pas:registerMultiPlugin />`` or the
 ``registerMultiPlugin()`` API from ``PluggableAuthService`` may leave global
 state that needs to be cleaned up. You can use the helper
 ``tearDownMultiPluginRegistration()`` for this purpose.

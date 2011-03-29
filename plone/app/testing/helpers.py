@@ -35,32 +35,6 @@ def setRoles(portal, userId, roles):
     userFolder = portal['acl_users']
     z2.setRoles(userFolder, userId, roles)
 
-# Product management - helpers to tear down state
-
-def tearDownProfileRegistation(productName):
-    """Remove all profiles for the given product in the global GenericSetup
-    profile registry. Does nothing if no profile is associated with this
-    product.
-
-    This helper is useful during tear-down if a product has explicitly added
-    a registration to the GenericSetup ``_profile_registry``, or used the
-    ``<genericsetup:registerProfile />`` ZCML directive.
-    """
-
-    simpleProductName = None
-    if productName.startswith('Products.'):
-        simpleProductName = productName[9:]
-
-    # Look for profiles added to the _profileRegistry and remove
-    from Products.GenericSetup.registry import _profile_registry
-    profilesToRemove = set()
-    for profileId, profileInfo in _profile_registry._profile_info.items():
-        if profileInfo['product'] in (productName, simpleProductName):
-            profilesToRemove.add(profileId)
-    for profileId in profilesToRemove:
-        del _profile_registry._profile_info[profileId]
-        _profile_registry._profile_ids.remove(profileId)
-
 def tearDownMultiPluginRegistration(pluginName):
     """Remove the given PAS MultiPlugin name from the global PAS registry.
     Does nothing if the plugin name is not registered.
@@ -342,17 +316,6 @@ class PloneSandboxLayer(Layer):
 
             security.pushCheckers()
 
-            # Snapshot the GenericSetup profiles registry before loading
-            # the custom configuration
-
-            from Products.GenericSetup.registry import _profile_registry
-            from Products.GenericSetup.registry import _import_step_registry
-            from Products.GenericSetup.registry import _export_step_registry
-
-            preSetupProfiles     = list(_profile_registry._profile_ids)
-            preSetupImportSteps  = list(_import_step_registry.listSteps())
-            preSetupExportSteps  = list(_export_step_registry.listSteps())
-
             from Products.PluggableAuthService.PluggableAuthService import MultiPlugins
 
             preSetupMultiPlugins = MultiPlugins[:]
@@ -364,9 +327,6 @@ class PloneSandboxLayer(Layer):
             setSite(portal)
             self.setUpPloneSite(portal)
             setSite(None)
-
-        # Keep track of profiles that were added during setup
-        self.snapshotProfileRegistry(preSetupProfiles, preSetupImportSteps, preSetupExportSteps)
 
         # Keep track of PAS plugins that were added during setup
         self.snapshotMultiPlugins(preSetupMultiPlugins)
@@ -398,9 +358,6 @@ class PloneSandboxLayer(Layer):
             # Remove PAS plugins
             self.tearDownMultiPlugins()
 
-            # Remove global profile registrations
-            self.tearDownProfileRegistry()
-
             # Allow subclass to tear down products
             self.tearDownZope(app)
 
@@ -419,54 +376,6 @@ class PloneSandboxLayer(Layer):
     def loadZCML(self, name='configure.zcml', **kw):
         kw.setdefault('context', self['configurationContext'])
         return xmlconfig.file(name, **kw)
-
-    def snapshotProfileRegistry(self, preSetupProfiles, preSetupImportSteps, preSetupExportSteps):
-        """Save a snapshot of all profiles that were added during setup, by
-        comparing to the list of profiles passed in.
-        """
-
-        self._addedProfiles = set()
-        self._addedImportSteps = set()
-        self._addedExportSteps = set()
-
-        from Products.GenericSetup.registry import _profile_registry
-        from Products.GenericSetup.registry import _import_step_registry
-        from Products.GenericSetup.registry import _export_step_registry
-
-        for profileId in _profile_registry._profile_ids:
-            if profileId not in preSetupProfiles:
-                self._addedProfiles.add(profileId)
-
-        for stepId in _import_step_registry.listSteps():
-            if stepId not in preSetupImportSteps:
-                self._addedImportSteps.add(stepId)
-
-        for stepId in _export_step_registry.listSteps():
-            if stepId not in preSetupExportSteps:
-                self._addedExportSteps.add(stepId)
-
-    def tearDownProfileRegistry(self):
-        """Delete all profiles that were added during setup, as stored by
-        ``snapshotProfileRegistry()``.
-        """
-
-        from Products.GenericSetup.registry import _profile_registry
-        from Products.GenericSetup.registry import _import_step_registry
-        from Products.GenericSetup.registry import _export_step_registry
-
-        for profileId in self._addedProfiles:
-            if profileId in _profile_registry._profile_ids:
-                _profile_registry._profile_ids.remove(profileId)
-            if profileId in _profile_registry._profile_info:
-                del _profile_registry._profile_info[profileId]
-
-        for stepId in self._addedImportSteps:
-            if stepId in _import_step_registry.listSteps():
-                _import_step_registry.unregisterStep(stepId)
-
-        for stepId in self._addedExportSteps:
-            if stepId in _export_step_registry.listSteps():
-                _export_step_registry.unregisterStep(stepId)
 
     def snapshotMultiPlugins(self, preSetupMultiPlugins):
         """Save a snapshot of all PAS multi plugins that were added during

@@ -6,43 +6,7 @@ When imported, this package will register a few cleanup handlers with
 and Plone packages.
 
     >>> import zope.testing.cleanup
-
-GenericSetup profiles registry
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-The profiles registry is populated on startup via the ``registerProfile()``
-or the corresponding ``<genericsetup:registerProfile />`` ZCML directive.
-Similarly, there are registries for import and export steps.
-
-    >>> from Products.GenericSetup.registry import _profile_registry
-    >>> from Products.GenericSetup.registry import _import_step_registry
-    >>> from Products.GenericSetup.registry import _export_step_registry
-
-A dummy profile and import/export steps may be registered like so:
-
-    >>> _profile_registry.registerProfile('dummy1', u"Dummy profile", u"", ".", 'plone.app.testing')
-    >>> _import_step_registry.registerStep('dummy2', version=1, handler='plone.app.testing.tests.dummy', title=u"Dummy import step", description=u"")
-    >>> _export_step_registry.registerStep('dummy3', handler='plone.app.testing.tests.dummy', title=u"Dummy import step", description=u"")
-
-The registries now contain these items:
-
-    >>> tuple(_profile_registry.listProfiles())
-    ('plone.app.testing:dummy1',)
-    >>> tuple(_import_step_registry.listSteps())
-    ('dummy2',)
-    >>> tuple(_export_step_registry.listSteps())
-    ('dummy3',)
-    
-On cleanup, the registries are cleared.
-
     >>> zope.testing.cleanup.cleanUp()
-
-    >>> tuple(_profile_registry.listProfiles())
-    ()
-    >>> tuple(_import_step_registry.listSteps())
-    ()
-    >>> tuple(_export_step_registry.listSteps())
-    ()
 
 PluggableAuthService MultiPlugins list
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -526,47 +526,6 @@ Component architecture sandboxing
 Global state cleanup
 --------------------
 
-``tearDownProfileRegistation(productName)``
-    GenericSetup profile registrations, e.g. as registered with the
-    ``<genericsetup:registerProfile />`` ZCML directive, are made into a
-    global registry. If you load the configuration for a package that
-    registers such a profile, you should ensure that registration is torn
-    down in your layer's ``tearDown()`` method. Pass a package/product name,
-    and all profiles associated with that package will be cleared from the
-    registry.
-    
-    For example::
-    
-        from plone.testing import Layer
-        
-        from plone.app.testing import ploneSite
-        from plone.app.testing import tearDownProfileRegistration
-        
-        ...
-        
-        class MyLayer(Layer):
-        
-            ...
-            
-            def tearDown(self):
-                
-                tearDownProfileRegistration('my.product')
-                
-                ...
-    
-    **Note:** If your product also registered custom import or export steps,
-    you should tear those down as well. There is no need for a helper here,
-    just use the API::
-    
-        from Products.GenericSetup import _import_step_registry
-        from Products.GenericSetup import _export_step_registry
-        
-        _import_step_registry.unregisterStep('import-step-id')
-        _export_step_registry.unregisterStep('export-step-id')
-    
-    **Also note:** If you use the ``PloneSandboxLayer`` layer base class,
-    this will snapshot the registries and tear them down for you.
-    
 ``tearDownMultiPluginRegistration(pluginName)``
     PluggableAuthService "MultiPlugins" are kept in a global registry. If
     you have registered a plugin, e.g. using the ``registerMultiPlugin()``
@@ -620,25 +579,21 @@ content or changing some settings.
 
 On tear-down, you will then want to:
 
-1. Remove any GenericSetup profiles and import/export steps that were loaded
-   into the global registries during setup.
-
-2. Remove any Pluggable Authentication Service "multi-plugins" that were added
+1. Remove any Pluggable Authentication Service "multi-plugins" that were added
    to the global registry during setup.
 
-3. Pop the global component registry to unregister components loaded via ZCML.
+2. Pop the global component registry to unregister components loaded via ZCML.
 
-4. Pop the configuration context resource to restore its state.
+3. Pop the configuration context resource to restore its state.
 
-5. Pop the ``DemoStorage`` to undo any persistent changes.
+4. Pop the ``DemoStorage`` to undo any persistent changes.
 
 If you have made other changes on setup that are not covered by this broad
 tear-down, you'll also want to tear those down explicitly here.
 
-Stacking a demo storage and component registry and snapshotting the
-GenericSetup profile registry is the safest way to avoid fixtures bleeding
-between tests. However, it can be tricky to ensure that everything happens in
-the right order.
+Stacking a demo storage and component registry is the safest way to avoid 
+fixtures bleeding between tests. However, it can be tricky to ensure that 
+everything happens in the right order.
 
 To make things easier, you can use the ``PloneSandboxLayer`` layer base class.
 This extends ``plone.testing.Layer`` and implements ``setUp()`` and
@@ -663,10 +618,9 @@ following methods:
     stacked ``DemoStorage`` are popped. Use this to tear down any additional
     global state.
     
-    **Note:** Global component registrations, GenericSetup profile registry
-    manipulations, and PAS multi-plugin registrations are automatically torn 
-    down. Product installations are not, so you should use the
-    ``uninstallProduct()`` helper if any products were installed during 
+    **Note:** Global component registrations PAS multi-plugin registrations are
+    automatically torn down. Product installations are not, so you should use 
+    the ``uninstallProduct()`` helper if any products were installed during 
     ``setUpZope()``.
 
 ``tearDownPloneSite(self, portal)``
@@ -763,10 +717,9 @@ performs an explicit permission check).
 
     **Note:** Automatic tear down suffices for all the test setup above. If
     the only changes made during layer setup are to persistent, in-ZODB data,
-    the global component registry, or the GenericSetup profiles registry, then
-    no additional tear-down is required. For any other global state being
-    managed, you should write a ``tearDownPloneSite()`` method to perform the
-    necessary cleanup.
+    or the global component registry then no additional tear-down is required. 
+    For any other global state being managed, you should write a 
+    ``tearDownPloneSite()`` method to perform the necessary cleanup.
 
 Given this layer, we could write a test (e.g. in ``tests.py``) like::
     
