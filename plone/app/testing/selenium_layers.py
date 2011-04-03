@@ -10,7 +10,7 @@ from plone.testing import z2
 
 class SeleniumLayer(Layer):
 
-    def setUp(self):
+    def testSetUp(self):
         # Start up Selenium
         driver = os.environ.get('SELENIUM_DRIVER', '') or 'firefox'
         webdriver = __import__(
@@ -20,7 +20,7 @@ class SeleniumLayer(Layer):
                 if arg.strip()]
         self['selenium'] = webdriver.WebDriver(*args)
 
-    def tearDown(self):
+    def testTearDown(self):
         self['selenium'].quit()
         del self['selenium']
 

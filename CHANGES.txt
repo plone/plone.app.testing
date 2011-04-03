@@ -4,6 +4,14 @@ Changelog
 4.0a6 (Unreleased)
 ------------------
 
+- Moved selenium start up and tear down to testSetUp and testTearDown,
+  respectively.  This was done to help further isolate individual tests.
+  For example, logging in under one test would require either logging out
+  or shutting down the browser, which is what the selenium_layer will now
+  do under testTearDown, in order to have a "clean" state within the next
+  test.
+  [emanlove]
+
 - Corrected module path for the various selenium webdrivers using
   selenium 2.0b2.
   [emanlove]
