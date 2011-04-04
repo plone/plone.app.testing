@@ -4,6 +4,10 @@ Changelog
 4.0a6 (Unreleased)
 ------------------
 
+- Added helper functions for selenium layer. (Copied from SeleniumTestCase 
+  within Products.CMFPlone/Products/CMFPlone/tests/selenium/base.py)
+  [emanlove]
+
 - Rework layer setup of SeleniumLayer so that z2.ZSERVER_FIXTURE is a
   default_base.
   [esteele]
