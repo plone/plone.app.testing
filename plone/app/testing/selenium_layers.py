@@ -12,7 +12,7 @@ class SeleniumLayer(Layer):
 
     def testSetUp(self):
         # Start up Selenium
-        driver = os.environ.get('SELENIUM_DRIVER', '') or 'firefox'
+        driver = os.environ.get('SELENIUM_DRIVER', '').lower() or 'firefox'
         webdriver = __import__(
             'selenium.webdriver.%s.webdriver' % driver, fromlist=['WebDriver'])
         args = [arg.strip() for arg in
