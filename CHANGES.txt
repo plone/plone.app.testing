@@ -4,6 +4,10 @@ Changelog
 4.0a6 (Unreleased)
 ------------------
 
+- Rework layer setup of SeleniumLayer so that z2.ZSERVER_FIXTURE is a
+  default_base.
+  [esteele]
+
 - Convert the passed-in selenium webdriver name to lowercase before doing a
   module lookup.
   [esteele]

@@ -9,6 +9,7 @@ from plone.testing import z2
 
 
 class SeleniumLayer(Layer):
+    defaultBases = (z2.ZSERVER_FIXTURE,)
 
     def testSetUp(self):
         # Start up Selenium
@@ -26,10 +27,10 @@ class SeleniumLayer(Layer):
 
 SELENIUM_FIXTURE = SeleniumLayer()
 SELENIUM_FUNCTIONAL_TESTING = FunctionalTesting(
-    bases=(SELENIUM_FIXTURE, z2.ZSERVER_FIXTURE),
+    bases=(SELENIUM_FIXTURE,),
     name="SeleniumTesting:Functional")
 SELENIUM_PLONE_FUNCTIONAL_TESTING = FunctionalTesting(
-    bases=(SELENIUM_FIXTURE, z2.ZSERVER_FIXTURE, PLONE_FIXTURE),
+    bases=(SELENIUM_FIXTURE, PLONE_FIXTURE),
     name="SeleniumTesting:Functional")
 
 
