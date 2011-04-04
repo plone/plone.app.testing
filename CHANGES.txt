@@ -4,6 +4,10 @@ Changelog
 4.0a6 (Unreleased)
 ------------------
 
+- Convert the passed-in selenium webdriver name to lowercase before doing a
+  module lookup.
+  [esteele]
+  
 - Moved selenium start up and tear down to testSetUp and testTearDown,
   respectively.  This was done to help further isolate individual tests.
   For example, logging in under one test would require either logging out
