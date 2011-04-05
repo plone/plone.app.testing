@@ -72,10 +72,10 @@ def tearDownMultiPluginRegistration(pluginName):
 
     from Products.PluggableAuthService import PluggableAuthService
     from Products.PluggableAuthService import zcml
-    
+
     if pluginName in PluggableAuthService.MultiPlugins:
         PluggableAuthService.MultiPlugins.remove(pluginName)
-    
+
     if pluginName in zcml._mt_regs:
         zcml._mt_regs.remove(pluginName)
 
@@ -330,7 +330,14 @@ class PloneSandboxLayer(Layer):
 
         # Push a new configuration context so that it's possible to re-import
         # ZCML files after tear-down
-        self['configurationContext'] = configurationContext = zca.stackConfigurationContext(self.get('configurationContext'))
+        if self.__name__ is not None:
+            name = self.__name__
+        else:
+            name = 'not-named'
+        contextName = "PloneSandboxLayer-%s" % name
+        self['configurationContext'] = configurationContext = (
+            zca.stackConfigurationContext(self.get('configurationContext'),
+            name=contextName))
 
         for portal in ploneSite():
 
@@ -347,9 +354,9 @@ class PloneSandboxLayer(Layer):
 
             # Make sure zope.security checkers can be set up and torn down
             # reliably
-            
+
             security.pushCheckers()
-            
+
             # Snapshot the GenericSetup profiles registry before loading
             # the custom configuration
 
@@ -362,9 +369,9 @@ class PloneSandboxLayer(Layer):
             preSetupExportSteps  = list(_export_step_registry.listSteps())
 
             from Products.PluggableAuthService.PluggableAuthService import MultiPlugins
-            
+
             preSetupMultiPlugins = MultiPlugins[:]
-            
+
             # Allow subclass to load ZCML and products
             self.setUpZope(portal.getPhysicalRoot(), configurationContext)
 
@@ -375,10 +382,10 @@ class PloneSandboxLayer(Layer):
 
         # Keep track of profiles that were added during setup
         self.snapshotProfileRegistry(preSetupProfiles, preSetupImportSteps, preSetupExportSteps)
-        
+
         # Keep track of PAS plugins that were added during setup
         self.snapshotMultiPlugins(preSetupMultiPlugins)
-        
+
     def tearDown(self):
 
         for app in z2.zopeApp():
@@ -396,16 +403,16 @@ class PloneSandboxLayer(Layer):
 
             # Make sure zope.security checkers can be set up and torn down
             # reliably
-            
+
             security.popCheckers()
-            
+
             # Pop the component registry, thus removing component
             # architecture registrations
             popGlobalRegistry(portal)
 
             # Remove PAS plugins
             self.tearDownMultiPlugins()
-            
+
             # Remove global profile registrations
             self.tearDownProfileRegistry()
 
@@ -475,25 +482,68 @@ class PloneSandboxLayer(Layer):
         for stepId in self._addedExportSteps:
             if stepId in _export_step_registry.listSteps():
                 _export_step_registry.unregisterStep(stepId)
-    
+
     def snapshotMultiPlugins(self, preSetupMultiPlugins):
         """Save a snapshot of all PAS multi plugins that were added during
         setup, by comparing to the list of plugins passed in.
         """
-        
+
         self._addedMultiPlugins = set()
-        
+
         from Products.PluggableAuthService.PluggableAuthService import MultiPlugins
-        
+
         for plugin in MultiPlugins:
             if plugin not in preSetupMultiPlugins:
                 self._addedMultiPlugins.add(plugin)
-        
+
     def tearDownMultiPlugins(self):
         """Delete all PAS multi plugins that were added during setup, as
         stored by ``snapshotMultiPlugins()``.
         """
-        
+
         for pluginName in self._addedMultiPlugins:
             tearDownMultiPluginRegistration(pluginName)
-        
+
+
+class PloneWithPackageLayer(PloneSandboxLayer):
+
+    def __init__(self, bases=None, name=None, module=None, zcml_filename=None,
+        zcml_package=None, gs_profile_id=None):
+        super(PloneWithPackageLayer, self).__init__(bases, name, module)
+        self.zcml_filename = zcml_filename
+        self.zcml_package = zcml_package
+        self.gs_profile_id = gs_profile_id
+
+    def setUpZope(self, app, configurationContext):
+        """Set up Zope.
+
+        Only load ZCML files.
+        """
+        self.setUpZCMLFiles()
+
+    def setUpZCMLFiles(self):
+        """Load default ZCML.
+
+        Can be overridden to load more ZCML.
+        """
+        if self.zcml_filename is None:
+            raise ValueError("ZCML file name has not been provided.")
+        if self.zcml_package is None:
+            raise ValueError("The package that contains the ZCML file "
+                "has not been provided.")
+        self.loadZCML(self.zcml_filename, package=self.zcml_package)
+
+    def setUpPloneSite(self, portal):
+        """Set up the Plone site.
+
+        Only install GenericSetup profiles
+        """
+        self.applyProfiles(portal)
+
+    def applyProfiles(self, portal):
+        """Install default profile.
+
+        Can be overridden to install more profiles.
+        """
+        if self.gs_profile_id is not None:
+            self.applyProfile(portal, self.gs_profile_id)

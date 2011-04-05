@@ -31,7 +31,8 @@ from plone.app.testing.helpers import (
         
         ploneSite,
         
-        PloneSandboxLayer
+        PloneSandboxLayer,
+        PloneWithPackageLayer
     )
 
 # Constants
