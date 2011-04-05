@@ -4,6 +4,30 @@ Changelog
 3.0a2 (unreleased)
 ------------------
 
+- Added helper functions for selenium layer. (Copied from SeleniumTestCase 
+  within Products.CMFPlone/Products/CMFPlone/tests/selenium/base.py)
+  [emanlove]
+
+- Rework layer setup of SeleniumLayer so that z2.ZSERVER_FIXTURE is a
+  default_base.
+  [esteele]
+
+- Convert the passed-in selenium webdriver name to lowercase before doing a
+  module lookup.
+  [esteele]
+  
+- Moved selenium start up and tear down to testSetUp and testTearDown,
+  respectively.  This was done to help further isolate individual tests.
+  For example, logging in under one test would require either logging out
+  or shutting down the browser, which is what the selenium_layer will now
+  do under testTearDown, in order to have a "clean" state within the next
+  test.
+  [emanlove]
+
+- Corrected module path for the various selenium webdrivers using
+  selenium 2.0b2.
+  [emanlove]
+
 - Use the new ``plone.testing.security`` module to ensure isolation of
   security checkers when setting up and tearing down layers based on the
   ``PloneSandboxLayer`` helper base class. This would cause problems when
