@@ -626,11 +626,14 @@ On tear-down, you will then want to:
 1. Remove any GenericSetup profiles and import/export steps that were loaded
    into the global registries during setup.
 
-2. Pop the global component registry to unregister components loaded via ZCML.
+2. Remove any Pluggable Authentication Service "multi-plugins" that were added
+   to the global registry during setup.
 
-3. Pop the configuration context resource to restore its state.
+3. Pop the global component registry to unregister components loaded via ZCML.
 
-4. Pop the ``DemoStorage`` to undo any persistent changes.
+4. Pop the configuration context resource to restore its state.
+
+5. Pop the ``DemoStorage`` to undo any persistent changes.
 
 If you have made other changes on setup that are not covered by this broad
 tear-down, you'll also want to tear those down explicitly here.
@@ -663,11 +666,11 @@ following methods:
     stacked ``DemoStorage`` are popped. Use this to tear down any additional
     global state.
     
-    **Note:** Global component registrations and GenericSetup profile registry
-    manipulations are automatically torn down. PAS multi-plugin registrations
-    and product installations are not, so you should use the
-    ``tearDownMultiPluginRegistration()`` or ``uninstallProduct()`` helpers
-    if any PAS plugins or products were installed during ``setUpZope()``.
+    **Note:** Global component registrations, GenericSetup profile registry
+    manipulations, and PAS multi-plugin registrations are automatically torn 
+    down. Product installations are not, so you should use the
+    ``uninstallProduct()`` helper if any products were installed during 
+    ``setUpZope()``.
 
 ``tearDownPloneSite(self, portal)``
     This is called during tear-down, before the global component registry and
