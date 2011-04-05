@@ -26,7 +26,6 @@ from plone.app.testing.helpers import (
         pushGlobalRegistry,
         popGlobalRegistry,
         
-        tearDownProfileRegistation,
         tearDownMultiPluginRegistration,
         
         ploneSite,
@@ -52,6 +51,5 @@ from plone.app.testing.interfaces import (
 
 # Cleanup handlers
 from plone.app.testing.cleanup import (
-        cleanUpGenericSetupRegistries,
         cleanUpMultiPlugins,
     )

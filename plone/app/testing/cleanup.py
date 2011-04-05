@@ -9,18 +9,6 @@ try:
 except ImportError:
     pass
 
-def cleanUpGenericSetupRegistries():
-    try:
-        from Products.GenericSetup import registry
-    except ImportError:
-        pass
-    else:
-        registry._import_step_registry.clear()
-        registry._export_step_registry.clear()
-        registry._profile_registry.clear()
-
-addCleanUp(cleanUpGenericSetupRegistries)
-
 # Make sure cleanup handlers from PAS are registered
 try:
     import Products.PluggableAuthService.zcml
