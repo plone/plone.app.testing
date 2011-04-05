@@ -32,7 +32,7 @@ setup(name='plone.app.testing',
           'zope.testing',
           'five.localsitemanager',
           'plone.memoize',
-          'plone.testing [zca,zodb,z2] <= 3.99',
+          'plone.testing [zca,security,zodb,z2] <= 3.99',
           # 'Acquisition', # Zope 2.13+
           # 'AccessControl', # Zope 2.13+
           'Plone',

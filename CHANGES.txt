@@ -4,6 +4,13 @@ Changelog
 3.0a2 (unreleased)
 ------------------
 
+- Use the new ``plone.testing.security`` module to ensure isolation of
+  security checkers when setting up and tearing down layers based on the
+  ``PloneSandboxLayer`` helper base class. This would cause problems when
+  running multiple test suites in the same test run, in particular if one of
+  those suites were setting up ZCML that used ``five.grok``.
+  [optilude]
+
 - Automatically tear down PAS registrations via snapshotting when using
   ``PloneSandboxLayer``. It's too difficult to do this manually when you
   consider that plugins may be registered in ZCML via transitive dependencies.

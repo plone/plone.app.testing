@@ -5,7 +5,7 @@
 
 from zope.configuration import xmlconfig
 
-from plone.testing import z2, zodb, zca, Layer
+from plone.testing import z2, zodb, zca, security, Layer
 
 from plone.app.testing import layers
 from plone.app.testing.interfaces import (
@@ -345,6 +345,11 @@ class PloneSandboxLayer(Layer):
             # and other global component registry changes are sandboxed
             pushGlobalRegistry(portal)
 
+            # Make sure zope.security checkers can be set up and torn down
+            # reliably
+            
+            security.pushCheckers()
+            
             # Snapshot the GenericSetup profiles registry before loading
             # the custom configuration
 
@@ -389,6 +394,11 @@ class PloneSandboxLayer(Layer):
 
             setSite(None)
 
+            # Make sure zope.security checkers can be set up and torn down
+            # reliably
+            
+            security.popCheckers()
+            
             # Pop the component registry, thus removing component
             # architecture registrations
             popGlobalRegistry(portal)
