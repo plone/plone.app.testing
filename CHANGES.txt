@@ -1,10 +1,15 @@
 Changelog
 =========
 
-4.0a7 (Unreleased)
+
+4.0a7 - Unreleased
 ------------------
 
-4.0a6 (2011-04-06)
+- Add MANIFEST.in.
+  [WouterVH]
+
+
+4.0a6 - 2011-04-06
 ------------------
 
 - Added helper functions for selenium layer. (Copied from SeleniumTestCase 
@@ -18,7 +23,7 @@ Changelog
 - Convert the passed-in selenium webdriver name to lowercase before doing a
   module lookup.
   [esteele]
-  
+
 - Moved selenium start up and tear down to testSetUp and testTearDown,
   respectively.  This was done to help further isolate individual tests.
   For example, logging in under one test would require either logging out
@@ -31,7 +36,8 @@ Changelog
   selenium 2.0b2.
   [emanlove]
 
-4.0a5 (2011-03-02)
+
+4.0a5 - 2011-03-02
 ------------------
 
 - Use the new ``plone.testing.security`` module to ensure isolation of
@@ -41,7 +47,8 @@ Changelog
   those suites were setting up ZCML that used ``five.grok``.
   [optilude]
 
-4.0a4 (2011-01-11)
+
+4.0a4 - 2011-01-11
 ------------------
 
 - Automatically tear down PAS registrations via snapshotting when using
@@ -63,7 +70,8 @@ Changelog
 - Depend on ``Products.CMFPlone`` instead of ``Plone``.
   [elro]
 
-4.0a3 (2010-12-14)
+
+4.0a3 - 2010-12-14
 ------------------
 
 - Allow top-level import of PloneTestLifecycle.
@@ -89,11 +97,13 @@ Changelog
   problems with userid vs login name errors, an overly common error.
   [wichert]
 
+
 1.0a2 - 2010-09-05
 ------------------
 
 - Make sure plone.app.imaging is installed properly during layer setup.
   [optilude]
+
 
 1.0a1 - 2010-08-01
 ------------------
