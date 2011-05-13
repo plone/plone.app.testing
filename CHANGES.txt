@@ -2,8 +2,11 @@ Changelog
 =========
 
 
-4.0a7 - Unreleased
+4.0 - 2011-05-13
 ------------------
+
+- 4.0 Final release.
+  [esteele]
 
 - Add MANIFEST.in.
   [WouterVH]
