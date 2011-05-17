@@ -92,7 +92,10 @@ class PloneFixture(Layer):
 
         self.setUpZCML()
 
-        from zope.app.component.hooks import setHooks
+        try:
+            from zope.site.hooks import setHooks
+        except ImportError:
+            from zope.app.component.hooks import setHooks
         setHooks()
 
         # Set up products and the default content
@@ -107,7 +110,10 @@ class PloneFixture(Layer):
             # note: content tear-down happens by squashing the ZODB
             self.tearDownProducts(app)
 
-        from zope.app.component.hooks import resetHooks
+        try:
+            from zope.site.hooks import resetHooks
+        except ImportError:
+            from zope.app.component.hooks import resetHooks
         resetHooks()
 
         self.tearDownZCML()
@@ -272,7 +278,10 @@ class PloneTestLifecycle(object):
         """
 
         # Set up the local site manager
-        from zope.app.component.hooks import setSite
+        try:
+            from zope.site.hooks import setSite
+        except ImportError:
+            from zope.app.component.hooks import setSite
         setSite(portal)
 
         # Reset skin data
@@ -303,7 +312,10 @@ class PloneTestLifecycle(object):
             cache.invalidateAll()
 
         # Unset the local component site
-        from zope.app.component.hooks import setSite
+        try:
+            from zope.site.hooks import setSite
+        except ImportError:
+            from zope.app.component.hooks import setSite
         setSite(None)
 
 
