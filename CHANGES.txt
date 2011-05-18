@@ -4,9 +4,8 @@ Changelog
 3.0a2 (unreleased)
 ------------------
 
-- Try to firsly import zca hooks from zope.site package as it may be used
-  in plone 3 as well. Otherwise we'll end up with plone.testing keeping
-  it's zca siteinfo in zope.site while plone.app.testing in zope.app.component.
+- Import ZCA hooks only from zope.app.component as it's the only place where
+  Plone 3 looks for local components, not zope.site.
   [piv]
 
 - Added helper functions for selenium layer. (Copied from SeleniumTestCase 
