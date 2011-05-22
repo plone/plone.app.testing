@@ -175,7 +175,7 @@ the ``IntegrationTesting`` and ``FunctionalTesting`` classes. For example::
     from plone.app.testing import IntegrationTesting, FunctionalTesting
 
     class MyFixture(Layer):
-        default_bases = (PLONE_FIXTURE,)
+        defaultBases = (PLONE_FIXTURE,)
         
         ...
     
