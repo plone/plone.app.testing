@@ -16,11 +16,13 @@ from plone.app.testing.interfaces import (
 
 # User management
 
+
 def login(portal, userName):
     """Log in as the given user in the given Plone site
     """
 
     z2.login(portal['acl_users'], userName)
+
 
 def logout():
     """Log out, i.e. become anonymous
@@ -28,12 +30,14 @@ def logout():
 
     z2.logout()
 
+
 def setRoles(portal, userId, roles):
     """Set the given user's roles to a tuple of roles.
     """
 
     userFolder = portal['acl_users']
     z2.setRoles(userFolder, userId, roles)
+
 
 def tearDownMultiPluginRegistration(pluginName):
     """Remove the given PAS MultiPlugin name from the global PAS registry.
@@ -53,7 +57,9 @@ def tearDownMultiPluginRegistration(pluginName):
     if pluginName in zcml._mt_regs:
         zcml._mt_regs.remove(pluginName)
 
+
 # Product management - local site
+
 
 def quickInstallProduct(portal, productName, reinstall=False):
     """Install a product using the ``portal_quickinstaller`` tool. If
@@ -86,6 +92,7 @@ def quickInstallProduct(portal, productName, reinstall=False):
     finally:
         setSecurityManager(sm)
 
+
 def applyProfile(portal, profileName):
     """Install an extension profile into the portal. The profile name
     should be a package name and a profile name, e.g. 'my.product:default'.
@@ -102,7 +109,7 @@ def applyProfile(portal, profileName):
 
     try:
         setupTool = portal['portal_setup']
-        profileId = 'profile-%s' % (profileName,)
+        profileId = 'profile-%s' % (profileName, )
         setupTool.runAllImportStepsFromProfile(profileId)
 
         portal.clearCurrentSkin()
@@ -111,7 +118,9 @@ def applyProfile(portal, profileName):
     finally:
         setSecurityManager(sm)
 
+
 # Component architecture
+
 
 def pushGlobalRegistry(portal, new=None, name=None):
     """Set a new global component registry that uses the current registry as
@@ -134,13 +143,14 @@ def pushGlobalRegistry(portal, new=None, name=None):
     current = zca.pushGlobalRegistry(new=new)
 
     if current not in localSiteManager.__bases__:
-        localSiteManager.__bases__ = (current,)
+        localSiteManager.__bases__ = (current, )
 
     if site is not None:
         setHooks()
         setSite(site)
 
     return current
+
 
 def popGlobalRegistry(portal):
     """Restore the global component registry form the top of the stack, as
@@ -237,6 +247,7 @@ def checkSite(site, portal):
 
 # Layer base class
 
+
 class PloneSandboxLayer(Layer):
     """Layer base class managing the common pattern of having a stacked ZODB
     ``DemoStorage`` and a stacked global component registry for the layer.
@@ -248,7 +259,7 @@ class PloneSandboxLayer(Layer):
 
     # The default list of bases.
 
-    defaultBases = (layers.PLONE_FIXTURE,)
+    defaultBases = (layers.PLONE_FIXTURE, )
 
     # Hooks
 

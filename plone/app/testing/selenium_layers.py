@@ -9,7 +9,7 @@ from plone.testing import z2
 
 
 class SeleniumLayer(Layer):
-    defaultBases = (z2.ZSERVER_FIXTURE,)
+    defaultBases = (z2.ZSERVER_FIXTURE, )
 
     def testSetUp(self):
         # Start up Selenium
@@ -27,18 +27,21 @@ class SeleniumLayer(Layer):
 
 SELENIUM_FIXTURE = SeleniumLayer()
 SELENIUM_FUNCTIONAL_TESTING = FunctionalTesting(
-    bases=(SELENIUM_FIXTURE,),
+    bases=(SELENIUM_FIXTURE, ),
     name="SeleniumTesting:Functional")
 SELENIUM_PLONE_FUNCTIONAL_TESTING = FunctionalTesting(
     bases=(SELENIUM_FIXTURE, PLONE_FIXTURE),
     name="SeleniumTesting:Functional")
 
+
 # Helper functions
+
 
 def open(selenium, url):
     # ensure we have a clean starting point
     transaction.commit()
     selenium.get(url)
+
 
 def login(selenium, portal, username=False, password=False):
 
@@ -51,6 +54,7 @@ def login(selenium, portal, username=False, password=False):
     selenium.find_element_by_name('__ac_name').send_keys(username)
     selenium.find_element_by_name('__ac_password').send_keys(password)
     selenium.find_element_by_name('submit').click()
+
 
 def click(selenium, xpath):
     if xpath.count("link="):
@@ -66,16 +70,18 @@ def click(selenium, xpath):
 
     element.click()
 
+
 def type(selenium, name, value):
     selenium.find_element_by_name(name).send_keys(value)
-    
+
+
 def typeMce(selenium, value):
     '''
-    Text fields with mce are different.We need to go into the frame and update the 
-    p element to make this work. Unfortunately the code to get out of the frame is not 
-    implemented in python yet. The workaround is to use this handle trick, which 
+    Text fields with mce are different.We need to go into the frame and update the
+    p element to make this work. Unfortunately the code to get out of the frame is not
+    implemented in python yet. The workaround is to use this handle trick, which
     is currently unsupported in chrome. See issue #405 for more. In general there
-    are still a lot of open issues on frame support so if this breaks it won't 
+    are still a lot of open issues on frame support so if this breaks it won't
     be a surprise.'''
     handle = selenium.get_current_window_handle()
     selenium.switch_to_frame("form.text_ifr")
@@ -83,8 +89,10 @@ def typeMce(selenium, value):
     ele.send_keys(value)
     selenium.switch_to_window(handle)
 
+
 def clear(selenium, name):
     selenium.find_element_by_name(name).clear()
+
 
 def select(selenium, xpath1, xpath2=''):
     xpath = xpath1
@@ -93,15 +101,16 @@ def select(selenium, xpath1, xpath2=''):
         xpath = xpath.replace("select['label=", "select/option['text()=")
     selenium.find_element_by_xpath(xpath).select()
 
+
 def waitForPageToLoad(selenium, foo):
     # this does nothing but make us lazy folks happy
     pass
 
+
 def publish(selenium):
     click(selenium, "//dl[@id='plone-contentmenu-workflow']/dt/a")
     click(selenium, "#workflow-transition-publish")
-    
+
+
 def submit(selenium, formId):
     selenium.find_element_by_id(formId).submit()
-        
-
