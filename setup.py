@@ -36,7 +36,7 @@ setup(name='plone.app.testing',
           # 'Acquisition', # Zope 2.13+
           # 'AccessControl', # Zope 2.13+
           'Plone',
-          'Products.GenericSetup',
+          'Products.GenericSetup = 1.4.6devCA1',
           'Zope2',
       ],
       extras_require = {
