@@ -1,8 +1,8 @@
 Changelog
 =========
 
-3.0a2 (unreleased)
-------------------
+3.0a2devCA1 (2011-05-31)
+------------------------
 
 - Import ZCA hooks only from zope.app.component as it's the only place where
   Plone 3 looks for local components, not zope.site.
