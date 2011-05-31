@@ -1,6 +1,12 @@
 Changelog
 =========
 
+3.0a2devCA2 (unreleased)
+------------------------
+
+- Nothing changed yet.
+
+
 3.0a2devCA1 (2011-05-31)
 ------------------------
 
