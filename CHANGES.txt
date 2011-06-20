@@ -4,6 +4,10 @@ Changelog
 4.0.1 - Unreleased
 ------------------
 
+- Add ``additional_z2_products`` parameter to ``PloneWithPackageLayer``
+  helper class to install additional Zope 2 products
+
+
 4.0 - 2011-05-13
 ------------------
 

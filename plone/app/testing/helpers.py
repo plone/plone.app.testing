@@ -415,17 +415,20 @@ class PloneSandboxLayer(Layer):
 class PloneWithPackageLayer(PloneSandboxLayer):
 
     def __init__(self, bases=None, name=None, module=None, zcml_filename=None,
-        zcml_package=None, gs_profile_id=None):
+        zcml_package=None, gs_profile_id=None, additional_z2_products=()):
         super(PloneWithPackageLayer, self).__init__(bases, name, module)
         self.zcml_filename = zcml_filename
         self.zcml_package = zcml_package
         self.gs_profile_id = gs_profile_id
+        self.additional_z2_products = additional_z2_products
 
     def setUpZope(self, app, configurationContext):
         """Set up Zope.
 
         Only load ZCML files.
         """
+        for z2Product in self.additional_z2_products:
+            z2.installProduct(app, z2Product)
         self.setUpZCMLFiles()
 
     def setUpZCMLFiles(self):
