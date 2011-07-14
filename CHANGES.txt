@@ -1,7 +1,7 @@
 Changelog
 =========
 
-4.0.1 - Unreleased
+4.0.1 (2011-07-14)
 ------------------
 
 - Add ``additional_z2_products`` parameter to ``PloneWithPackageLayer``
