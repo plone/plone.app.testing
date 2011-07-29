@@ -4,14 +4,17 @@ Changelog
 4.0.2 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Load ZCML before installing Zope products in ``PloneWithPackageLayer``;
+  it enables package registration.
+  [gotcha]
 
 
 4.0.1 (2011-07-14)
 ------------------
 
 - Add ``additional_z2_products`` parameter to ``PloneWithPackageLayer``
-  helper class to install additional Zope 2 products
+  helper class to install additional Zope 2 products.
+  [jfroche]
 
 
 4.0 - 2011-05-13
