@@ -430,9 +430,9 @@ class PloneWithPackageLayer(PloneSandboxLayer):
 
         Only load ZCML files.
         """
+        self.setUpZCMLFiles()
         for z2Product in self.additional_z2_products:
             z2.installProduct(app, z2Product)
-        self.setUpZCMLFiles()
 
     def setUpZCMLFiles(self):
         """Load default ZCML.
