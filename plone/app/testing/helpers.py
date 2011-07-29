@@ -302,7 +302,8 @@ class PloneSandboxLayer(Layer):
 
         # Push a new database storage so that database changes
         # commited during layer setup can be easily torn down
-        self['zodbDB'] = zodb.stackDemoStorage(self.get('zodbDB'), name=self.__name__)
+        self['zodbDB'] = zodb.stackDemoStorage(self.get('zodbDB'),
+                name=self.__name__)
 
         # Push a new configuration context so that it's possible to re-import
         # ZCML files after tear-down
@@ -329,7 +330,8 @@ class PloneSandboxLayer(Layer):
 
             security.pushCheckers()
 
-            from Products.PluggableAuthService.PluggableAuthService import MultiPlugins
+            from Products.PluggableAuthService.PluggableAuthService import (
+                    MultiPlugins)
 
             preSetupMultiPlugins = MultiPlugins[:]
 
@@ -397,7 +399,8 @@ class PloneSandboxLayer(Layer):
 
         self._addedMultiPlugins = set()
 
-        from Products.PluggableAuthService.PluggableAuthService import MultiPlugins
+        from Products.PluggableAuthService.PluggableAuthService import (
+                MultiPlugins)
 
         for plugin in MultiPlugins:
             if plugin not in preSetupMultiPlugins:
