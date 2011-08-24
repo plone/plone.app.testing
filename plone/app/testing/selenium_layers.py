@@ -99,7 +99,7 @@ def select(selenium, xpath1, xpath2=''):
     if xpath2:
         xpath = "%s['%s']"%(xpath1, xpath2)
         xpath = xpath.replace("select['label=", "select/option['text()=")
-    selenium.find_element_by_xpath(xpath).select()
+    selenium.find_element_by_xpath(xpath).click()
 
 
 def waitForPageToLoad(selenium, foo):
