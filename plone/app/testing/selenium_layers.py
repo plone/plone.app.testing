@@ -83,7 +83,7 @@ def typeMce(selenium, value):
     is currently unsupported in chrome. See issue #405 for more. In general there
     are still a lot of open issues on frame support so if this breaks it won't
     be a surprise.'''
-    handle = selenium.get_current_window_handle()
+    handle = selenium.current_window_handle
     selenium.switch_to_frame("form.text_ifr")
     ele = selenium.find_element_by_xpath("//p")
     ele.send_keys(value)
