@@ -334,7 +334,7 @@ We can now look for this new object through the server.
     'http://localhost:55001/plone'
     
     >>> import urllib2
-    >>> conn = urllib2.urlopen(portal_url + '/folder1', timeout=5)
+    >>> conn = urllib2.urlopen(portal_url + '/folder1', timeout=10)
     >>> responseBody = conn.read()
     >>> "Folder 1" in responseBody
     True
