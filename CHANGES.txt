@@ -7,6 +7,9 @@ Changelog
 - Fixed spurious failure in our own tests by using a longer timeout.
   [maurits]
 
+- plone.app.collection added to PloneFixture.
+  [timo]
+
 
 4.0.2 (2011-08-31)
 ------------------
