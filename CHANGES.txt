@@ -1,8 +1,11 @@
 Changelog
 =========
 
-4.0.3 (unreleased)
+4.1 (unreleased)
 ------------------
+
+- Branch for Plone 4.1 compatibility. 
+  [esteele]
 
 - Fixed spurious failure in our own tests by using a longer timeout.
   [maurits]
