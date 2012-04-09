@@ -1,8 +1,12 @@
 Changelog
 =========
 
-4.0.3 (unreleased)
+4.2 (unreleased)
 ------------------
+
+- Branch as 4.2 as the plone.app.collection addition breaks backwards
+  compatibility.
+  [esteele]
 
 - Fixed spurious failure in our own tests by using a longer timeout.
   [maurits]
