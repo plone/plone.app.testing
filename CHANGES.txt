@@ -1,8 +1,8 @@
 Changelog
 =========
 
-4.2 (unreleased)
-------------------
+4.2 (2012-04-15)
+----------------
 
 - Branch as 4.2 as the plone.app.collection addition breaks backwards
   compatibility.
