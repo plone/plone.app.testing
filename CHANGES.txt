@@ -1,11 +1,24 @@
 Changelog
 =========
 
-4.0.3 (unreleased)
+4.2.1 (unreleased)
 ------------------
+
+- Nothing changed yet.
+
+
+4.2 (2012-04-15)
+----------------
+
+- Branch as 4.2 as the plone.app.collection addition breaks backwards
+  compatibility.
+  [esteele]
 
 - Fixed spurious failure in our own tests by using a longer timeout.
   [maurits]
+
+- plone.app.collection added to PloneFixture.
+  [timo]
 
 
 4.0.2 (2011-08-31)
