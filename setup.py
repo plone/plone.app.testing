@@ -14,8 +14,8 @@ tests_require = ['Products.CMFCore',
 setup(name='plone.app.testing',
       version=version,
       description="Testing tools for Plone-the-application, based on plone.testing.",
-      long_description=open("README.txt").read() + "\n" +
-                       open("CHANGES.txt").read(),
+      long_description=open("README.rst").read() + "\n" +
+                       open("CHANGES.rst").read(),
       classifiers=[
         "Environment :: Web Environment",
         "Framework :: Plone",
