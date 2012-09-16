@@ -135,3 +135,27 @@ When the layer is torn down, the Selenium browser is closed.
     ...     WebDriver._execute(selenium, 'quit')
     Traceback (most recent call last):
     URLError: ...
+
+Selenium and transactions
+==========================
+
+Selenium WebDriver runs in a different thread than your plone.app.testing Python code.
+Both threads have their own ZODB transactions. If you modify the data in Selenium thread
+(e.g. your virtual user modifies something) you cannot directly access this data 
+in the test thread.
+
+The workaround is to run a commit in the test thread which forces the the test 
+thread to get a fresh copy of the object after commit. 
+
+Example::
+
+    import transaction
+
+    def test_something():
+        # ... Selenium modifies the site here ...
+
+        # Make sure that the test thread and the selenium thread ZODB are synced
+        transaction.commit()
+        text = self.page.getText()
+
+        self.assertEqual(text, NEW_TEXT)
