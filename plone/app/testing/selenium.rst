@@ -1,10 +1,39 @@
 Selenium testing layer
 ----------------------
 
+Introduction
+============
+
 There is a layer used to set up test fixtures for running 
 `Selenium <code.google.com/p/selenium/>`_ 
 tests against a Plone site. It is importable from
 ``plone.app.testing.selenium_layers``.
+
+With Selenium you get
+
+* Any real web browser, installed on your computer, accessing your unit test site
+
+* Real Javascript support and AJAX support
+
+* Real visibility test: is any element visible on the screen according to CSS
+
+* Scrape your page content with CSS selectors
+
+* Execute Javascript test snippets against loaded pages to see if your JS code is sane
+
+* Ability to take screenshots of web pages
+
+Selenium provides a ``WebDriver`` class which has a subclass for each
+browser (Chrome, Firefox, IE...) for running the tests on this specific browser.
+
+`More info about available WebDriver API <http://code.google.com/p/selenium/source/browse/trunk/py/selenium/webdriver/remote/webdriver.py>`_.
+
+`Selenium element matching options <http://code.google.com/p/selenium/source/browse/trunk/py/selenium/webdriver/common/by.py>`_ 
+
+`Extracting data from matched elements <http://code.google.com/p/selenium/source/browse/trunk/py/selenium/webdriver/remote/webelement.py>`_
+
+Using Selenium with plone.app.testing
+=======================================
 
 Note that if using the "-D" pdb debugger testrunner flag for failures
 in this test before the layer is torn down, the testrunner process
