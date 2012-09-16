@@ -1,7 +1,8 @@
 Selenium testing layer
 ----------------------
 
-There is a layer used to set up test fixtures for running Selenium
+There is a layer used to set up test fixtures for running 
+`Selenium <code.google.com/p/selenium/>`_ 
 tests against a Plone site. It is importable from
 ``plone.app.testing.selenium_layers``.
 
@@ -72,20 +73,6 @@ instance, do not affect the server thread.
     >>> portal.invokeFactory('Folder', 'folder1')
     'folder1'
 
-Note that we need to commit the transaction before it will show up in the
-other thread.  This is important whenever your interactions with the
-selenium browser are going to require retrieving content from the
-server when that content needs to reflect changes you've made in your
-test. For example, if some browser action invokes some AJAX code which
-refreshes a part of the page from ZODB content, that refreshed content
-will only reflect recent changes if you did transaction.commit()
-before executing the browser action that triggered the AJAX.  The
-plone.app.testing.selenium_layers.open() method does this for you when
-opening a new URL, but there are many more ways to cause content
-changes that pull from the ZODB when doing JavaScript testing so in
-all other cases you are responsible to call transaction.commit()
-yourself.
-
     >>> from plone.app.testing.selenium_layers import open
     >>> selenium = layers.SELENIUM_PLONE_FUNCTIONAL_TESTING['selenium']
     >>> open(selenium, portal.folder1.absolute_url())
@@ -144,8 +131,21 @@ Both threads have their own ZODB transactions. If you modify the data in Seleniu
 (e.g. your virtual user modifies something) you cannot directly access this data 
 in the test thread.
 
-The workaround is to run a commit in the test thread which forces the the test 
-thread to get a fresh copy of the object after commit. 
+This is important whenever your interactions with the
+Selenium browser are going to require retrieving content from the
+server when that content needs to reflect changes you've made in your
+test. For example, if some browser action invokes some AJAX code which
+refreshes a part of the page from ZODB content, that refreshed content
+will only reflect recent changes if you did transaction.commit()
+before executing the browser action that triggered the AJAX.  The
+plone.app.testing.selenium_layers.open() method does this for you when
+opening a new URL, but there are many more ways to cause content
+changes that pull from the ZODB when doing JavaScript testing so in
+all other cases you are responsible to call transaction.commit()
+yourself.
+
+Here is an example how we force the test thread to get a fresh copy of the object 
+after Selenium has poked it. 
 
 Example::
 
