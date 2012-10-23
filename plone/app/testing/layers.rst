@@ -299,8 +299,9 @@ indicate where Zope is running.
     'localhost'
     
     >>> port = layers.PLONE_ZSERVER['port']
-    >>> port
-    55001
+    >>> import os
+    >>> port == int(os.environ.get('ZSERVER_PORT', 55001))
+    True
     
 Let's now simulate a test. Test setup does nothing beyond what the base layers
 do.
@@ -330,8 +331,8 @@ other thread.
 We can now look for this new object through the server.
 
     >>> portal_url = portal.absolute_url()
-    >>> portal_url
-    'http://localhost:55001/plone'
+    >>> portal_url.split(':')[:-1]
+    ['http', '//localhost']
     
     >>> import urllib2
     >>> conn = urllib2.urlopen(portal_url + '/folder1', timeout=10)
