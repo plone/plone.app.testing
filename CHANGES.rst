@@ -1,7 +1,7 @@
 Changelog
 =========
 
-4.2.1 (Unreleased)
+4.2.1 (2012-12-15)
 ------------------
 
 - Allow testing with non standard port. Allows running multiple test suites 
