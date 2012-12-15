@@ -1,10 +1,15 @@
 Changelog
 =========
 
-4.2.1 (unreleased)
+4.2.1 (Unreleased)
 ------------------
 
-- Nothing changed yet.
+- Allow testing with non standard port. Allows running multiple test suites 
+  in parallel.
+  [do3cc]
+
+- Documentation updates.
+  [moo]
 
 
 4.2 (2012-04-15)
