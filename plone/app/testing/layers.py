@@ -81,6 +81,7 @@ class PloneFixture(Layer):
             ('plone.app.collection'                 , {'loadZCML': True}, ),
 
             ('Products.CMFPlone'                    , {'loadZCML': True}, ),
+            ('Products.PythonScripts'               , {'loadZCML': False}, ),
 
         )
 
