@@ -83,6 +83,7 @@ class PloneFixture(Layer):
             ('Products.DateRecurringIndex'          , {'loadZCML': False}, ),
 
             ('Products.CMFPlone'                    , {'loadZCML': True}, ),
+            ('Products.PythonScripts'               , {'loadZCML': False}, ),
 
         )
 

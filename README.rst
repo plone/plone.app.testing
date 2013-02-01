@@ -820,6 +820,10 @@ To delete an object from a container:
 
     del portal['f1']
 
+There is no content or workflows installed by default. You can enable workflows::
+
+    portal.portal_workflow.setDefaultChain("simple_publication_workflow")
+
 Searching
 ---------
 

@@ -4,7 +4,8 @@ Changelog
 4.2.2 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Install PythonScripts as zope product 
+  [mikejmets]
 
 
 4.2.1 (2012-12-15)
