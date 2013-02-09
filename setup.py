@@ -11,6 +11,11 @@ tests_require = ['Products.CMFCore',
                  'zope.publisher',
                  ]
 
+robot_require = ['robotsuite',
+                 'robotframework-selenium2library',
+                 'decorator',
+                 'selenium']
+
 setup(name='plone.app.testing',
       version=version,
       description="Testing tools for Plone-the-application, based on plone.testing.",
@@ -52,5 +57,6 @@ setup(name='plone.app.testing',
       tests_require=tests_require,
       extras_require={
         'test': tests_require,
+        'robot': robot_require,
       },
       )
