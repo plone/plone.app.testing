@@ -22,7 +22,7 @@ layer, we will perform the following setup:
    down completely, simply by popping the demo storage.
 
 2. Stack a new ZCML configuration context. This keeps separate the information
-   about which ZCML files were loaded, in case other, independent layers want 
+   about which ZCML files were loaded, in case other, independent layers want
    to load those same files after this layer has been torn down.
 
 3. Push a new global component registry. This allows us to register components
@@ -30,7 +30,7 @@ layer, we will perform the following setup:
    tear down those registration easily by popping the component registry.
    We pass the portal so that the local component site manager can be
    configured appropriately.
-   
+
    *Note:* We obtain the portal from the ``ploneSite()`` context manager,
    which will ensure that the portal is properly set up and commit our changes
    on exiting the ``with`` block.
@@ -48,7 +48,7 @@ loaded and so allow them to be loaded again in other layers), and the stacked
 component registry (to roll back all global component registrations). Of
 course, if our setup had changed any other global or external state, we would
 need to tear that down as well.
-    
+
     >>> from plone.testing import Layer
     >>> from plone.testing import zca, z2, zodb
 
@@ -57,23 +57,23 @@ need to tear that down as well.
 
     >>> class HelperDemos(Layer):
     ...     defaultBases = (PLONE_FIXTURE,)
-    ...     
+    ...
     ...     def setUp(self):
-    ...         
+    ...
     ...         # Push a new database storage so that database changes
     ...         # commited during layer setup can be easily torn down
     ...         self['zodbDB'] = zodb.stackDemoStorage(self.get('zodbDB'), name='HelperDemos')
-    ...         
+    ...
     ...         # Push a new configuration context so that it's possible to re-import
     ...         # ZCML files after tear-down
     ...         self['configurationContext'] = zca.stackConfigurationContext(self.get('configurationContext'))
-    ...         
+    ...
     ...         with helpers.ploneSite() as portal:
-    ...             
-    ...             # Push a new component registry so that ZCML registations 
+    ...
+    ...             # Push a new component registry so that ZCML registations
     ...             # and other global component registry changes are sandboxed
     ...             helpers.pushGlobalRegistry(portal)
-    ...             
+    ...
     ...             # Register some components
     ...             from zope.component import provideUtility
     ...             from zope.interface import Interface
@@ -81,20 +81,20 @@ need to tear that down as well.
     ...
     ...             # Make some persistent changes
     ...             portal.title = u"New title"
-    ...                 
+    ...
     ...             # Install a product using portal_quickinstaller
     ...             helpers.quickInstallProduct(portal, 'plonetheme.classic')
-    ...             
+    ...
     ...             # Apply a GenericSetup (extension) profile
     ...             helpers.applyProfile(portal, 'plonetheme.sunburst:default')
-    ...     
+    ...
     ...     def tearDown(self):
-    ...         
+    ...
     ...         # Pop the component registry, thus removing component
     ...         # architecture registrations
     ...         with helpers.ploneSite() as portal:
     ...             helpers.popGlobalRegistry(portal)
-    ...         
+    ...
     ...         # Pop the configuration context
     ...         del self['configurationContext']
     ...
@@ -128,11 +128,11 @@ having taken effect.
     >>> from zope.interface import Interface
     >>> queryUtility(Interface, name="dummy1")
     <object object at ...>
-    
+
     >>> with helpers.ploneSite() as portal:
     ...     print portal.title
     New title
-    
+
 We should also see our product installation in the quickinstaller tool
 and the results of the profile having been applied.
 
@@ -141,7 +141,7 @@ and the results of the profile having been applied.
     ...     print portal['portal_skins'].getDefaultSkin()
     True
     Sunburst Theme
-    
+
 Let's now simulate a test.
 
     >>> zca.LAYER_CLEANUP.testSetUp()
@@ -177,14 +177,14 @@ the ``ploneSite()`` context manager as shown above.
     >>> helpers.logout()
     >>> getSecurityManager().getUser()
     <SpecialUser 'Anonymous User'>
-    
+
     >>> helpers.login(portal, TEST_USER_NAME)
     >>> getSecurityManager().getUser().getUserName() == TEST_USER_NAME
     True
-    
+
     >>> portal.invokeFactory('Folder', 'folder1', title=u"Folder 1")
     'folder1'
-    
+
 Let's now tear down the test.
 
     >>> HELPER_DEMOS_INTEGRATION_TESTING.testTearDown()
@@ -198,7 +198,7 @@ should not.
 
     >>> queryUtility(Interface, name="dummy1")
     <object object at ...>
-    
+
     >>> with helpers.ploneSite() as portal:
     ...     print portal.title
     ...     print portal['portal_quickinstaller'].isProductInstalled('plonetheme.classic')
@@ -219,7 +219,7 @@ component architecture changes from our layer.
 
     >>> queryUtility(Interface, name="dummy1") is None
     True
-    
+
     >>> with helpers.ploneSite() as portal:
     ...     print portal.title
     ...     print portal['portal_quickinstaller'].isProductInstalled('plonetheme.classic')
@@ -241,16 +241,16 @@ Plone sandbox layer helper
 The pattern above of setting up a stacked ZODB ``DemoStorage``, configuration
 context and global component registry is very common. In fact, there is a
 layer base class which helps implement this pattern.
-    
+
     >>> someGlobal = {}
-    
+
     >>> class MyLayer(helpers.PloneSandboxLayer):
     ...
     ...     def setUpZope(self, app, configurationContext):
-    ...         
+    ...
     ...         # We'd often load ZCML here, using the passed-in
     ...         # configurationContext as the configuration context.
-    ...         
+    ...
     ...         # Of course, we can also register some components using the
     ...         # zope.component API directly
     ...         from zope.component import provideUtility
@@ -262,16 +262,16 @@ layer base class which helps implement this pattern.
     ...         from Products.GenericSetup.registry import _profile_registry
     ...         from Products.GenericSetup.registry import _import_step_registry
     ...         from Products.GenericSetup.registry import _export_step_registry
-    ...         
+    ...
     ...         _profile_registry.registerProfile('dummy1', u"My package", u"", ".", 'plone.app.testing')
     ...         _import_step_registry.registerStep('import1', version=1, handler='plone.app.testing.tests.dummy', title=u"Dummy import step", description=u"")
     ...         _export_step_registry.registerStep('export1', handler='plone.app.testing.tests.dummy', title=u"Dummy import step", description=u"")
-    ...         
+    ...
     ...         # And then pretend to register a PAS multi-plugin
     ...         from Products.PluggableAuthService import PluggableAuthService
     ...         PluggableAuthService.registerMultiPlugin("dummy_plugin1")
-    ...         
-    ...         # Finally, this is a good place to load Zope products, 
+    ...
+    ...         # Finally, this is a good place to load Zope products,
     ...         # using the plone.testing.z2.installProduct() helper.
     ...         # Make some other global changes not stored in the ZODB or
     ...         # the global component registry
@@ -282,7 +282,7 @@ layer base class which helps implement this pattern.
     ...         del someGlobal['test']
     ...
     ...     def setUpPloneSite(self, portal):
-    ...     
+    ...
     ...         # We can make persistent changes here
     ...         portal.title = u"New title"
 
@@ -292,7 +292,7 @@ layer base class which helps implement this pattern.
 Here, we have derived from ``PloneSandboxLayer`` instead of the more usual
 ``Layer`` base class. This layer implements the sandboxing of the ZODB, global
 component registry, and GenericSetup profile and import/export step registries
-for us, and delegates to four template methods, all of them optional: 
+for us, and delegates to four template methods, all of them optional:
 
 * ``setUpZope()``, called with the Zope app root and the ZCML configuration
   context as arguments. This is a good place to load ZCML, manipulate global
@@ -328,39 +328,39 @@ Let's now simulate layer setup:
     Set up plone.app.testing.layers.PloneFixture in ... seconds.
     Set up MyLayer in ... seconds.
     Set up plone.app.testing.layers.MyLayer:Integration in ... seconds.
-      
+
 Again, our state should now be available.
 
     >>> queryUtility(Interface, name="dummy1")
     <object object at ...>
-    
+
     >>> with helpers.ploneSite() as portal:
     ...     print portal.title
     New title
-    
+
     >>> someGlobal['test']
     1
-    
+
     >>> from Products.GenericSetup.registry import _profile_registry
     >>> from Products.GenericSetup.registry import _import_step_registry
     >>> from Products.GenericSetup.registry import _export_step_registry
-    
+
     >>> numProfiles = len(_profile_registry.listProfiles())
     >>> 'plone.app.testing:dummy1' in _profile_registry.listProfiles()
     True
-    
+
     >>> numImportSteps = len(_import_step_registry.listSteps())
     >>> 'import1' in _import_step_registry.listSteps()
     True
-    
+
     >>> numExportSteps = len(_export_step_registry.listSteps())
     >>> 'export1' in _export_step_registry.listSteps()
     True
-    
+
     >>> from Products.PluggableAuthService import PluggableAuthService
     >>> 'dummy_plugin1' in PluggableAuthService.MultiPlugins
     True
-    
+
 We'll now tear down just the ``MY_INTEGRATION_TESTING`` layer. At this
 point, we should still have a Plone site, but none of the changes from our
 layer.
@@ -370,33 +370,33 @@ layer.
 
     >>> queryUtility(Interface, name="dummy1") is None
     True
-    
+
     >>> with helpers.ploneSite() as portal:
     ...     print portal.title
     Plone site
-    
+
     >>> 'test' in someGlobal
     False
-    
+
     >>> len(_profile_registry.listProfiles()) == numProfiles - 1
     True
     >>> 'plone.app.testing:dummy1' in _profile_registry.listProfiles()
     False
-    
+
     >>> len(_import_step_registry.listSteps()) == numImportSteps - 1
     True
     >>> 'import1' in _import_step_registry.listSteps()
     False
-    
+
     >>> len(_export_step_registry.listSteps()) == numExportSteps - 1
     True
     >>> 'export1' in _export_step_registry.listSteps()
     False
-    
+
     >>> from Products.PluggableAuthService import PluggableAuthService
     >>> 'dummy_plugin1' in PluggableAuthService.MultiPlugins
     False
-    
+
 Let's tear down the rest of the layers too.
 
     >>> runner.tear_down_unneeded(options, [], setupLayers)
@@ -419,7 +419,7 @@ Let's simulate registering some plugins:
     >>> from Products.PluggableAuthService import PluggableAuthService
     >>> PluggableAuthService.registerMultiPlugin("dummy_plugin1")
     >>> PluggableAuthService.registerMultiPlugin("dummy_plugin2")
-    
+
     >>> PluggableAuthService.MultiPlugins
     ['dummy_plugin1', 'dummy_plugin2']
 
@@ -441,5 +441,5 @@ The tear down helper takes a plugin meta-type as an argument:
     ['dummy_plugin2']
 
 Let's clean up the registry completely.
-    
+
     >>> del PluggableAuthService.MultiPlugins[:]
