@@ -6,10 +6,11 @@
 Welcome to plone.app.testing's documentation!
 =============================================
 
-Contents:
-
 .. toctree::
    :maxdepth: 2
+
+.. include:: ../../README.rst
+
 
 Indices and tables
 ==================
