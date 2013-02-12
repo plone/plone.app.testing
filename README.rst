@@ -139,7 +139,7 @@ This layer sets up the Plone site fixture on top of the ``z2.STARTUP``
 fixture.
 
 You should not use this layer directly, as it does not provide any test
-lifecycle or transaction management. Instead, you should use a layer 
+lifecycle or transaction management. Instead, you should use a layer
 created with either the ``IntegrationTesting`` or ``FunctionalTesting``
 classes, as outlined below.
 
@@ -176,11 +176,11 @@ the ``IntegrationTesting`` and ``FunctionalTesting`` classes. For example::
 
     class MyFixture(Layer):
         defaultBases = (PLONE_FIXTURE,)
-        
+
         ...
-    
+
     MY_FIXTURE = MyFixture()
-    
+
     MY_INTEGRATION_TESTING = IntegrationTesting(bases=(MY_FIXTURE,), name="MyFixture:Integration")
     MY_FUNCTIONAL_TESTING = FunctionalTesting(bases=(MY_FIXTURE,), name="MyFixture:Functional")
 
@@ -252,12 +252,12 @@ that has a running ZServer, you can use the same pattern as this one, e.g.::
     from plone.testing import z2
     from plone.app.testing import PLONE_FIXTURE
     from plone.app.testing import FunctionalTesting
-    
+
     class MyFixture(Layer):
         defaultBases = (PLONE_FIXTURE,)
-        
+
         ...
-    
+
     MY_FIXTURE = MyFixture()
     MY_ZSERVER = FunctionalTesting(bases=(MY_FIXTURE, z2.ZSERVER_FIXTURE), name='MyFixture:ZServer')
 
@@ -299,40 +299,40 @@ Plone site context manager
     but if you have special needs, you can tie it to a particular database
     instance. See the description of the ``zopeApp()`` context manager in
     `plone.testing`_ (which this context manager uses internally) for details.
-    
+
     The usual pattern is to call it during ``setUp()`` or ``tearDown()`` in
     your own layers::
-        
+
         from plone.testing import Layer
         from plone.app.testing import ploneSite
-        
+
         class MyLayer(Layer):
-        
+
             def setUp(self):
-            
+
                 ...
-            
+
                 with ploneSite() as portal:
-                
+
                     # perform operations on the portal, e.g.
                     portal.title = u"New title"
-    
+
     Here, ``portal`` is the Plone site root. A transaction is begun before
     entering the ``with`` block, and will be committed upon exiting the block,
     unless an exception is raised, in which case it will be rolled back.
-    
+
     Inside the block, the local component site is set to the Plone site root,
     so that local component lookups should work.
-    
+
     **Warning:** Do not attempt to load ZCML files inside a ``ploneSite``
     block. Because the local site is set to the Plone site, you may end up
     accidentally registering components in the local site manager, which can
     cause pickling errors later.
-    
+
     **Note:** You should not use this in a test, or in a ``testSetUp()`` or
     ``testTearDown()`` method of a layer based on one of the layer in this
     package. Use the ``portal`` resource instead.
-    
+
     **Also note:** If you are writing a layer setting up a Plone site fixture,
     you may want to use the ``PloneSandboxLayer`` layer base class, and
     implement the ``setUpZope()``, ``setUpPloneSite()``, ``tearDownZope()``
@@ -345,67 +345,67 @@ User management
     Simulate login as the given user. This is based on the ``z2.login()``
     helper in `plone.testing`_, but instead of passing a specific user folder,
     you pass the portal (e.g. as obtained via the ``portal`` layer resource).
-    
+
     For example::
-        
+
         import unittest2 as unittest
-        
+
         from plone.app.testing import PLONE_INTEGRATION_TESTING
         from plone.app.testing import TEST_USER_NAME
         from plone.app.testing import login
-        
+
         ...
-        
+
         class MyTest(unittest.TestCase):
-        
+
             layer = PLONE_INTEGRATION_TESTING
-        
+
             def test_something(self):
                 portal = self.layer['portal']
                 login(portal, TEST_USER_NAME)
-                
+
                 ...
 
 ``logout()``
     Simulate logging out, i.e. becoming the anonymous user. This is equivalent
     to the ``z2.logout()`` helper in `plone.testing`_.
-    
+
     For example::
-    
+
         import unittest2 as unittest
-        
+
         from plone.app.testing import PLONE_INTEGRATION_TESTING
         from plone.app.testing import logout
-        
+
         ...
-        
+
         class MyTest(unittest.TestCase):
-        
+
             layer = PLONE_INTEGRATION_TESTING
-        
+
             def test_something(self):
                 portal = self.layer['portal']
                 logout()
-                
+
                 ...
 
 ``setRoles(portal, userId, roles)``
     Set the roles for the given user. ``roles`` is a list of roles.
-    
+
     For example::
-    
+
         import unittest2 as unittest
-        
+
         from plone.app.testing import PLONE_INTEGRATION_TESTING
         from plone.app.testing import TEST_USER_ID
         from plone.app.testing import setRoles
-        
+
         ...
-        
+
         class MyTest(unittest.TestCase):
-        
+
             layer = PLONE_INTEGRATION_TESTING
-        
+
             def test_something(self):
                 portal = self.layer['portal']
                 setRoles(portal, TEST_USER_ID, ['Manager'])
@@ -417,27 +417,27 @@ Product and profile installation
     Install a GenericSetup profile (usually an extension profile) by name,
     using the ``portal_setup`` tool. The name is normally made up of a package
     name and a profile name. Do not use the ``profile-`` prefix.
-    
+
     For example::
-    
+
         from plone.testing import Layer
-        
+
         from plone.app.testing import ploneSite
         from plone.app.testing import applyProfile
-        
+
         ...
-        
+
         class MyLayer(Layer):
-        
+
             ...
-            
+
             def setUp(self):
-                
+
                 ...
-                
+
                 with ploneSite() as portal:
                     applyProfile(portal, 'my.product:default')
-                    
+
                     ...
 
 ``quickInstallProduct(portal, productName, reinstall=False)``
@@ -447,27 +447,27 @@ Product and profile installation
     ``reinstall`` is ``True``, the product will be reinstalled. The
     ``productName`` should be a full dotted name, e.g. ``Products.MyProduct``,
     or ``my.product``.
-    
+
     For example::
-        
+
         from plone.testing import Layer
-        
+
         from plone.app.testing import ploneSite
         from plone.app.testing import quickInstallProduct
-        
+
         ...
-        
+
         class MyLayer(Layer):
-        
+
             ...
-            
+
             def setUp(self):
-                
+
                 ...
-                
+
                 with ploneSite() as portal:
                     quickInstallProduct(portal, 'my.product')
-                    
+
                     ...
 
 Component architecture sandboxing
@@ -477,49 +477,49 @@ Component architecture sandboxing
     Create or obtain a stack of global component registries, and push a new
     registry to the top of the stack. This allows Zope Component Architecture
     registrations (e.g. loaded via ZCML) to be effectively torn down.
-    
+
     If you are going to use this function, please read the corresponding
     documentation for ``zca.pushGlobalRegistry()`` in `plone.testing`_. In
     particular, note that you *must* reciprocally call ``popGlobalRegistry()``
     (see below).
-    
+
     This helper is based on ``zca.pushGlobalRegistry()``, but will also fix
     up the local component registry in the Plone site ``portal`` so that it
     has the correct bases.
-    
+
     For example::
-    
+
         from plone.testing import Layer
-        
+
         from plone.app.testing import ploneSite
         from plone.app.testing import pushGlobalRegistry
         from plone.app.testing import popGlobalRegistry
-        
+
         ...
-        
+
         class MyLayer(Layer):
-        
+
             ...
-            
+
             def setUp(self):
-                
+
                 ...
-                
+
                 with ploneSite() as portal:
                     pushGlobalRegistry(portal)
-                    
+
                     ...
 
 ``popGlobalRegistry(portal)``
     Tear down the top of the component architecture stack, as created with
     ``pushGlobalRegistry()``
-    
+
     For example::
-        
+
         ...
-        
+
             def tearDown(self):
-                
+
                 with ploneSite() as portal:
                     popGlobalRegistry(portal)
 
@@ -531,24 +531,24 @@ Global state cleanup
     you have registered a plugin, e.g. using the ``registerMultiPlugin()``
     API, you should tear that registration down in your layer's ``tearDown()``
     method. You can use this helper, passing a plugin name.
-    
+
     For example::
-    
+
         from plone.testing import Layer
-        
+
         from plone.app.testing import ploneSite
         from plone.app.testing import tearDownMultiPluginRegistration
-        
+
         ...
-        
+
         class MyLayer(Layer):
-        
+
             ...
-            
+
             def tearDown(self):
-                
+
                 tearDownMultiPluginRegistration('MyPlugin')
-                
+
                 ...
 
 Layer base class
@@ -562,7 +562,7 @@ will often want to do the following on setup:
    torn down completely, simply by popping the demo storage.
 
 2. Stack a new ZCML configuration context. This keeps separate the information
-   about which ZCML files were loaded, in case other, independent layers want 
+   about which ZCML files were loaded, in case other, independent layers want
    to load those same files after this layer has been torn down.
 
 3. Push a new global component registry. This allows you to register
@@ -591,8 +591,8 @@ On tear-down, you will then want to:
 If you have made other changes on setup that are not covered by this broad
 tear-down, you'll also want to tear those down explicitly here.
 
-Stacking a demo storage and component registry is the safest way to avoid 
-fixtures bleeding between tests. However, it can be tricky to ensure that 
+Stacking a demo storage and component registry is the safest way to avoid
+fixtures bleeding between tests. However, it can be tricky to ensure that
 everything happens in the right order.
 
 To make things easier, you can use the ``PloneSandboxLayer`` layer base class.
@@ -617,17 +617,17 @@ following methods:
     This is called during tear-down, before the global component registry and
     stacked ``DemoStorage`` are popped. Use this to tear down any additional
     global state.
-    
+
     **Note:** Global component registrations PAS multi-plugin registrations are
-    automatically torn down. Product installations are not, so you should use 
-    the ``uninstallProduct()`` helper if any products were installed during 
+    automatically torn down. Product installations are not, so you should use
+    the ``uninstallProduct()`` helper if any products were installed during
     ``setUpZope()``.
 
 ``tearDownPloneSite(self, portal)``
     This is called during tear-down, before the global component registry and
     stacked ``DemoStorage`` are popped. During this method, the local
     component site hook is set, giving you access to local components.
-    
+
     **Note:** Persistent changes to the ZODB are automatically torn down by
     virtue of a stacked ``DemoStorage``. Thus, this method is less commonly
     used than the others described here.
@@ -644,37 +644,37 @@ the package, i.e. ``my.product.testing``::
     from plone.app.testing import PloneSandboxLayer
     from plone.app.testing import PLONE_FIXTURE
     from plone.app.testing import IntegrationTesting
-    
+
     from plone.testing import z2
-    
+
     class MyProduct(PloneSandboxLayer):
-    
+
         defaultBases = (PLONE_FIXTURE,)
-        
+
         def setUpZope(self, app, configurationContext):
             # Load ZCML
             import my.product
             self.loadZCML(package=my.product)
-            
+
             # Install product and call its initialize() function
             z2.installProduct(app, 'my.product')
-            
+
             # Note: you can skip this if my.product is not a Zope 2-style
             # product, i.e. it is not in the Products.* namespace and it
             # does not have a <five:registerPackage /> directive in its
             # configure.zcml.
-            
+
         def setUpPloneSite(self, portal):
             # Install into Plone site using portal_setup
             self.applyProfile(portal, 'my.product:default')
-        
+
         def tearDownZope(self, app):
             # Uninstall product
             z2.uninstallProduct(app, 'my.product')
-            
+
             # Note: Again, you can skip this if my.product is not a Zope 2-
             # style product
-    
+
     MY_PRODUCT_FIXTURE = MyProduct()
     MY_PRODUCT_INTEGRATION_TESTING = IntegrationTesting(bases=(MY_PRODUCT_FIXTURE,), name="MyProduct:Integration")
 
@@ -696,20 +696,20 @@ test content. We could do that with::
     from plone.app.testing import TEST_USER_NAME
     from plone.app.testing import login
     from plone.app.testing import setRoles
-    
+
     ...
-    
+
         def setUpPloneSite(self, portal):
-            
+
             ...
-            
+
             setRoles(portal, TEST_USER_ID, ['Manager'])
             login(portal, TEST_USER_NAME)
             portal.invokeFactory('my.product.page', 'page-1', title=u"Page 1")
             setRoles(portal, TEST_USER_ID, ['Member'])
-    
+
     ...
-    
+
 Note that unlike in a test, there is no user logged in at layer setup time,
 so we have to explicitly log in as the test user. Here, we also grant the test
 user the ``Manager`` role temporarily, to allow object construction (which
@@ -717,27 +717,27 @@ performs an explicit permission check).
 
     **Note:** Automatic tear down suffices for all the test setup above. If
     the only changes made during layer setup are to persistent, in-ZODB data,
-    or the global component registry then no additional tear-down is required. 
-    For any other global state being managed, you should write a 
+    or the global component registry then no additional tear-down is required.
+    For any other global state being managed, you should write a
     ``tearDownPloneSite()`` method to perform the necessary cleanup.
 
 Given this layer, we could write a test (e.g. in ``tests.py``) like::
-    
+
     import unittest2 as unittest
     from my.product.testing import MY_PRODUCT_INTEGRATION_TESTING
-    
+
     class IntegrationTest(unittest.TestCase):
-        
+
         layer = MY_PRODUCT_INTEGRATION_TESTING
-        
+
         def test_page_dublin_core_title(self):
             portal = self.layer['portal']
-            
+
             page1 = portal['page-1']
             page1.title = u"Some title"
-            
+
             self.assertEqual(page1.Title(), u"Some title")
-    
+
 Please see `plone.testing`_ for more information about how to write and run
 tests and assertions.
 
@@ -788,10 +788,10 @@ user won't normally have permissions to add content in the portal root, and
 the ``invokeFactory()`` method performs an explicit security check. You can
 set the roles of the test user to ensure that he has the necessary
 permissions::
-    
+
     from plone.app.testing import setRoles
     from plone.app.testing import TEST_USER_ID
-    
+
     setRoles(portal, TEST_USER_ID, ['Manager'])
     portal.invokeFactory('Folder', 'f1', title=u"Folder 1")
 
@@ -830,7 +830,7 @@ Searching
 To obtain the ``portal_catalog`` tool::
 
     from Products.CMFCore.utils import getToolByName
-    
+
     catalog = getToolByName(portal, 'portal_catalog')
 
 To search the catalog::
@@ -849,15 +849,15 @@ necessarily up to date).
 To make assertions against the search results::
 
     self.assertEqual(len(results), 1)
-    
+
     # Copy the list into memory so that we can use [] notation
     results = list(results)
-    
+
     # Check the first (and in this case only) result in the list
     self.assertEqual(results[0].Title, u"Document 1")
 
 To get the path of a given item in the search results::
-    
+
     self.assertEqual(resuls[0].getPath(), portal.absolute_url_path() + '/f1/d1')
 
 To get an absolute URL::
@@ -876,11 +876,11 @@ User management
 ---------------
 
 To create a new user::
-    
+
     from Products.CMFCore.utils import getToolByName
-    
+
     acl_users = getToolByName(portal, 'acl_users')
-    
+
     acl_users.userFolderAddUser('user1', 'secret', ['Member'], [])
 
 The arguments are the username (which will also be the user id), the password,
@@ -890,23 +890,23 @@ To make a particular user active ("logged in") in the integration testing
 environment use the ``login`` method and pass it the username::
 
     from plone.app.testing import login
-    
+
     login(portal, 'user1')
 
 To log out (become anonymous)::
-    
+
     from plone.app.testing import logout
-    
+
     logout()
 
 To obtain the current user::
 
     from AccessControl import getSecurityManager
-    
+
     user = getSecurityManager().getUser()
 
 To obtain a user by name::
-    
+
     user = acl_users.getUser('user1')
 
 Or by user id (id and username are often the same, but can differ in real-world
@@ -927,11 +927,11 @@ Permissions and roles
 
 To get a user's roles in a particular context (taking local roles into
 account)::
-    
+
     from AccessControl import getSecurityManager
-    
+
     user = getSecurityManager().getUser()
-    
+
     self.assertEqual(user.getRolesInContext(portal), ['Member'])
 
 To change the test user's roles::
@@ -978,18 +978,18 @@ This can now be assigned to users globally (using the ``setRoles`` helper)
 or locally (using ``manage_setLocalRoles()``).
 
 To assert which roles are available in a given context::
-    
+
     self.assertTrue('Tester' in portal.valid_roles())
 
 Workflow
 --------
 
 To set the default workflow chain::
-    
+
     from Products.CMFCore.utils import getToolByName
-    
+
     workflowTool = getToolByName(portal, 'portal_workflow')
-    
+
     workflowTool.setDefaultChain('my_workflow')
 
 In Plone, most chains contain only one workflow, but the ``portal_workflow``
@@ -999,11 +999,11 @@ workflow simultaneously.
 To set a multi-workflow chain, separate workflow names by commas.
 
 To get the default workflow chain::
-    
+
     self.assertEqual(workflowTool.getDefaultChain(), ('my_workflow',))
 
 To set the workflow chain for the 'Document' type::
-    
+
     workflowTool.setChainForPortalTypes(('Document',), 'my_workflow')
 
 You can pass multiple type names to set multiple chains at once. To set a
@@ -1015,20 +1015,20 @@ To get the workflow chain for the portal type 'Document'::
     chains = dict(workflowTool.listChainOverrides())
     defaultChain = workflowTool.getDefaultChain()
     documentChain = chains.get('Document', defaultChain)
-    
+
     self.assertEqual(documentChain, ('my_other_workflow',))
 
 To get the current workflow chain for the content object f1::
-    
+
     self.assertEqual(workflowTool.getChainFor(f1), ('my_workflow',))
 
 To update all permissions after changing the workflow::
-    
+
     workflowTool.updateRoleMappings()
 
 To change the workflow state of the content object f1 by invoking the
 transaction 'publish'::
-    
+
     workflowTool.doActionFor(f1, 'publish')
 
 Note that this performs an explicit permission check, so if the current user
@@ -1038,7 +1038,7 @@ indicating the action is not available. If so, use ``login()`` or
 state.
 
 To check the current workflow state of the content object f1::
-    
+
     self.assertEqual(workflowTool.getInfoFor(f1, 'review_state'), 'published')
 
 Properties
@@ -1056,12 +1056,12 @@ To change the value of a property in a property sheet in the
 ``portal_properties`` tool::
 
     from Products.CMFCore.utils import getToolByName
-    
+
     propertiesTool = getToolByName(portal, 'portal_properties')
     siteProperties = propertiesTool['site_properties']
-    
+
     siteProperties._setPropValue('many_users', True)
-    
+
 To assert the value of a property in a property sheet in the
 ``portal_properties`` tool::
 
@@ -1071,18 +1071,18 @@ Installing products and extension profiles
 ------------------------------------------
 
 To apply a particular extension profile::
-    
+
     from plone.app.testing import applyProfile
-    
+
     applyProfile(portal, 'my.product:default')
 
 This is the preferred method of installing a product's configuration.
 
 To install an add-on product into the Plone site using the
 ``portal_quickinstaller`` tool::
-    
+
     from plone.app.testing import quickInstallProduct
-    
+
     quickInstallProduct(portal, 'my.product')
 
 To re-install a product using the quick-installer::
@@ -1099,9 +1099,9 @@ has been applied. Some of the more common such tests are shown below.
 
 To verify that a product has been installed (e.g. as a dependency via
 ``metadata.xml``)::
-    
+
     from Products.CMFCore.utils import getToolByName
-    
+
     quickinstaller = getToolByName(portal, 'portal_quickinstaller')
     self.assertTrue(quickinstaller.isProductInstalled('my.product'))
 
@@ -1109,14 +1109,14 @@ To verify that a particular content type has been installed (e.g. via
 ``types.xml``)::
 
     typesTool = getToolByName(portal, 'portal_types')
-    
+
     self.assertNotEqual(typesTool.getTypeInfo('mytype'), None)
 
 To verify that a new catalog index has been installed (e.g. via
 ``catalog.xml``)::
 
     catalog = getToolByName(portal, 'portal_catalog')
-    
+
     self.assertTrue('myindex' in catalog.indexes())
 
 To verify that a new catalog metadata column has been added (e.g. via
@@ -1128,14 +1128,14 @@ To verify that a new workflow has been installed (e.g. via
 ``workflows.xml``)::
 
     workflowTool = getToolByName(portal, 'portal_workflow')
-    
+
     self.assertNotEqual(workflowTool.getWorkflowById('my_workflow'), None)
-    
+
 To verify that a new workflow has been assigned to a type (e.g. via
 ``workflows.xml``)::
-    
+
     self.assertEqual(dict(workflowTool.listChainOverrides())['mytype'], ('my_workflow',))
-    
+
 To verify that a new workflow has been set as the default (e.g. via
 ``workflows.xml``)::
 
@@ -1143,24 +1143,24 @@ To verify that a new workflow has been set as the default (e.g. via
 
 To test the value of a property in the ``portal_properties`` tool (e.g. set
 via ``propertiestool.xml``):::
-    
+
     propertiesTool = getToolByName(portal, 'portal_properties')
     siteProperties = propertiesTool['site_properties']
-    
+
     self.assertEqual(siteProperties.getProperty('some_property'), "some value")
 
 To verify that a stylesheet has been installed in the ``portal_css`` tool
 (e.g. via ``cssregistry.xml``)::
 
     cssRegistry = getToolByName(portal, 'portal_css')
-    
+
     self.assertTrue('mystyles.css' in cssRegistry.getResourceIds())
 
 To verify that a JavaScript resource has been installed in the
 ``portal_javascripts`` tool (e.g. via ``jsregistry.xml``)::
 
     jsRegistry = getToolByName(portal, 'portal_javascripts')
-    
+
     self.assertTrue('myscript.js' in jsRegistry.getResourceIds())
 
 To verify that a new role has been added (e.g. via ``rolemap.xml``)::
@@ -1187,7 +1187,7 @@ It may be invoked to obtain an actual response (see below).
 ``restrictedTraverse()`` performs an explicit security check, and so may
 raise ``Unauthorized`` if the current test user does not have permission to
 view the given resource. If you don't want that, you can use::
-    
+
     resource = portal.unrestrictedTraverse('f1/@@folder_contents')
 
 You can call this on a folder or other content item as well, to traverse from
@@ -1205,7 +1205,7 @@ identical to URL traversal.
 To look up a view manually::
 
     from zope.component import getMultiAdapter
-    
+
     view = getMultiAdapter((f1, request), name=u"folder_contents")
 
 Note that the name here should not include the ``@@`` prefix.
@@ -1216,9 +1216,9 @@ implements ``IPublishTraverse``::
     next = view.IPublishTraverse(request, u"some-name")
 
 Or, if the ``IPublishTraverse`` adapter is separate from the view::
-    
+
     from zope.publisher.interfaces import IPublishTraverse
-    
+
     publishTraverse = getMultiAdapter((f1, request), IPublishTraverse)
     next = view.IPublishTraverse(request, u"some-name")
 
@@ -1237,10 +1237,10 @@ in the example above), and the name should be the base name (``age`` instead
 of ``age:int``).
 
 To invoke a view and obtain the response body as a string::
-    
+
     view = f1.restrictedTraverse('@@folder_contents')
     body = view()
-    
+
     self.assertFalse(u"An unexpected error occurred" in body)
 
 Please note that this approach is not perfect. In particular, the request
@@ -1257,7 +1257,7 @@ To inspect the state of the request (e.g. after a view has been invoked)::
 To inspect response headers (e.g. after a view has been invoked)::
 
     response = request.response
-    
+
     self.assertEqual(response.getHeader('content-type'), 'text/plain')
 
 Simulating browser interaction
@@ -1277,15 +1277,15 @@ instantiated with the ``FunctionalTesting`` class.
 If you want to create some initial content, you can do so either in a layer,
 or in the test itself, before invoking the test browser client. In the latter
 case, you need to commit the transaction before it becomes available, e.g.::
-    
+
     from plone.app.testing import setRoles
     from plone.app.testing import TEST_USER_ID
-    
+
     # Make some changes
     setRoles(portal, TEST_USER_ID, ['Manager'])
     portal.invokeFactory('Folder', 'f1', title=u"Folder 1")
     setRoles(portal, TEST_USER_ID, ['Member'])
-    
+
     # Commit so that the test browser sees these changes
     import transaction
     transaction.commit()
@@ -1293,7 +1293,7 @@ case, you need to commit the transaction before it becomes available, e.g.::
 To obtain a new test browser client::
 
     from plone.testing.z2 import Browser
-    
+
     browser = Browser(app)
 
 To open a given URL::
@@ -1310,7 +1310,7 @@ To inspect response headers::
     self.assertEqual(browser.headers['content-type'], 'text/html; charset=utf-8')
 
 To follow a link::
-    
+
     browser.getLink('Edit').click()
 
 This gets a link by its text. To get a link by HTML id::
@@ -1344,9 +1344,9 @@ name::
 
 To simulate HTTP BASIC authentication and remain logged in for all
 requests::
-    
+
     from plone.app.testing import TEST_USER_NAME, TEST_USER_PASSWORD
-    
+
     browser.addHeader('Authorization', 'Basic %s:%s' % (TEST_USER_NAME, TEST_USER_PASSWORD,))
 
 To simulate logging in via the login form::
@@ -1372,14 +1372,14 @@ False::
 To inspect the error log and obtain a full traceback of the latest entry::
 
     from Products.CMFCore.utils import getToolByName
-    
+
     errorLog = getToolByName(portal, 'error_log')
     print errorLog.getLogEntries()[-1]['tb_text']
 
 To save the current response to an HTML file::
 
     open('/tmp/testbrowser.html', 'w').write(browser.contents)
-    
+
 You can now open this file and use tools like Firebug to inspect the structure
 of the page. You should remove the file afterwards.
 
@@ -1412,7 +1412,7 @@ differences to bear in mind.
   moves shared state to layers and layer resources, and does not impose any
   particular base class for tests. This does sometimes mean a little more
   typing (e.g. ``self.layer['portal']`` vs. ``self.portal``), but it makes
-  it much easier to control and re-use test fixtures. It also makes your 
+  it much easier to control and re-use test fixtures. It also makes your
   test code simpler and more explicit.
 
 * ``ZopeTestCase`` has an ``installProduct()`` function and a corresponding
@@ -1445,40 +1445,40 @@ differences to bear in mind.
   ``plone.app.testing`` takes a more minimalist approach. To create a test
   folder owned by the test user that is similar to ``self.folder`` in a
   ``PloneTestCase``, you can do::
-      
+
         import unittest2 as unittest
         from plone.app.testing import TEST_USER_ID, setRoles
         from plone.app.testing import PLONE_INTEGRATION_TESTING
-        
+
         class MyTest(unitest.TestCase):
-            
+
             layer = PLONE_INTEGRATION_TESTING
-            
+
             def setUp(self):
                 self.portal = self.layer['portal']
-                
+
                 setRoles(self.portal, TEST_USER_ID, ['Manager'])
                 self.portal.invokeFactory('Folder', 'test-folder')
                 setRoles(self.portal, TEST_USER_ID, ['Member'])
-                
+
                 self.folder = self.portal['test-folder']
-            
+
   You could of course do this type of setup in your own layer and expose it
   as a resource instead.
 
-* To use `zope.testbrowser`_ with ``PloneTestCase``, you should use its 
+* To use `zope.testbrowser`_ with ``PloneTestCase``, you should use its
   ``FunctionalTestCase`` as a base class, and then use the following pattern::
-  
+
         from Products.Five.testbrowser import Browser
         browser = Browser()
-  
+
   The equivalent pattern in ``plone.app.testing`` is to use the
   ``FunctionalTesting`` test lifecycle layer (see example above), and then
   use::
-  
+
         from plone.testing.z2 import Browser
         browser = Browser(self.layer['app'])
-  
+
   Also note that if you have made changes to the fixture prior to calling
   ``browser.open()``, they will *not* be visible until you perform an
   explicit commit. See the ``zope.testbrowser`` examples above for details.

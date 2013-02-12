@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-version = '4.2.2.dev0'
+version = '4.2.2'
 
 tests_require = ['Products.CMFCore',
                  'Products.PluggableAuthService',
@@ -10,6 +10,11 @@ tests_require = ['Products.CMFCore',
                  'zope.interface',
                  'zope.publisher',
                  ]
+
+robot_require = ['robotsuite',
+                 'robotframework-selenium2library',
+                 'decorator',
+                 'selenium']
 
 setup(name='plone.app.testing',
       version=version,
@@ -52,5 +57,6 @@ setup(name='plone.app.testing',
       tests_require=tests_require,
       extras_require={
         'test': tests_require,
+        'robot': robot_require,
       },
       )

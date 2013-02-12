@@ -47,7 +47,7 @@ Let's set up the fixture layer and inspect the state of the site.
     Set up plone.testing.zca.LayerCleanup in ... seconds.
     Set up plone.testing.z2.Startup in ... seconds.
     Set up plone.app.testing.layers.PloneFixture in ... seconds.
-    
+
 The application root's ``acl_users`` folder will have one user, whose name and
 password are found in the constants ``SITE_OWNER_NAME`` and
 ``SITE_OWNER_PASSWORD``, in ``plone.app.testing.interfaces``. This user
@@ -69,7 +69,7 @@ Inside the Plone site, the default theme is installed
     >>> with helpers.ploneSite() as portal:
     ...     print portal['portal_skins'].getDefaultSkin()
     Sunburst Theme
-    
+
 **Note:** Here, we have used the ``ploneSite`` context manager to get hold of
 the Plone site root. Like ``z2.zopeApp()``, this is intended for use during
 layer setup and tear-down, and will automatically commit any changes unless an
@@ -122,14 +122,14 @@ Let's set up the layers and attempt to run a test.
     Set up plone.testing.z2.Startup in ... seconds.
     Set up plone.app.testing.layers.PloneFixture in ... seconds.
     Set up plone.app.testing.layers.Plone:Integration in ... seconds.
-    
+
 Let's now simulate a test
 
     >>> zca.LAYER_CLEANUP.testSetUp()
     >>> z2.STARTUP.testSetUp()
     >>> layers.PLONE_FIXTURE.testSetUp()
     >>> layers.PLONE_INTEGRATION_TESTING.testSetUp()
-    
+
 The portal is available as the resource ``portal``:
 
     >>> layers.PLONE_INTEGRATION_TESTING['portal'] # would normally be self.layer['portal']
@@ -140,7 +140,7 @@ The local component site is set to the Plone site for the test:
     >>> from zope.component import getSiteManager
     >>> getSiteManager()
     <PersistentComponents /plone>
-    
+
 During the test, we are logged in as the test user:
 
     >>> from AccessControl import getSecurityManager
@@ -188,7 +188,7 @@ Layer tear-down resets the environment.
     Tear down plone.app.testing.layers.PloneFixture in ... seconds.
     Tear down plone.testing.z2.Startup in ... seconds.
     Tear down plone.testing.zca.LayerCleanup in ... seconds.
-    
+
 Functional testing
 ~~~~~~~~~~~~~~~~~~
 
@@ -210,21 +210,21 @@ Let's set up the layers and attempt to run a test.
     Set up plone.testing.z2.Startup in ... seconds.
     Set up plone.app.testing.layers.PloneFixture in ... seconds.
     Set up plone.app.testing.layers.Plone:Functional in ... seconds.
-    
+
 Let's now simulate a test
 
     >>> zca.LAYER_CLEANUP.testSetUp()
     >>> z2.STARTUP.testSetUp()
     >>> layers.PLONE_FIXTURE.testSetUp()
     >>> layers.PLONE_FUNCTIONAL_TESTING.testSetUp()
-    
+
     >>> layers.PLONE_FUNCTIONAL_TESTING['portal'] # would normally be self.layer['portal']
     <PloneSite at /plone>
 
     >>> from zope.component import getSiteManager
     >>> getSiteManager()
     <PersistentComponents /plone>
-    
+
     >>> from AccessControl import getSecurityManager
     >>> getSecurityManager().getUser()
     <PloneUser 'test-user'>
@@ -290,34 +290,34 @@ two bases: ``PLONE_FIXTURE``, as shown above, and ``ZSERVER_FIXTURE`` from
     Set up plone.app.testing.layers.PloneFixture in ... seconds.
     Set up plone.testing.z2.ZServer in ... seconds.
     Set up plone.app.testing.layers.Plone:ZServer in ... seconds.
-      
+
 After layer setup, the resources ``host`` and ``port`` are available, and
 indicate where Zope is running.
 
     >>> host = layers.PLONE_ZSERVER['host']
     >>> host
     'localhost'
-    
+
     >>> port = layers.PLONE_ZSERVER['port']
     >>> import os
     >>> port == int(os.environ.get('ZSERVER_PORT', 55001))
     True
-    
+
 Let's now simulate a test. Test setup does nothing beyond what the base layers
 do.
-    
+
     >>> zca.LAYER_CLEANUP.testSetUp()
     >>> z2.STARTUP.testSetUp()
     >>> layers.PLONE_FIXTURE.testSetUp()
     >>> z2.ZSERVER_FIXTURE.testSetUp()
     >>> layers.PLONE_ZSERVER.testSetUp()
-    
+
 It is common in a test to use the Python API to change the state of the server
 (e.g. create some content or change a setting) and then use the HTTP protocol
 to look at the results. Bear in mind that the server is running in a separate
 thread, with a separate security manager, so calls to ``helpers.login()`` and
 ``helpers.logout()``, for instance, do not affect the server thread.
-    
+
     >>> portal = layers.PLONE_ZSERVER['portal'] # would normally be self.layer['portal']
     >>> helpers.setRoles(portal, TEST_USER_ID, ['Manager'])
     >>> portal.invokeFactory('Folder', 'folder1', title=u"Folder 1")
@@ -333,7 +333,7 @@ We can now look for this new object through the server.
     >>> portal_url = portal.absolute_url()
     >>> portal_url.split(':')[:-1]
     ['http', '//localhost']
-    
+
     >>> import urllib2
     >>> conn = urllib2.urlopen(portal_url + '/folder1', timeout=10)
     >>> responseBody = conn.read()
@@ -342,7 +342,7 @@ We can now look for this new object through the server.
     >>> conn.close()
 
 Test tear-down does nothing beyond what the base layers do.
-    
+
     >>> layers.PLONE_ZSERVER.testTearDown()
     >>> z2.ZSERVER_FIXTURE.testTearDown()
     >>> layers.PLONE_FIXTURE.testTearDown()
@@ -354,10 +354,10 @@ Test tear-down does nothing beyond what the base layers do.
 
     >>> 'app' in layers.PLONE_ZSERVER
     False
-    
+
     >>> 'request' in layers.PLONE_ZSERVER
     False
-    
+
     >>> with helpers.ploneSite() as portal:
     ...     print 'folder1' in portal.objectIds()
     False
@@ -404,11 +404,11 @@ indicate where Zope is running.
     >>> host = layers.PLONE_FTP_SERVER['host']
     >>> host
     'localhost'
-    
+
     >>> port = layers.PLONE_FTP_SERVER['port']
     >>> port
     55002
-    
+
 Let's now simulate a test. Test setup does nothing beyond what the base layers
 do.
 
@@ -417,13 +417,13 @@ do.
     >>> layers.PLONE_FIXTURE.testSetUp()
     >>> z2.FTP_SERVER_FIXTURE.testSetUp()
     >>> layers.PLONE_FTP_SERVER.testSetUp()
-    
+
 It is common in a test to use the Python API to change the state of the server
 (e.g. create some content or change a setting) and then use the FTP protocol
 to look at the results. Bear in mind that the server is running in a separate
 thread, with a separate security manager, so calls to ``helpers.login()`` and
 ``helpers.logout()``, for instance, do not affect the server thread.
-    
+
     >>> portal = layers.PLONE_FTP_SERVER['portal'] # would normally be self.layer['portal']
     >>> helpers.setRoles(portal, TEST_USER_ID, ['Manager'])
     >>> portal.invokeFactory('Folder', 'folder1')
@@ -435,12 +435,12 @@ other thread.
     >>> import transaction; transaction.commit()
 
     >>> folder_path = portal.absolute_url_path() + '/folder1'
-    
+
     >>> import ftplib
     >>> ftpClient = ftplib.FTP()
     >>> ftpClient.connect(host, port, timeout=5)
     '220 ... FTP server (...) ready.'
-    
+
     >>> from plone.app.testing.interfaces import SITE_OWNER_NAME
     >>> from plone.app.testing.interfaces import SITE_OWNER_PASSWORD
 
@@ -449,7 +449,7 @@ other thread.
 
     >>> ftpClient.cwd(folder_path)
     '250 CWD command successful.'
-    
+
     >>> ftpClient.retrlines('LIST')
     drwxrwx---   1 test_user_1_ Zope            0 ... .
     d---------   1 admin        Zope            0 ... ..
@@ -459,7 +459,7 @@ other thread.
     '221 Goodbye.'
 
 Test tear-down does nothing beyond what the base layers do.
-    
+
     >>> layers.PLONE_FTP_SERVER.testTearDown()
     >>> z2.FTP_SERVER_FIXTURE.testTearDown()
     >>> layers.PLONE_FIXTURE.testTearDown()
@@ -471,10 +471,10 @@ Test tear-down does nothing beyond what the base layers do.
 
     >>> 'app' in layers.PLONE_FTP_SERVER
     False
-    
+
     >>> 'request' in layers.PLONE_FTP_SERVER
     False
-    
+
     >>> with helpers.ploneSite() as portal:
     ...     print 'folder1' in portal.objectIds()
     False

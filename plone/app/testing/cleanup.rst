@@ -19,7 +19,7 @@ multi-plugins.
     []
 
 A new plugin can be registered using the ``registerPlugin()`` API.
-    
+
     >>> PluggableAuthService.registerMultiPlugin("dummy_plugin")
     >>> PluggableAuthService.MultiPlugins
     ['dummy_plugin']

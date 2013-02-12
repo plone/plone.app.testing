@@ -1,8 +1,12 @@
 Changelog
 =========
 
-4.2.2 (unreleased)
+4.2.2 (2013-02-09)
 ------------------
+
+- Add [robot] extras for requiring dependnecies for Robot Framework
+  tests with Selenium2Library
+  [datakurre]
 
 - Install PythonScripts as zope product 
   [mikejmets]

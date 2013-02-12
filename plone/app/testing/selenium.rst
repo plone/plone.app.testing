@@ -4,8 +4,8 @@ Selenium testing layer
 Introduction
 ============
 
-There is a layer used to set up test fixtures for running 
-`Selenium <code.google.com/p/selenium/>`_ 
+There is a layer used to set up test fixtures for running
+`Selenium <code.google.com/p/selenium/>`_
 tests against a Plone site. It is importable from
 ``plone.app.testing.selenium_layers``.
 
@@ -28,7 +28,7 @@ browser (Chrome, Firefox, IE...) for running the tests on this specific browser.
 
 `More info about available WebDriver API <http://code.google.com/p/selenium/source/browse/trunk/py/selenium/webdriver/remote/webdriver.py>`_.
 
-`Selenium element matching options <http://code.google.com/p/selenium/source/browse/trunk/py/selenium/webdriver/common/by.py>`_ 
+`Selenium element matching options <http://code.google.com/p/selenium/source/browse/trunk/py/selenium/webdriver/common/by.py>`_
 
 `Extracting data from matched elements <http://code.google.com/p/selenium/source/browse/trunk/py/selenium/webdriver/remote/webelement.py>`_
 
@@ -74,12 +74,12 @@ indicate where Zope is running.
     >>> host = layers.SELENIUM_PLONE_FUNCTIONAL_TESTING['host']
     >>> host
     'localhost'
-    
+
     >>> port = layers.SELENIUM_PLONE_FUNCTIONAL_TESTING['port']
     >>> import os
     >>> port == int(os.environ.get('ZSERVER_PORT', 55001))
     True
-    
+
 Let's now simulate a test. Test setup does nothing beyond what the base layers
 do.
 
@@ -88,14 +88,14 @@ do.
     >>> z2.STARTUP.testSetUp()
     >>> layers.SELENIUM_FIXTURE.testSetUp()
     >>> layers.SELENIUM_PLONE_FUNCTIONAL_TESTING.testSetUp()
-    
+
 It is common in a test to use the Python API to change the state of
 the server (e.g. create some content or change a setting) and then use
 the Selenium browser to look at the results. Bear in mind that the
 server is running in a separate thread, with a separate security
 manager, so calls to ``helpers.login()`` and ``helpers.logout()``, for
 instance, do not affect the server thread.
-    
+
     >>> from plone.app.testing import helpers
     >>> from plone.app.testing.interfaces import TEST_USER_ID
     >>> portal = layers.SELENIUM_PLONE_FUNCTIONAL_TESTING['portal'] # would normally be self.layer['portal']
@@ -109,7 +109,7 @@ instance, do not affect the server thread.
     >>> selenium.get_title()
     u'folder1 \u2014 Plone site'
 
-Now we also test logging-in to Plone. 
+Now we also test logging-in to Plone.
 
     >>> from plone.app.testing.selenium_layers import login
     >>> login(selenium, portal)
@@ -117,7 +117,7 @@ Now we also test logging-in to Plone.
     u'You are now logged in'
 
 Test tear-down does nothing beyond what the base layers do.
-    
+
     >>> layers.SELENIUM_PLONE_FUNCTIONAL_TESTING.testTearDown()
     >>> layers.SELENIUM_FIXTURE.testTearDown()
     >>> z2.STARTUP.testTearDown()
@@ -128,10 +128,10 @@ Test tear-down does nothing beyond what the base layers do.
 
     >>> 'app' in layers.SELENIUM_PLONE_FUNCTIONAL_TESTING
     False
-    
+
     >>> 'request' in layers.SELENIUM_PLONE_FUNCTIONAL_TESTING
     False
-    
+
     >>> with helpers.ploneSite() as portal:
     ...     print 'folder1' in portal.objectIds()
     False
@@ -158,7 +158,7 @@ Selenium and transactions
 
 Selenium WebDriver runs in a different thread than your plone.app.testing Python code.
 Both threads have their own ZODB transactions. If you modify the data in Selenium thread
-(e.g. your virtual user modifies something) you cannot directly access this data 
+(e.g. your virtual user modifies something) you cannot directly access this data
 in the test thread.
 
 This is important whenever your interactions with the
@@ -174,8 +174,8 @@ changes that pull from the ZODB when doing JavaScript testing so in
 all other cases you are responsible to call transaction.commit()
 yourself.
 
-Here is an example how we force the test thread to get a fresh copy of the object 
-after Selenium has poked it. 
+Here is an example how we force the test thread to get a fresh copy of the object
+after Selenium has poked it.
 
 Example::
 
