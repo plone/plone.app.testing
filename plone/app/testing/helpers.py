@@ -388,8 +388,16 @@ class PloneSandboxLayer(Layer):
     def applyProfile(self, portal, profileName):
         return applyProfile(portal, profileName)
 
-    def loadZCML(self, name='configure.zcml', **kw):
+    def loadZCML(self, name='configure.zcml', override=False, **kw):
+        """Load a ZCML file into the layer.
+
+        :param override: Set this to True to load this ZCML as overrides.zcml
+        :type override: Boolean
+        """
         kw.setdefault('context', self['configurationContext'])
+        if override:
+            return xmlconfig.includeOverrides(
+                kw['context'], name, kw['package'])
         return xmlconfig.file(name, **kw)
 
     def snapshotMultiPlugins(self, preSetupMultiPlugins):
