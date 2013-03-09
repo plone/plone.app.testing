@@ -80,6 +80,8 @@ class PloneFixture(Layer):
             ('plone.app.imaging'                    , {'loadZCML': True}, ),
             ('plone.app.collection'                 , {'loadZCML': True}, ),
 
+            ('Products.DateRecurringIndex'          , {'loadZCML': False}, ),
+
             ('Products.CMFPlone'                    , {'loadZCML': True}, ),
             ('Products.PythonScripts'               , {'loadZCML': False}, ),
 
