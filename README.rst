@@ -1294,6 +1294,7 @@ To obtain a new test browser client::
 
     from plone.testing.z2 import Browser
 
+    # This is usually self.app (Zope root) or site.portal (test Plone site root)
     browser = Browser(app)
 
 To open a given URL::
