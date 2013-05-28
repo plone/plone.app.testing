@@ -4,6 +4,12 @@ Changelog
 4.4a1 (unreleased)
 ------------------
 
+4.2.3 (Unreleased)
+------------------
+
+- Fix wrong spelling of ``reinstallProducts`` method in quickInstallProduct.
+  [saily]
+
 
 4.2.2 (2013-02-09)
 ------------------
@@ -12,14 +18,14 @@ Changelog
   tests with Selenium2Library
   [datakurre]
 
-- Install PythonScripts as zope product 
+- Install PythonScripts as zope product
   [mikejmets]
 
 
 4.2.1 (2012-12-15)
 ------------------
 
-- Allow testing with non standard port. Allows running multiple test suites 
+- Allow testing with non standard port. Allows running multiple test suites
   in parallel.
   [do3cc]
 
@@ -70,7 +76,7 @@ Changelog
 4.0a6 - 2011-04-06
 ------------------
 
-- Added helper functions for selenium layer. (Copied from SeleniumTestCase 
+- Added helper functions for selenium layer. (Copied from SeleniumTestCase
   within Products.CMFPlone/Products/CMFPlone/tests/selenium/base.py)
   [emanlove]
 

@@ -82,7 +82,7 @@ def quickInstallProduct(portal, productName, reinstall=False):
 
         if quickinstaller.isProductInstalled(productName):
             if reinstall:
-                quickinstaller.reinstallProduct([productName])
+                quickinstaller.reinstallProducts([productName])
         else:
             quickinstaller.installProduct(productName)
 
