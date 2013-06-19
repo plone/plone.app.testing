@@ -11,7 +11,7 @@ tests_require = ['Products.CMFCore',
                  'zope.publisher',
                  ]
 
-robot_require = ['robotsuite',
+robot_require = ['robotsuite>=1.4.0',
                  'robotframework-selenium2library',
                  'decorator',
                  'selenium']

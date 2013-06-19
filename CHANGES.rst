@@ -4,8 +4,8 @@ Changelog
 4.4a1 (unreleased)
 ------------------
 
-4.2.3 (Unreleased)
-------------------
+- Pin [robot] extra to ``robotsuite>=1.4.0``.
+  [saily]
 
 - Fix wrong spelling of ``reinstallProducts`` method in quickInstallProduct.
   [saily]
