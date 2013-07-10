@@ -1,8 +1,12 @@
 Changelog
 =========
 
-4.4a1 (unreleased)
+5.0a1 (unreleased)
 ------------------
+
+- Don't install Archetypes-related packages.
+  Install plone.app.contenttypes.
+  [davisagli]
 
 - Pin [robot] extra to ``robotsuite>=1.4.0``.
   [saily]

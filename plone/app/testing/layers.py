@@ -76,12 +76,6 @@ class PloneFixture(Layer):
             ('plonetheme.classic'                   , {'loadZCML': True}, ),
             ('plonetheme.sunburst'                  , {'loadZCML': True}, ),
 
-            ('plone.app.blob'                       , {'loadZCML': True}, ),
-            ('plone.app.imaging'                    , {'loadZCML': True}, ),
-            ('plone.app.collection'                 , {'loadZCML': True}, ),
-
-            ('Products.DateRecurringIndex'          , {'loadZCML': False}, ),
-
             ('Products.CMFPlone'                    , {'loadZCML': True}, ),
             ('Products.PythonScripts'               , {'loadZCML': False}, ),
 
@@ -90,6 +84,7 @@ class PloneFixture(Layer):
     # Extension profiles to be installed with site setup
     extensionProfiles = (
             'plonetheme.sunburst:default',
+            'plone.app.contenttypes:default',
         )
 
     # Layer lifecycle
