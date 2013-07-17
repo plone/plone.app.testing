@@ -4,6 +4,10 @@
 from plone.testing import Layer
 from plone.testing import zodb, zca, z2
 
+from zope.event import notify
+from zope.traversing.interfaces import BeforeTraverseEvent
+
+
 from plone.app.testing.interfaces import (
     PLONE_SITE_ID,
     PLONE_SITE_TITLE,
@@ -286,6 +290,8 @@ class PloneTestLifecycle(object):
         # Reset skin data
         portal.clearCurrentSkin()
         portal.setupCurrentSkin(portal.REQUEST)
+        notify(BeforeTraverseEvent(portal, portal.REQUEST))
+
 
         # Pseudo-login as the test user
         from plone.app.testing import helpers
