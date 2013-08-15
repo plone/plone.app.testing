@@ -182,7 +182,8 @@ the ``ploneSite()`` context manager as shown above.
     >>> getSecurityManager().getUser().getUserName() == TEST_USER_NAME
     True
 
-    >>> portal.invokeFactory('Folder', 'folder1', title=u"Folder 1")
+    >>> from OFS.Folder import Folder
+    >>> portal._setObject('folder1', Folder('folder1'))
     'folder1'
 
 Let's now tear down the test.

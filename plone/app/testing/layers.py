@@ -51,12 +51,8 @@ class PloneFixture(Layer):
             ('Products.CMFFormController'           , {'loadZCML': True}, ),
             ('Products.CMFDynamicViewFTI'           , {'loadZCML': True}, ),
 
-            ('Products.Archetypes'                  , {'loadZCML': True}, ),
             ('Products.MimetypesRegistry'           , {'loadZCML': True}, ),
             ('Products.PortalTransforms'            , {'loadZCML': True}, ),
-
-            ('Products.ATContentTypes'              , {'loadZCML': True}, ),
-            ('Products.ATReferenceBrowserWidget'    , {'loadZCML': True}, ),
 
             ('Products.ExternalEditor'              , {'loadZCML': True}, ),
             ('Products.ExtendedPathIndex'           , {'loadZCML': True}, ),
@@ -84,7 +80,6 @@ class PloneFixture(Layer):
     # Extension profiles to be installed with site setup
     extensionProfiles = (
             'plonetheme.sunburst:default',
-            'plone.app.contenttypes:default',
         )
 
     # Layer lifecycle

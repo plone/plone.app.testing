@@ -153,7 +153,8 @@ content safely (so long as we don't commit):
     >>> from plone.app.testing.interfaces import TEST_USER_ID
     >>> portal = layers.PLONE_INTEGRATION_TESTING['portal'] # would normally be self.layer['portal']
     >>> helpers.setRoles(portal, TEST_USER_ID, ['Manager'])
-    >>> portal.invokeFactory('Document', 'd1')
+    >>> from OFS.SimpleItem import SimpleItem
+    >>> portal._setObject('d1', SimpleItem('d1'))
     'd1'
     >>> 'd1' in portal.objectIds()
     True
@@ -234,7 +235,7 @@ test execution.
 
     >>> portal = layers.PLONE_FUNCTIONAL_TESTING['portal'] # would normally be self.layer['portal']
     >>> helpers.setRoles(portal, TEST_USER_ID, ['Manager'])
-    >>> portal.invokeFactory('Document', 'd1')
+    >>> portal._setObject('d1', SimpleItem('d1'))
     'd1'
     >>> import transaction; transaction.commit()
     >>> 'd1' in portal.objectIds()
@@ -320,8 +321,7 @@ thread, with a separate security manager, so calls to ``helpers.login()`` and
 
     >>> portal = layers.PLONE_ZSERVER['portal'] # would normally be self.layer['portal']
     >>> helpers.setRoles(portal, TEST_USER_ID, ['Manager'])
-    >>> portal.invokeFactory('Folder', 'folder1', title=u"Folder 1")
-    'folder1'
+    >>> portal.title = 'Fancy Portal'
 
 Note that we need to commit the transaction before it will show up in the
 other thread.
@@ -335,9 +335,9 @@ We can now look for this new object through the server.
     ['http', '//localhost']
 
     >>> import urllib2
-    >>> conn = urllib2.urlopen(portal_url + '/folder1', timeout=10)
+    >>> conn = urllib2.urlopen(portal_url + '/Title', timeout=10)
     >>> responseBody = conn.read()
-    >>> "Folder 1" in responseBody
+    >>> "Fancy Portal" in responseBody
     True
     >>> conn.close()
 
@@ -426,7 +426,8 @@ thread, with a separate security manager, so calls to ``helpers.login()`` and
 
     >>> portal = layers.PLONE_FTP_SERVER['portal'] # would normally be self.layer['portal']
     >>> helpers.setRoles(portal, TEST_USER_ID, ['Manager'])
-    >>> portal.invokeFactory('Folder', 'folder1')
+    >>> from OFS.Folder import Folder
+    >>> portal._setObject('folder1', Folder('folder1'))
     'folder1'
 
 Note that we need to commit the transaction before it will show up in the
