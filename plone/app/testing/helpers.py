@@ -299,52 +299,57 @@ class PloneSandboxLayer(Layer):
     # Boilerplate
 
     def setUp(self):
+        try:
+            # Push a new database storage so that database changes
+            # commited during layer setup can be easily torn down
+            self['zodbDB'] = zodb.stackDemoStorage(self.get('zodbDB'),
+                    name=self.__name__)
 
-        # Push a new database storage so that database changes
-        # commited during layer setup can be easily torn down
-        self['zodbDB'] = zodb.stackDemoStorage(self.get('zodbDB'),
-                name=self.__name__)
+            # Push a new configuration context so that it's possible to re-import
+            # ZCML files after tear-down
+            name = self.__name__ if self.__name__ is not None else 'not-named'
+            contextName = "PloneSandboxLayer-%s" % name
+            self['configurationContext'] = configurationContext = (
+                zca.stackConfigurationContext(self.get('configurationContext'),
+                name=contextName))
 
-        # Push a new configuration context so that it's possible to re-import
-        # ZCML files after tear-down
-        name = self.__name__ if self.__name__ is not None else 'not-named'
-        contextName = "PloneSandboxLayer-%s" % name
-        self['configurationContext'] = configurationContext = (
-            zca.stackConfigurationContext(self.get('configurationContext'),
-            name=contextName))
+            with ploneSite() as portal:
 
-        with ploneSite() as portal:
+                from zope.site.hooks import setSite, setHooks
+                setHooks()
 
-            from zope.site.hooks import setSite, setHooks
-            setHooks()
+                # Make sure there's no local site manager while we load ZCML
+                setSite(None)
 
-            # Make sure there's no local site manager while we load ZCML
-            setSite(None)
+                # Push a new component registry so that ZCML registations
+                # and other global component registry changes are sandboxed
+                pushGlobalRegistry(portal)
 
-            # Push a new component registry so that ZCML registations
-            # and other global component registry changes are sandboxed
-            pushGlobalRegistry(portal)
+                # Make sure zope.security checkers can be set up and torn down
+                # reliably
 
-            # Make sure zope.security checkers can be set up and torn down
-            # reliably
+                security.pushCheckers()
 
-            security.pushCheckers()
+                from Products.PluggableAuthService.PluggableAuthService import (
+                        MultiPlugins)
 
-            from Products.PluggableAuthService.PluggableAuthService import (
-                    MultiPlugins)
+                preSetupMultiPlugins = MultiPlugins[:]
 
-            preSetupMultiPlugins = MultiPlugins[:]
+                # Allow subclass to load ZCML and products
+                self.setUpZope(portal.getPhysicalRoot(), configurationContext)
 
-            # Allow subclass to load ZCML and products
-            self.setUpZope(portal.getPhysicalRoot(), configurationContext)
+                # Allow subclass to configure a persistent fixture
+                setSite(portal)
+                self.setUpPloneSite(portal)
+                setSite(None)
 
-            # Allow subclass to configure a persistent fixture
-            setSite(portal)
-            self.setUpPloneSite(portal)
-            setSite(None)
-
-        # Keep track of PAS plugins that were added during setup
-        self.snapshotMultiPlugins(preSetupMultiPlugins)
+            # Keep track of PAS plugins that were added during setup
+            self.snapshotMultiPlugins(preSetupMultiPlugins)
+        except:
+            del self['configurationContext']
+            self['zodbDB'].close()
+            del self['zodbDB']
+            raise
 
     def tearDown(self):
 

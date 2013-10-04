@@ -4,6 +4,10 @@ Changelog
 5.0a1 (unreleased)
 ------------------
 
+- Clean up the zodbDB and configurationContext resources if there
+  is an error during the PloneSandboxLayer setUp.
+  [davisagli]
+
 - Make PLONE_FIXTURE not install a content type system.
   Packages that need content types to run their tests should
   pick the appropriate fixture from plone.app.contenttypes
