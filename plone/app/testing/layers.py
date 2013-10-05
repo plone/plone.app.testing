@@ -80,7 +80,9 @@ class PloneFixture(Layer):
         )
 
     # Extension profiles to be installed with site setup
-    extensionProfiles = ()
+    extensionProfiles = (
+        'plonetheme.sunburst:default',
+    )
 
     # Layer lifecycle
 
