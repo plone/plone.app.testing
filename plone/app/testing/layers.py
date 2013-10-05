@@ -50,6 +50,7 @@ class PloneFixture(Layer):
             ('Products.CMFQuickInstallerTool'       , {'loadZCML': True}, ),
             ('Products.CMFFormController'           , {'loadZCML': True}, ),
             ('Products.CMFDynamicViewFTI'           , {'loadZCML': True}, ),
+            ('Products.CMFPlacefulWorkflow'         , {'loadZCML': True}, ),
 
             ('Products.MimetypesRegistry'           , {'loadZCML': True}, ),
             ('Products.PortalTransforms'            , {'loadZCML': True}, ),
@@ -58,6 +59,7 @@ class PloneFixture(Layer):
             ('Products.ExtendedPathIndex'           , {'loadZCML': True}, ),
             ('Products.ResourceRegistries'          , {'loadZCML': True}, ),
             ('Products.SecureMailHost'              , {'loadZCML': True}, ),
+            ('Products.SiteAccess'                  , {'loadZCML': False}, ),
 
             ('Products.PasswordResetTool'           , {'loadZCML': True}, ),
 
@@ -78,9 +80,7 @@ class PloneFixture(Layer):
         )
 
     # Extension profiles to be installed with site setup
-    extensionProfiles = (
-            'plonetheme.sunburst:default',
-        )
+    extensionProfiles = ()
 
     # Layer lifecycle
 
