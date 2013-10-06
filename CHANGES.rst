@@ -4,6 +4,10 @@ Changelog
 5.0a1 (unreleased)
 ------------------
 
+- plonetheme.classic no longer ships with Plone, don't use it for
+  testing.
+  [esteele]
+
 - Clean up the zodbDB and configurationContext resources if there
   is an error during the PloneSandboxLayer setUp.
   [davisagli]

@@ -83,7 +83,7 @@ need to tear that down as well.
     ...             portal.title = u"New title"
     ...
     ...             # Install a product using portal_quickinstaller
-    ...             helpers.quickInstallProduct(portal, 'plonetheme.classic')
+    ...             helpers.quickInstallProduct(portal, 'plone.resource')
     ...
     ...             # Apply a GenericSetup (extension) profile
     ...             helpers.applyProfile(portal, 'plonetheme.sunburst:default')
@@ -137,7 +137,7 @@ We should also see our product installation in the quickinstaller tool
 and the results of the profile having been applied.
 
     >>> with helpers.ploneSite() as portal:
-    ...     print portal['portal_quickinstaller'].isProductInstalled('plonetheme.classic')
+    ...     print portal['portal_quickinstaller'].isProductInstalled('plone.resource')
     ...     print portal['portal_skins'].getDefaultSkin()
     True
     Sunburst Theme
@@ -202,7 +202,7 @@ should not.
 
     >>> with helpers.ploneSite() as portal:
     ...     print portal.title
-    ...     print portal['portal_quickinstaller'].isProductInstalled('plonetheme.classic')
+    ...     print portal['portal_quickinstaller'].isProductInstalled('plone.resource')
     ...     print portal['portal_skins'].getDefaultSkin()
     ...     'folder1' in portal.objectIds()
     New title
@@ -223,7 +223,7 @@ component architecture changes from our layer.
 
     >>> with helpers.ploneSite() as portal:
     ...     print portal.title
-    ...     print portal['portal_quickinstaller'].isProductInstalled('plonetheme.classic')
+    ...     print portal['portal_quickinstaller'].isProductInstalled('plone.resource')
     ...     print portal['portal_skins'].getDefaultSkin()
     Plone site
     False

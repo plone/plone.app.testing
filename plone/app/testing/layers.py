@@ -71,7 +71,6 @@ class PloneFixture(Layer):
             ('Products.PlacelessTranslationService' , {'loadZCML': True}, ),
             ('Products.PloneLanguageTool'           , {'loadZCML': True}, ),
 
-            ('plonetheme.classic'                   , {'loadZCML': True}, ),
             ('plonetheme.sunburst'                  , {'loadZCML': True}, ),
 
             ('Products.CMFPlone'                    , {'loadZCML': True}, ),
