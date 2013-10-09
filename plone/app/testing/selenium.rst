@@ -47,8 +47,8 @@ For testing, we need a testrunner
     >>> from zope.testing.testrunner import runner
 
 The ``SELENIUM_PLONE_FUNCTIONAL_TESTING`` layer instantiates the
-``FunctionalTesting`` class with one base: ``SELENIUM_FIXTURE``, as
-shown above.
+``FunctionalTesting`` class with two bases: ``SELENIUM_FIXTURE``, as
+shown above, and ``PLONE_FIXTURE``.
 
     >>> "%s.%s" % (
     ...     layers.SELENIUM_PLONE_FUNCTIONAL_TESTING.__module__,
@@ -56,15 +56,16 @@ shown above.
     'plone.app.testing.selenium_layers.SeleniumTesting:Functional'
 
     >>> layers.SELENIUM_PLONE_FUNCTIONAL_TESTING.__bases__
-    (<Layer 'plone.app.testing.selenium_layers.SeleniumLayer'>, <Layer 'plone.testing.z2.ZServer'>, <Layer 'plone.app.testing.layers.PloneFixture'>)
+    (<Layer 'plone.app.testing.selenium_layers.SeleniumLayer'>, <Layer 'plone.app.testing.layers.PloneFixture'>)
 
     >>> options = runner.get_options([], [])
     >>> setupLayers = {}
     >>> runner.setup_layer(
     ...     options, layers.SELENIUM_PLONE_FUNCTIONAL_TESTING, setupLayers)
-    Set up plone.app.testing.selenium_layers.SeleniumLayer in ... seconds.
     Set up plone.testing.zca.LayerCleanup in ... seconds.
     Set up plone.testing.z2.Startup in ... seconds.
+    Set up plone.testing.z2.ZServer in ... seconds.
+    Set up plone.app.testing.selenium_layers.SeleniumLayer in ... seconds.
     Set up plone.app.testing.layers.PloneFixture in ... seconds.
     Set up plone.app.testing.selenium_layers.SeleniumTesting:Functional in ... seconds.
 
@@ -100,20 +101,19 @@ instance, do not affect the server thread.
     >>> from plone.app.testing.interfaces import TEST_USER_ID
     >>> portal = layers.SELENIUM_PLONE_FUNCTIONAL_TESTING['portal'] # would normally be self.layer['portal']
     >>> helpers.setRoles(portal, TEST_USER_ID, ['Manager'])
-    >>> portal.invokeFactory('Folder', 'folder1')
-    'folder1'
+    >>> portal.title = 'Ploney times'
 
     >>> from plone.app.testing.selenium_layers import open
     >>> selenium = layers.SELENIUM_PLONE_FUNCTIONAL_TESTING['selenium']
-    >>> open(selenium, portal.folder1.absolute_url())
-    >>> selenium.get_title()
-    u'folder1 \u2014 Plone site'
+    >>> open(selenium, portal.absolute_url())
+    >>> selenium.title
+    u'Ploney times'
 
 Now we also test logging-in to Plone.
 
     >>> from plone.app.testing.selenium_layers import login
     >>> login(selenium, portal)
-    >>> selenium.find_element_by_tag_name('h1').get_text()
+    >>> selenium.find_element_by_tag_name('h1').text
     u'You are now logged in'
 
 Test tear-down does nothing beyond what the base layers do.
@@ -130,10 +130,6 @@ Test tear-down does nothing beyond what the base layers do.
     False
 
     >>> 'request' in layers.SELENIUM_PLONE_FUNCTIONAL_TESTING
-    False
-
-    >>> with helpers.ploneSite() as portal:
-    ...     print 'folder1' in portal.objectIds()
     False
 
 When the layer is torn down, the Selenium browser is closed.
