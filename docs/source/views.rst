@@ -82,7 +82,7 @@ Test if object exists in folder
 Test::
 
     def test_object_in_folder(self):
-        self.failIf('yoda' in self.portal.objectIds())
+        self.assertFalse('yoda' in self.portal.objectIds())
 
 Test Redirect
 -------------
