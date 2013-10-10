@@ -4,6 +4,9 @@ Changelog
 5.0a1 (unreleased)
 ------------------
 
+- Replace deprecated test assert statements.
+  [timo]
+
 - plonetheme.classic no longer ships with Plone, don't use it for
   testing.
   [esteele]

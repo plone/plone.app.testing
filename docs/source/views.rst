@@ -27,7 +27,7 @@ Test::
         # Put the view into the acquisition chain
         view = view.__of__(self.portal)
         # Call the view
-        self.failUnless(view())
+        self.assertTrue(view())
 
 
 Test with restrictedTraverse
@@ -37,8 +37,8 @@ Test::
 
     def test_view_is_registered(self):
         view = self.portal.restrictedTraverse('@@list-products')
-        self.failUnless(view)
-        self.assertEquals(view(), 'ListProductsView')
+        self.assertTrue(view)
+        self.assertEqual(view(), 'ListProductsView')
 
 Test view with parameter
 ------------------------
@@ -50,7 +50,7 @@ Test::
         view = getMultiAdapter((self.portal, self.request),
                                name="autocomplete-tags")
         view = view.__of__(self.portal)
-        self.failUnless(view())
+        self.assertTrue(view())
 
 
 Test with restrictedTraverse and parameter
@@ -135,7 +135,7 @@ KeyError: 'ACTUAL_URL'::
     def test_view(self):
         view = self.collection.restrictedTraverse('@@RSS')
         self.assertTrue(view())
-        self.assertEquals(view.request.response.status, 200)
+        self.assertEqual(view.request.response.status, 200)
 
 
 ComponentLookupError
