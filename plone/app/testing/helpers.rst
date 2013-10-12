@@ -443,4 +443,4 @@ The tear down helper takes a plugin meta-type as an argument:
 
 Let's clean up the registry completely.
 
-    >>> del PluggableAuthService.MultiPlugins[:]
+    >>> helpers.tearDownMultiPluginRegistration('dummy_plugin2')
