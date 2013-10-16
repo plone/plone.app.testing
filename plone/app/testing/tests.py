@@ -19,6 +19,6 @@ def test_suite():
         doctest.DocFileSuite('cleanup.rst', optionflags=OPTIONFLAGS),
         doctest.DocFileSuite('layers.rst', optionflags=OPTIONFLAGS),
         doctest.DocFileSuite('helpers.rst', optionflags=OPTIONFLAGS),
-        seltest,
+#        seltest,
     ])
     return suite
