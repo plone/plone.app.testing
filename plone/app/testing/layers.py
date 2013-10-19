@@ -36,7 +36,6 @@ class PloneFixture(Layer):
             ('Products.DCWorkflow'                  , {'loadZCML': True}, ),
             ('Products.ZCTextIndex'                 , {'loadZCML': True}, ),
 
-            ('Products.CMFActionIcons'              , {'loadZCML': True}, ),
             ('Products.CMFUid'                      , {'loadZCML': True}, ),
             ('Products.CMFCalendar'                 , {'loadZCML': True}, ),
 
