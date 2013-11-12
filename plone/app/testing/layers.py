@@ -70,7 +70,8 @@ class PloneFixture(Layer):
             ('Products.PlacelessTranslationService' , {'loadZCML': True}, ),
             ('Products.PloneLanguageTool'           , {'loadZCML': True}, ),
 
-            ('plonetheme.sunburst'                  , {'loadZCML': True}, ),
+            # ('plonetheme.sunburst'                  , {'loadZCML': True}, ),
+            ('plonetheme.barceloneta'                  , {'loadZCML': True}, ),
 
             ('Products.CMFPlone'                    , {'loadZCML': True}, ),
             ('Products.PythonScripts'               , {'loadZCML': False}, ),
@@ -79,7 +80,8 @@ class PloneFixture(Layer):
 
     # Extension profiles to be installed with site setup
     extensionProfiles = (
-        'plonetheme.sunburst:default',
+        # 'plonetheme.sunburst:default',
+        'plonetheme.barceloneta:default',
     )
 
     # Layer lifecycle
