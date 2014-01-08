@@ -27,6 +27,8 @@ Changelog
 - Fix wrong spelling of ``reinstallProducts`` method in quickInstallProduct.
   [saily]
 
+- Sync bbb PloneTestCase class with original one.
+  [tomgross]
 
 4.2.2 (2013-02-09)
 ------------------

@@ -3,6 +3,7 @@
 from plone.testing import z2
 from plone.app import testing
 from Testing.ZopeTestCase.functional import Functional
+from AccessControl import getSecurityManager
 import transaction
 import unittest
 
@@ -83,9 +84,17 @@ class PloneTestCase(Functional, unittest.TestCase):
     def afterTearDown(self):
         """Hook to do teardown after the portal is removed."""
 
-    def setRoles(self, roles):
-        """Set the effective roles of the test user."""
-        testing.setRoles(self.portal, testing.TEST_USER_ID, roles)
+    def setRoles(self, roles, name=testing.TEST_USER_ID):
+        """Set the effective roles of a user."""
+        testing.setRoles(self.portal, name, roles)
+
+    def setGroups(self, groups, name=testing.TEST_USER_ID):
+        '''Changes the user's groups.'''
+        uf = self.portal['acl_users']
+        uf.userSetGroups(name, list(groups))
+        user = getSecurityManager().getUser()
+        if name == user.getId():
+            self.login(user.getUserName())
 
     def setPermissions(self, permissions, role='Member'):
         """Changes the permissions assigned to role."""
