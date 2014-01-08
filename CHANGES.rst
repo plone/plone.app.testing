@@ -1,6 +1,12 @@
 Changelog
 =========
 
+4.2.3 (unreleased)
+------------------
+
+- Sync bbb PloneTestCase class with original one.
+  [tomgross]
+
 4.2.2 (2013-02-09)
 ------------------
 
