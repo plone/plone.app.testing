@@ -4,7 +4,8 @@ Changelog
 4.2.3 (unreleased)
 ------------------
 
-- Sync bbb PloneTestCase class with original one.
+- Sync bbb PloneTestCase class with original one but don't install
+  ATContentTypes profile
   [tomgross]
 
 4.2.2 (2013-02-09)

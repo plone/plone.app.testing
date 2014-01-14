@@ -7,6 +7,11 @@ from AccessControl import getSecurityManager
 import transaction
 import unittest
 
+try:
+   from Products.CMPLone.utils import getFSVersionTuple
+   major_version = getFSVersionTuple()[0]
+except ImportError:
+   major_version = 0
 
 def _createMemberarea(portal, user_id):
     mtool = portal.portal_membership
@@ -34,8 +39,9 @@ class PloneTestCaseFixture(testing.PloneSandboxLayer):
         # restore default workflow
         testing.applyProfile(portal, 'Products.CMFPlone:testfixture')
 
-        # add default content
-        testing.applyProfile(portal, 'Products.ATContentTypes:content')
+        if major_version > 4:
+            # add default content
+            testing.applyProfile(portal, 'Products.ATContentTypes:content')
 
         # add home folder for default test user
         _createMemberarea(portal, testing.TEST_USER_ID)
