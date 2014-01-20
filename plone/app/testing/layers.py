@@ -37,7 +37,6 @@ class PloneFixture(Layer):
             ('Products.ZCTextIndex'                 , {'loadZCML': True}, ),
 
             ('Products.CMFUid'                      , {'loadZCML': True}, ),
-            ('Products.CMFCalendar'                 , {'loadZCML': True}, ),
 
             ('Products.CMFCore'                     , {'loadZCML': True},),
             ('Products.CMFDefault'                  , {'loadZCML': True}, ),
