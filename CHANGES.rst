@@ -1,7 +1,7 @@
 Changelog
 =========
 
-4.2.3 (unreleased)
+4.2.2 (2014-01-28)
 ------------------
 
 - Sync bbb PloneTestCase class with original one but don't install
