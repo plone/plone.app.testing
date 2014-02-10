@@ -9,10 +9,10 @@ from plone.testing import z2, zodb, zca, security, Layer
 
 from plone.app.testing import layers
 from plone.app.testing.interfaces import (
-        PLONE_SITE_ID,
-        SITE_OWNER_NAME,
-        TEST_USER_NAME,
-    )
+    PLONE_SITE_ID,
+    SITE_OWNER_NAME,
+    TEST_USER_NAME,
+)
 
 # User management
 
@@ -405,7 +405,8 @@ class PloneSandboxLayer(Layer):
         self._addedMultiPlugins = set()
 
         from Products.PluggableAuthService.PluggableAuthService import (
-                MultiPlugins)
+            MultiPlugins
+        )
 
         for plugin in MultiPlugins:
             if plugin not in preSetupMultiPlugins:
@@ -447,7 +448,8 @@ class PloneWithPackageLayer(PloneSandboxLayer):
         if self.zcml_filename is None:
             raise ValueError("ZCML file name has not been provided.")
         if self.zcml_package is None:
-            raise ValueError("The package that contains the ZCML file "
+            raise ValueError(
+                "The package that contains the ZCML file "
                 "has not been provided.")
         self.loadZCML(self.zcml_filename, package=self.zcml_package)
 

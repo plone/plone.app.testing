@@ -5,18 +5,19 @@ from plone.testing import Layer
 from plone.testing import zodb, zca, z2
 
 from plone.app.testing.interfaces import (
-        PLONE_SITE_ID,
-        PLONE_SITE_TITLE,
-        DEFAULT_LANGUAGE,
+    PLONE_SITE_ID,
+    PLONE_SITE_TITLE,
+    DEFAULT_LANGUAGE,
 
-        TEST_USER_ID,
-        TEST_USER_NAME,
-        TEST_USER_PASSWORD,
-        TEST_USER_ROLES,
+    TEST_USER_ID,
+    TEST_USER_NAME,
+    TEST_USER_PASSWORD,
+    TEST_USER_ROLES,
 
-        SITE_OWNER_NAME,
-        SITE_OWNER_PASSWORD
-    )
+    SITE_OWNER_NAME,
+    SITE_OWNER_PASSWORD
+)
+
 
 class PloneFixture(Layer):
     """This layer sets up a basic Plone site, with:
@@ -32,51 +33,49 @@ class PloneFixture(Layer):
 
     # Products that will be installed, plus options
     products = (
-            ('Products.GenericSetup'                , {'loadZCML': True},),
-            ('Products.DCWorkflow'                  , {'loadZCML': True}, ),
-            ('Products.ZCTextIndex'                 , {'loadZCML': True}, ),
+        ('Products.GenericSetup'                , {'loadZCML': True},),
+        ('Products.DCWorkflow'                  , {'loadZCML': True}, ),
+        ('Products.ZCTextIndex'                 , {'loadZCML': True}, ),
 
-            ('Products.CMFUid'                      , {'loadZCML': True}, ),
-            ('Products.CMFCalendar'                 , {'loadZCML': True}, ),
+        ('Products.CMFUid'                      , {'loadZCML': True}, ),
 
-            ('Products.CMFCore'                     , {'loadZCML': True},),
-            ('Products.CMFDefault'                  , {'loadZCML': True}, ),
+        ('Products.CMFCore'                     , {'loadZCML': True},),
+        ('Products.CMFDefault'                  , {'loadZCML': True}, ),
 
-            ('Products.PluggableAuthService'        , {'loadZCML': True}, ),
-            ('Products.PluginRegistry'              , {'loadZCML': True}, ),
-            ('Products.PlonePAS'                    , {'loadZCML': True}, ),
+        ('Products.PluggableAuthService'        , {'loadZCML': True}, ),
+        ('Products.PluginRegistry'              , {'loadZCML': True}, ),
+        ('Products.PlonePAS'                    , {'loadZCML': True}, ),
 
-            ('Products.CMFQuickInstallerTool'       , {'loadZCML': True}, ),
-            ('Products.CMFFormController'           , {'loadZCML': True}, ),
-            ('Products.CMFDynamicViewFTI'           , {'loadZCML': True}, ),
-            ('Products.CMFPlacefulWorkflow'         , {'loadZCML': True}, ),
+        ('Products.CMFQuickInstallerTool'       , {'loadZCML': True}, ),
+        ('Products.CMFFormController'           , {'loadZCML': True}, ),
+        ('Products.CMFDynamicViewFTI'           , {'loadZCML': True}, ),
+        ('Products.CMFPlacefulWorkflow'         , {'loadZCML': True}, ),
 
-            ('Products.MimetypesRegistry'           , {'loadZCML': True}, ),
-            ('Products.PortalTransforms'            , {'loadZCML': True}, ),
+        ('Products.MimetypesRegistry'           , {'loadZCML': True}, ),
+        ('Products.PortalTransforms'            , {'loadZCML': True}, ),
 
-            ('Products.ExternalEditor'              , {'loadZCML': True}, ),
-            ('Products.ExtendedPathIndex'           , {'loadZCML': True}, ),
-            ('Products.ResourceRegistries'          , {'loadZCML': True}, ),
-            ('Products.SecureMailHost'              , {'loadZCML': True}, ),
-            ('Products.SiteAccess'                  , {'loadZCML': False}, ),
+        ('Products.ExternalEditor'              , {'loadZCML': True}, ),
+        ('Products.ExtendedPathIndex'           , {'loadZCML': True}, ),
+        ('Products.ResourceRegistries'          , {'loadZCML': True}, ),
+        ('Products.SecureMailHost'              , {'loadZCML': True}, ),
+        ('Products.SiteAccess'                  , {'loadZCML': False}, ),
 
-            ('Products.PasswordResetTool'           , {'loadZCML': True}, ),
+        ('Products.PasswordResetTool'           , {'loadZCML': True}, ),
 
-            ('Products.TinyMCE'                     , {'loadZCML': True}, ),
+        ('Products.TinyMCE'                     , {'loadZCML': True}, ),
 
-            ('Products.CMFEditions'                 , {'loadZCML': True}, ),
-            ('Products.CMFDiffTool'                 , {'loadZCML': True}, ),
+        ('Products.CMFEditions'                 , {'loadZCML': True}, ),
+        ('Products.CMFDiffTool'                 , {'loadZCML': True}, ),
 
-            ('Products.PlacelessTranslationService' , {'loadZCML': True}, ),
-            ('Products.PloneLanguageTool'           , {'loadZCML': True}, ),
+        ('Products.PlacelessTranslationService' , {'loadZCML': True}, ),
+        ('Products.PloneLanguageTool'           , {'loadZCML': True}, ),
 
-            # ('plonetheme.sunburst'                  , {'loadZCML': True}, ),
-            ('plonetheme.barceloneta'                  , {'loadZCML': True}, ),
+        ('plonetheme.barceloneta'               , {'loadZCML': True}, ),
 
-            ('Products.CMFPlone'                    , {'loadZCML': True}, ),
-            ('Products.PythonScripts'               , {'loadZCML': False}, ),
+        ('Products.CMFPlone'                    , {'loadZCML': True}, ),
+        ('Products.PythonScripts'               , {'loadZCML': False}, ),
 
-        )
+    )
 
     # Extension profiles to be installed with site setup
     extensionProfiles = (
@@ -122,7 +121,8 @@ class PloneFixture(Layer):
         zca.pushGlobalRegistry()
 
         from zope.configuration import xmlconfig
-        self['configurationContext'] = context = zca.stackConfigurationContext(self.get('configurationContext'))
+        self['configurationContext'] = context = zca.stackConfigurationContext(
+            self.get('configurationContext'))
 
         # Turn off z3c.autoinclude
 
@@ -201,22 +201,24 @@ class PloneFixture(Layer):
         # Create the owner user and "log in" so that the site object gets
         # the right ownership information
         app['acl_users'].userFolderAddUser(
-                SITE_OWNER_NAME,
-                SITE_OWNER_PASSWORD,
-                ['Manager'],
-                []
-            )
+            SITE_OWNER_NAME,
+            SITE_OWNER_PASSWORD,
+            ['Manager'],
+            []
+        )
 
         z2.login(app['acl_users'], SITE_OWNER_NAME)
 
         # Create the site with the default set of extension profiles
         from Products.CMFPlone.factory import addPloneSite
-        addPloneSite(app, PLONE_SITE_ID,
-                title=PLONE_SITE_TITLE,
-                setup_content=False,
-                default_language=DEFAULT_LANGUAGE,
-                extension_ids=self.extensionProfiles,
-            )
+        addPloneSite(
+            app,
+            PLONE_SITE_ID,
+            title=PLONE_SITE_TITLE,
+            setup_content=False,
+            default_language=DEFAULT_LANGUAGE,
+            extension_ids=self.extensionProfiles,
+        )
 
         # Turn off default workflow
         app[PLONE_SITE_ID]['portal_workflow'].setDefaultChain('')
@@ -226,9 +228,10 @@ class PloneFixture(Layer):
         # directly.
         pas = app[PLONE_SITE_ID]['acl_users']
         pas.source_users.addUser(
-                TEST_USER_ID,
-                TEST_USER_NAME,
-                TEST_USER_PASSWORD)
+            TEST_USER_ID,
+            TEST_USER_NAME,
+            TEST_USER_PASSWORD
+        )
         for role in TEST_USER_ROLES:
             pas.portal_role_manager.doAssignRoleToPrincipal(TEST_USER_ID, role)
 
@@ -239,6 +242,7 @@ class PloneFixture(Layer):
 # for other layers.
 
 PLONE_FIXTURE = PloneFixture()
+
 
 class PloneTestLifecycle(object):
     """Mixin class for Plone test lifecycle. This exposes the ``portal``
@@ -303,9 +307,11 @@ class PloneTestLifecycle(object):
         from zope.site.hooks import setSite
         setSite(None)
 
+
 class IntegrationTesting(PloneTestLifecycle, z2.IntegrationTesting):
     """Plone version of the integration testing layer
     """
+
 
 class FunctionalTesting(PloneTestLifecycle, z2.FunctionalTesting):
     """Plone version of the functional testing layer
@@ -317,8 +323,20 @@ class FunctionalTesting(PloneTestLifecycle, z2.FunctionalTesting):
 
 # Note: PLONE_FIXTURE is defined above
 
-PLONE_INTEGRATION_TESTING = IntegrationTesting(bases=(PLONE_FIXTURE,), name='Plone:Integration')
-PLONE_FUNCTIONAL_TESTING  = FunctionalTesting(bases=(PLONE_FIXTURE,), name='Plone:Functional')
+PLONE_INTEGRATION_TESTING = IntegrationTesting(
+    bases=(PLONE_FIXTURE,),
+    name='Plone:Integration'
+)
+PLONE_FUNCTIONAL_TESTING = FunctionalTesting(
+    bases=(PLONE_FIXTURE,),
+    name='Plone:Functional'
+)
 
-PLONE_ZSERVER             = FunctionalTesting(bases=(PLONE_FIXTURE, z2.ZSERVER_FIXTURE), name='Plone:ZServer')
-PLONE_FTP_SERVER          = FunctionalTesting(bases=(PLONE_FIXTURE, z2.FTP_SERVER_FIXTURE), name='Plone:FTPServer')
+PLONE_ZSERVER = FunctionalTesting(
+    bases=(PLONE_FIXTURE, z2.ZSERVER_FIXTURE),
+    name='Plone:ZServer'
+)
+PLONE_FTP_SERVER = FunctionalTesting(
+    bases=(PLONE_FIXTURE, z2.FTP_SERVER_FIXTURE),
+    name='Plone:FTPServer'
+)
