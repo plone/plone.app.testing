@@ -45,7 +45,8 @@ from plone.app.testing.interfaces import (
     TEST_USER_ROLES,
 
     SITE_OWNER_NAME,
-    SITE_OWNER_PASSWORD
+    SITE_OWNER_PASSWORD,
+    ROBOT_TEST_LEVEL,
 )
 
 # Cleanup handlers
