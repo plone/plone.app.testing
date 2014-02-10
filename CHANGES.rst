@@ -4,6 +4,10 @@ Changelog
 5.0a1 (unreleased)
 ------------------
 
+- Add 'ROBOT_TEST_LEVEL' to interfaces, so other packages can import it. This
+  makes things easier if we decide to change the value.
+  [timo]
+
 - Replace deprecated test assert statements.
   [timo]
 
