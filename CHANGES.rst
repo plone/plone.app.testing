@@ -1,7 +1,7 @@
 Changelog
 =========
 
-4.2.4 (unreleased)
+4.2.4 (2014-02-11)
 ------------------
 
 - Add 'ROBOT_TEST_LEVEL' to interfaces, so other packages can import it. This
