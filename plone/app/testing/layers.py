@@ -1,5 +1,6 @@
 # Layers setting up fixtures with a Plone site. Also importable from
 # plone.app.testing directly
+import pkg_resources
 
 from plone.testing import Layer
 from plone.testing import zodb, zca, z2
@@ -61,9 +62,14 @@ class PloneFixture(Layer):
         ('Products.SiteAccess'                  , {'loadZCML': False}, ),
 
         ('Products.PasswordResetTool'           , {'loadZCML': True}, ),
+    )
 
+    if pkg_resources.get_distribution("Products.CMFPlone").version < 5:
+        products += (
         ('Products.TinyMCE'                     , {'loadZCML': True}, ),
+        )
 
+    products += (
         ('Products.CMFEditions'                 , {'loadZCML': True}, ),
         ('Products.CMFDiffTool'                 , {'loadZCML': True}, ),
 
