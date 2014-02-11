@@ -12,3 +12,5 @@ TEST_USER_ROLES = ['Member',]
 
 SITE_OWNER_NAME = 'admin'
 SITE_OWNER_PASSWORD = 'secret'
+
+ROBOT_TEST_LEVEL = 5
