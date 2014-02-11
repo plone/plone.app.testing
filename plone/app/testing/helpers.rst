@@ -86,7 +86,7 @@ need to tear that down as well.
     ...             helpers.quickInstallProduct(portal, 'plone.resource')
     ...
     ...             # Apply a GenericSetup (extension) profile
-    ...             helpers.applyProfile(portal, 'plonetheme.sunburst:default')
+    ...             helpers.applyProfile(portal, 'plone.app.theming:default')
     ...
     ...     def tearDown(self):
     ...
@@ -138,9 +138,9 @@ and the results of the profile having been applied.
 
     >>> with helpers.ploneSite() as portal:
     ...     print portal['portal_quickinstaller'].isProductInstalled('plone.resource')
-    ...     print portal['portal_skins'].getDefaultSkin()
+    ...     print portal['portal_quickinstaller'].isProductInstalled('plone.app.theming')
     True
-    Sunburst Theme
+    True
 
 Let's now simulate a test.
 
@@ -203,11 +203,11 @@ should not.
     >>> with helpers.ploneSite() as portal:
     ...     print portal.title
     ...     print portal['portal_quickinstaller'].isProductInstalled('plone.resource')
-    ...     print portal['portal_skins'].getDefaultSkin()
+    ...     print portal['portal_quickinstaller'].isProductInstalled('plone.app.theming')
     ...     'folder1' in portal.objectIds()
     New title
     True
-    Sunburst Theme
+    True
     False
 
 We'll now tear down just the ``HELPER_DEMOS_INTEGRATION_TESTING`` layer. At this
@@ -224,10 +224,10 @@ component architecture changes from our layer.
     >>> with helpers.ploneSite() as portal:
     ...     print portal.title
     ...     print portal['portal_quickinstaller'].isProductInstalled('plone.resource')
-    ...     print portal['portal_skins'].getDefaultSkin()
+    ...     print portal['portal_quickinstaller'].isProductInstalled('plone.app.theming')
     Plone site
     False
-    Sunburst Theme
+    True
 
 Let's tear down the rest of the layers too.
 

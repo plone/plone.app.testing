@@ -67,8 +67,8 @@ Inside the Plone site, the default theme is installed
 
     >>> from plone.app.testing import helpers
     >>> with helpers.ploneSite() as portal:
-    ...     print portal['portal_skins'].getDefaultSkin()
-    Sunburst Theme
+    ...     print portal['portal_registry']['plone.app.theming.interfaces.IThemeSettings.rules']
+    /++theme++barceloneta/rules.xml
 
 **Note:** Here, we have used the ``ploneSite`` context manager to get hold of
 the Plone site root. Like ``z2.zopeApp()``, this is intended for use during

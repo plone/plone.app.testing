@@ -79,7 +79,6 @@ class PloneFixture(Layer):
 
     # Extension profiles to be installed with site setup
     extensionProfiles = (
-        # 'plonetheme.sunburst:default',
         'plonetheme.barceloneta:default',
     )
 
