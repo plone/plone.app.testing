@@ -406,8 +406,9 @@ indicate where Zope is running.
     'localhost'
 
     >>> port = layers.PLONE_FTP_SERVER['port']
-    >>> port
-    55002
+    >>> import os
+    >>> port == int(os.environ.get('ZSERVER_PORT', 55002))
+    True
 
 Let's now simulate a test. Test setup does nothing beyond what the base layers
 do.
