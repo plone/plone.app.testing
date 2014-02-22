@@ -1,7 +1,7 @@
 Changelog
 =========
 
-5.0a1 (unreleased)
+5.0a1 (2014-02-22)
 ------------------
 
 - Add 'ROBOT_TEST_LEVEL' to interfaces, so other packages can import it. This
@@ -33,6 +33,7 @@ Changelog
 
 - Sync bbb PloneTestCase class with original one.
   [tomgross]
+
 
 4.2.2 (2013-02-09)
 ------------------
