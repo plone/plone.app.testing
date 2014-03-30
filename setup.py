@@ -1,4 +1,5 @@
 from setuptools import setup, find_packages
+import os
 
 version = '5.0a1'
 
@@ -16,12 +17,18 @@ robot_require = ['robotsuite>=1.4.0',
                  'decorator',
                  'selenium']
 
+def read(*rnames):
+    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
+
+long_description = \
+    read('docs', 'source','README.rst') + \
+    read('CHANGES.rst')
+
 setup(
     name='plone.app.testing',
     version=version,
     description="Testing tools for Plone-the-application, based on plone.testing.",
-    long_description=open("README.rst").read() + "\n" +
-                     open("CHANGES.rst").read(),
+    long_description=long_description,
     classifiers=[
         "Environment :: Web Environment",
         "Framework :: Plone",
