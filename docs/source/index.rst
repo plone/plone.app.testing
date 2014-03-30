@@ -9,7 +9,10 @@ Welcome to plone.app.testing's documentation!
 .. toctree::
    :maxdepth: 2
 
-.. include:: ../../README.rst
+   README
+   views
+   zope-testbrowser
+
 
 
 Indices and tables
