@@ -7,6 +7,7 @@ Changelog
 - Install Products.DateRecurringIndex for the PLONE_FIXTURE Layer.
   [thet]
 
+
 5.0a1 (2014-02-22)
 ------------------
 
