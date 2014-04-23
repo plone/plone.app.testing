@@ -413,7 +413,7 @@ User management
 Product and profile installation
 --------------------------------
 
-``applyProfile(portal, profileName)``
+``applyProfile(portal, profileName, stepsToSkip=None)``
     Install a GenericSetup profile (usually an extension profile) by name,
     using the ``portal_setup`` tool. The name is normally made up of a package
     name and a profile name. Do not use the ``profile-`` prefix.
