@@ -93,7 +93,7 @@ def quickInstallProduct(portal, productName, reinstall=False):
         setSecurityManager(sm)
 
 
-def applyProfile(portal, profileName, stepsToSkip=None):
+def applyProfile(portal, profileName, blacklistedSteps=None):
     """Install an extension profile into the portal. The profile name
     should be a package name and a profile name, e.g. 'my.product:default'.
     """
@@ -112,7 +112,7 @@ def applyProfile(portal, profileName, stepsToSkip=None):
         profileId = 'profile-%s' % (profileName, )
         setupTool.runAllImportStepsFromProfile(
             profileId,
-            steps_to_skip=stepsToSkip)
+            blacklisted_steps=blacklistedSteps)
 
         portal.clearCurrentSkin()
         portal.setupCurrentSkin(portal.REQUEST)
