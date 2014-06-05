@@ -4,7 +4,8 @@ Changelog
 5.0a3 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Allow applyProfile to skip steps.
+  [pbauer]
 
 
 5.0a2 (2014-04-19)
