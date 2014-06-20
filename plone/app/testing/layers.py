@@ -69,7 +69,8 @@ class PloneFixture(Layer):
         ('Products.PlacelessTranslationService' , {'loadZCML': True}, ),
         ('Products.PloneLanguageTool'           , {'loadZCML': True}, ),
 
-        ('plonetheme.barceloneta'               , {'loadZCML': True}, ),
+        ('plonetheme.barceloneta'               , {'loadZCML': True,
+                                                   'install': False}, ),
 
         ('Products.CMFPlone'                    , {'loadZCML': True}, ),
         ('Products.PythonScripts'               , {'loadZCML': False}, ),
@@ -168,14 +169,16 @@ class PloneFixture(Layer):
         """
 
         for p, config in self.products:
-            z2.installProduct(app, p)
+            if config.get('install', True):
+                z2.installProduct(app, p)
 
     def tearDownProducts(self, app):
         """Uninstall all old-style products listed in the the ``products``
         tuple of this class.
         """
         for p, config in reversed(self.products):
-            z2.uninstallProduct(app, p)
+            if config.get('install', True):
+                z2.uninstallProduct(app, p)
 
         # Clean up Wicked turds
         # XXX: This may tear down too much state
