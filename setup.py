@@ -5,6 +5,7 @@ version = '5.0a3.dev0'
 
 tests_require = ['Products.CMFCore',
                  'Products.PluggableAuthService',
+                 'Products.Archetypes',
                  'selenium',
                  'transaction',
                  'unittest2',
