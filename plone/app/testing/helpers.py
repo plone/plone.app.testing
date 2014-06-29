@@ -93,7 +93,9 @@ def quickInstallProduct(portal, productName, reinstall=False):
         setSecurityManager(sm)
 
 
-def applyProfile(portal, profileName, blacklistedSteps=None):
+def applyProfile(portal, profileName, purge_old=None,
+                 ignore_dependencies=False, archive=None,
+                 blacklisted_steps=None):
     """Install an extension profile into the portal. The profile name
     should be a package name and a profile name, e.g. 'my.product:default'.
     """
@@ -112,7 +114,10 @@ def applyProfile(portal, profileName, blacklistedSteps=None):
         profileId = 'profile-%s' % (profileName, )
         setupTool.runAllImportStepsFromProfile(
             profileId,
-            blacklisted_steps=blacklistedSteps)
+            purge_old=purge_old,
+            ignore_dependencies=ignore_dependencies,
+            archive=archive,
+            blacklisted_steps=blacklisted_steps)
 
         portal.clearCurrentSkin()
         portal.setupCurrentSkin(portal.REQUEST)
@@ -392,8 +397,12 @@ class PloneSandboxLayer(Layer):
         del self['zodbDB']
 
     # Helpers
-    def applyProfile(self, portal, profileName):
-        return applyProfile(portal, profileName)
+    def applyProfile(self, portal, profileName, purge_old=None,
+                     ignore_dependencies=False, archive=None,
+                     blacklisted_steps=None):
+        return applyProfile(portal, profileName, purge_old,
+                            ignore_dependencies, archive,
+                            blacklisted_steps)
 
     def loadZCML(self, name='configure.zcml', **kw):
         kw.setdefault('context', self['configurationContext'])

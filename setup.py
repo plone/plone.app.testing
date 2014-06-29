@@ -5,6 +5,8 @@ version = '5.0a3.dev0'
 
 tests_require = ['Products.CMFCore',
                  'Products.PluggableAuthService',
+                 'Products.ATContentTypes',  # XXX unspecified dependency of plone.app.upgrade XXX
+                 'Products.CMFPlacefulWorkflow',
                  'selenium',
                  'transaction',
                  'unittest2',
@@ -32,9 +34,12 @@ setup(
     classifiers=[
         "Environment :: Web Environment",
         "Framework :: Plone",
+        "Framework :: Plone :: 5.0",
+        "Framework :: Zope2",
         "License :: OSI Approved :: GNU General Public License (GPL)",
         "Operating System :: OS Independent",
         "Programming Language :: Python",
+        "Programming Language :: Python :: 2.7",
         "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
     ],
     keywords='',

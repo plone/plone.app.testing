@@ -4,8 +4,9 @@ Changelog
 5.0a3 (unreleased)
 ------------------
 
-- Allow applyProfile to skip steps.
-  [pbauer]
+- Allow applyProfile to skip steps and all other options supported by
+  runAllImportStepsFromProfile of portal_setup-tool.
+  [pbauer, tomgross]
 
 
 5.0a2 (2014-04-19)
