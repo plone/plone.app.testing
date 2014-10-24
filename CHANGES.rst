@@ -1,7 +1,7 @@
 Changelog
 =========
 
-5.0a3 (unreleased)
+5.0b1 (2014-10-23)
 ------------------
 
 - Allow applyProfile to skip steps and all other options supported by
