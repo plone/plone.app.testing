@@ -3,6 +3,7 @@ from setuptools import setup, find_packages
 version = '4.2.4'
 
 tests_require = ['Products.CMFCore',
+                 'Products.CMFPlone',
                  'Products.PluggableAuthService',
                  'selenium',
                  'transaction',
@@ -24,9 +25,12 @@ setup(name='plone.app.testing',
       classifiers=[
         "Environment :: Web Environment",
         "Framework :: Plone",
+        "Framework :: Plone :: 4.3",
         "License :: OSI Approved :: GNU General Public License (GPL)",
         "Operating System :: OS Independent",
         "Programming Language :: Python",
+        "Programming Language :: Python :: 2.6",
+        "Programming Language :: Python :: 2.7",
         "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
         ],
       keywords='',
