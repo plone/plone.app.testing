@@ -3,6 +3,7 @@
 from plone.testing import z2
 from plone.app import testing
 from Testing.ZopeTestCase.functional import Functional
+from Products.CMFPlone.utils import _createObjectByType
 from AccessControl import getSecurityManager
 import transaction
 import unittest
@@ -10,6 +11,9 @@ import unittest
 
 def _createMemberarea(portal, user_id):
     mtool = portal.portal_membership
+    members = mtool.getMembersFolder()
+    if members is None:
+        _createObjectByType('Folder', portal, id='Members')
     if not mtool.getMemberareaCreationFlag():
         mtool.setMemberareaCreationFlag()
     mtool.createMemberArea(user_id)

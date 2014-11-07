@@ -4,6 +4,7 @@ import os
 version = '5.0b2.dev0'
 
 tests_require = ['Products.CMFCore',
+                 'Products.CMFPlone',
                  'Products.PluggableAuthService',
                  'Products.ATContentTypes',  # XXX unspecified dependency of plone.app.upgrade XXX
                  'Products.CMFPlacefulWorkflow',
