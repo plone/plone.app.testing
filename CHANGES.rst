@@ -1,13 +1,18 @@
 Changelog
 =========
 
+4.2.5 (unreleased)
+------------------
+
+- Add *Members* folder, if it is not there in test layer
+  [tomgross]
+
 4.2.4 (2014-02-11)
 ------------------
 
 - Add 'ROBOT_TEST_LEVEL' to interfaces, so other packages can import it. This
   makes things easier if we decide to change the value.
   [timo]
-
 
 4.2.3 (2014-01-28)
 ------------------
