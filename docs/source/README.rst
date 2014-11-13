@@ -680,7 +680,7 @@ the package, i.e. ``my.product.testing``::
 
 Here, ``MY_PRODUCT_FIXTURE`` is the "fixture" base layer. Other layers can
 use this as a base if they want to build on this fixture, but it would not
-be used in tests directly. For that, we have crated an ``IntegrationTesting``
+be used in tests directly. For that, we have created an ``IntegrationTesting``
 instance, ``MY_PRODUCT_INTEGRATION_TESTING``.
 
 Of course, we could have created a ``FunctionalTesting`` instance as
