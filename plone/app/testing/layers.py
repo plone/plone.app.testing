@@ -33,47 +33,48 @@ class PloneFixture(Layer):
 
     # Products that will be installed, plus options
     products = (
-        ('Products.GenericSetup'                , {'loadZCML': True},),
-        ('Products.DCWorkflow'                  , {'loadZCML': True}, ),
-        ('Products.ZCTextIndex'                 , {'loadZCML': True}, ),
-        ('Products.DateRecurringIndex'          , {'loadZCML': False},),
+        ('Products.GenericSetup',                {'loadZCML': True}, ),
+        ('Products.DCWorkflow',                  {'loadZCML': True}, ),
+        ('Products.ZCTextIndex',                 {'loadZCML': True}, ),
+        ('Products.DateRecurringIndex',          {'loadZCML': False},),
 
-        ('Products.CMFUid'                      , {'loadZCML': True}, ),
+        ('Products.CMFUid',                      {'loadZCML': True}, ),
 
-        ('Products.CMFCore'                     , {'loadZCML': True},),
-        ('Products.CMFDefault'                  , {'loadZCML': True}, ),
+        ('Products.CMFCore',                     {'loadZCML': True},),
+        ('Products.CMFDefault',                  {'loadZCML': True}, ),
 
-        ('Products.PluggableAuthService'        , {'loadZCML': True}, ),
-        ('Products.PluginRegistry'              , {'loadZCML': True}, ),
-        ('Products.PlonePAS'                    , {'loadZCML': True}, ),
+        ('Products.PluggableAuthService',        {'loadZCML': True}, ),
+        ('Products.PluginRegistry',              {'loadZCML': True}, ),
+        ('Products.PlonePAS',                    {'loadZCML': True}, ),
 
-        ('Products.CMFQuickInstallerTool'       , {'loadZCML': True}, ),
-        ('Products.CMFFormController'           , {'loadZCML': True}, ),
-        ('Products.CMFDynamicViewFTI'           , {'loadZCML': True}, ),
-        ('Products.CMFPlacefulWorkflow'         , {'loadZCML': True}, ),
+        ('Products.CMFQuickInstallerTool',       {'loadZCML': True}, ),
+        ('Products.CMFFormController',           {'loadZCML': True}, ),
+        ('Products.CMFDynamicViewFTI',           {'loadZCML': True}, ),
+        ('Products.CMFPlacefulWorkflow',         {'loadZCML': True}, ),
 
-        ('Products.MimetypesRegistry'           , {'loadZCML': True}, ),
-        ('Products.PortalTransforms'            , {'loadZCML': True}, ),
+        ('Products.MimetypesRegistry',           {'loadZCML': True}, ),
+        ('Products.PortalTransforms',            {'loadZCML': True}, ),
 
-        ('Products.ExternalEditor'              , {'loadZCML': True}, ),
-        ('Products.ExtendedPathIndex'           , {'loadZCML': True}, ),
-        ('Products.ResourceRegistries'          , {'loadZCML': True}, ),
-        ('Products.SecureMailHost'              , {'loadZCML': True}, ),
-        ('Products.SiteAccess'                  , {'loadZCML': False}, ),
+        ('Products.ExternalEditor',              {'loadZCML': True}, ),
+        ('Products.ExtendedPathIndex',           {'loadZCML': True}, ),
+        ('Products.ResourceRegistries',          {'loadZCML': True}, ),
+        ('Products.SecureMailHost',              {'loadZCML': True}, ),
+        ('Products.SiteAccess',                  {'loadZCML': False}, ),
 
-        ('Products.PasswordResetTool'           , {'loadZCML': True}, ),
+        ('Products.PasswordResetTool',           {'loadZCML': True}, ),
 
-        ('Products.CMFEditions'                 , {'loadZCML': True}, ),
-        ('Products.CMFDiffTool'                 , {'loadZCML': True}, ),
+        ('Products.CMFEditions',                 {'loadZCML': True}, ),
+        ('Products.CMFDiffTool',                 {'loadZCML': True}, ),
 
-        ('Products.PlacelessTranslationService' , {'loadZCML': True}, ),
-        ('Products.PloneLanguageTool'           , {'loadZCML': True}, ),
+        ('Products.PlacelessTranslationService', {'loadZCML': True}, ),
+        ('Products.PloneLanguageTool',           {'loadZCML': True}, ),
 
-        ('plonetheme.barceloneta'               , {'loadZCML': True,
-                                                   'install': False}, ),
+        ('plonetheme.barceloneta',               {'loadZCML': True,
+                                                  'install': False}, ),
 
-        ('Products.CMFPlone'                    , {'loadZCML': True}, ),
-        ('Products.PythonScripts'               , {'loadZCML': False}, ),
+        ('plone.app.folder',                     {'loadZCML': True}, ),
+        ('Products.CMFPlone',                    {'loadZCML': True}, ),
+        ('Products.PythonScripts',               {'loadZCML': False}, ),
 
     )
 
@@ -87,7 +88,10 @@ class PloneFixture(Layer):
     def setUp(self):
 
         # Stack a new DemoStorage on top of the one from z2.STARTUP.
-        self['zodbDB'] = zodb.stackDemoStorage(self.get('zodbDB'), name='PloneFixture')
+        self['zodbDB'] = zodb.stackDemoStorage(
+            self.get('zodbDB'),
+            name='PloneFixture'
+        )
 
         self.setUpZCML()
 
@@ -121,12 +125,14 @@ class PloneFixture(Layer):
 
         from zope.configuration import xmlconfig
         self['configurationContext'] = context = zca.stackConfigurationContext(
-            self.get('configurationContext'))
+            self.get('configurationContext')
+        )
 
         # Turn off z3c.autoinclude
 
         xmlconfig.string("""\
-<configure xmlns="http://namespaces.zope.org/zope" xmlns:meta="http://namespaces.zope.org/meta">
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:meta="http://namespaces.zope.org/meta">
     <meta:provides feature="disable-autoinclude" />
 </configure>
 """, context=context)

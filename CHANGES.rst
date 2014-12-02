@@ -4,7 +4,17 @@ Changelog
 5.0b2 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- fix: ``Products.CMFPlone`` needs the ``gopip`` index from 
+  ``plone.app.folder``. So latter has to be initialized before CMFPlones 
+  profile is applied (which installs the index to catalog). At the moment 
+  CMFPlone therefore registers the index itself, but plone.app.folder 
+  registers it too, which resulted in plone/Products.CMFPlone#313 
+  "GopipIndex registered twice" In tests the registration does not succedd, 
+  because plone.app.folder was never initialized as z2 products. In order to 
+  remove the misleading regisatration from CMFPlone we must take care that the
+  index is available, which is achieved with this change. Also minor pep8 
+  optimizations in the file touched.
+  [jensens]
 
 
 5.0b1 (2014-10-23)
