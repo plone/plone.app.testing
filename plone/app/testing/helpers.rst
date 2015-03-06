@@ -86,7 +86,7 @@ need to tear that down as well.
     ...             helpers.quickInstallProduct(portal, 'plone.resource')
     ...
     ...             # Apply a GenericSetup (extension) profile
-    ...             helpers.applyProfile(portal, 'plone.app.theming:default')
+    ...             helpers.applyProfile(portal, 'plone.app.caching:default')
     ...
     ...     def tearDown(self):
     ...
@@ -138,7 +138,7 @@ and the results of the profile having been applied.
 
     >>> with helpers.ploneSite() as portal:
     ...     print portal['portal_quickinstaller'].isProductInstalled('plone.resource')
-    ...     print portal['portal_quickinstaller'].isProductInstalled('plone.app.theming')
+    ...     print portal['portal_quickinstaller'].isProductInstalled('plone.app.caching')
     True
     True
 
@@ -203,7 +203,7 @@ should not.
     >>> with helpers.ploneSite() as portal:
     ...     print portal.title
     ...     print portal['portal_quickinstaller'].isProductInstalled('plone.resource')
-    ...     print portal['portal_quickinstaller'].isProductInstalled('plone.app.theming')
+    ...     print portal['portal_quickinstaller'].isProductInstalled('plone.app.caching')
     ...     'folder1' in portal.objectIds()
     New title
     True
@@ -224,7 +224,7 @@ component architecture changes from our layer.
     >>> with helpers.ploneSite() as portal:
     ...     print portal.title
     ...     print portal['portal_quickinstaller'].isProductInstalled('plone.resource')
-    ...     print portal['portal_quickinstaller'].isProductInstalled('plone.app.theming')
+    ...     print portal['portal_quickinstaller'].isProductInstalled('plone.app.caching')
     Plone site
     False
     True
