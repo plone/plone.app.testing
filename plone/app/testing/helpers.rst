@@ -85,9 +85,6 @@ need to tear that down as well.
     ...             # Install a product using portal_quickinstaller
     ...             helpers.quickInstallProduct(portal, 'plone.resource')
     ...
-    ...             # Apply a GenericSetup (extension) profile
-    ...             helpers.applyProfile(portal, 'plone.app.caching:default')
-    ...
     ...     def tearDown(self):
     ...
     ...         # Pop the component registry, thus removing component
@@ -138,8 +135,6 @@ and the results of the profile having been applied.
 
     >>> with helpers.ploneSite() as portal:
     ...     print portal['portal_quickinstaller'].isProductInstalled('plone.resource')
-    ...     print portal['portal_quickinstaller'].isProductInstalled('plone.app.caching')
-    True
     True
 
 Let's now simulate a test.
@@ -203,10 +198,8 @@ should not.
     >>> with helpers.ploneSite() as portal:
     ...     print portal.title
     ...     print portal['portal_quickinstaller'].isProductInstalled('plone.resource')
-    ...     print portal['portal_quickinstaller'].isProductInstalled('plone.app.caching')
     ...     'folder1' in portal.objectIds()
     New title
-    True
     True
     False
 
@@ -224,10 +217,8 @@ component architecture changes from our layer.
     >>> with helpers.ploneSite() as portal:
     ...     print portal.title
     ...     print portal['portal_quickinstaller'].isProductInstalled('plone.resource')
-    ...     print portal['portal_quickinstaller'].isProductInstalled('plone.app.caching')
     Plone site
     False
-    True
 
 Let's tear down the rest of the layers too.
 
