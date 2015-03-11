@@ -25,6 +25,7 @@ def read(*rnames):
 
 long_description = \
     read('docs', 'source','README.rst') + \
+    '\n' +\
     read('CHANGES.rst')
 
 setup(
