@@ -1,7 +1,7 @@
 Changelog
 =========
 
-5.0b2 (unreleased)
+5.0b2 (2015-03-13)
 ------------------
 
 - remove test of applying an extension profile, we don't have a good one to 
