@@ -4,6 +4,13 @@ Changelog
 5.0b2 (unreleased)
 ------------------
 
+- remove test of applying an extension profile, we don't have a good one to 
+  test now.
+  [davidagli]
+
+- fix test, plone.app.theming does not get recorded as installed .
+  [davisagli]
+
 - fix: ``Products.CMFPlone`` needs the ``gopip`` index from 
   ``plone.app.folder``. So latter has to be initialized before CMFPlones 
   profile is applied (which installs the index to catalog). At the moment 
@@ -16,6 +23,9 @@ Changelog
   optimizations in the file touched.
   [jensens]
 
+- create memberfolder, if it is not there for testing.
+  [tomgross]
+ 
 
 5.0b1 (2014-10-23)
 ------------------
