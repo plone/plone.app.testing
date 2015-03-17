@@ -1,7 +1,7 @@
 Changelog
 =========
 
-4.2.5 (unreleased)
+4.2.5 (2015-03-17)
 ------------------
 
 - Add *Members* folder, if it is not there in test layer
