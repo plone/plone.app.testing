@@ -4,7 +4,8 @@ Changelog
 5.0b3 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Remove PloneLanguageTool from PloneFixture.
+  [timo]
 
 
 5.0b2 (2015-03-13)
