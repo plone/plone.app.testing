@@ -1,7 +1,7 @@
 Changelog
 =========
 
-5.0b3 (unreleased)
+5.0b3 (2015-03-26)
 ------------------
 
 - Remove PloneLanguageTool from PloneFixture.
