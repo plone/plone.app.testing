@@ -4,7 +4,8 @@ Changelog
 5.0b4 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Do not install CMFFormController.
+  [timo]
 
 
 5.0b3 (2015-03-26)

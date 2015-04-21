@@ -52,7 +52,6 @@ class PloneFixture(Layer):
         ('Products.PlonePAS',                    {'loadZCML': True}, ),
 
         ('Products.CMFQuickInstallerTool',       {'loadZCML': True}, ),
-        ('Products.CMFFormController',           {'loadZCML': True}, ),
         ('Products.CMFDynamicViewFTI',           {'loadZCML': True}, ),
         ('Products.CMFPlacefulWorkflow',         {'loadZCML': True}, ),
 
