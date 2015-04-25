@@ -7,6 +7,8 @@ Changelog
 - Do not install CMFFormController.
   [timo]
 
+- Do not install CMFDefault
+  [tomgross]
 
 5.0b3 (2015-03-26)
 ------------------

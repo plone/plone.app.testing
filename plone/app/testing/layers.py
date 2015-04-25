@@ -43,9 +43,7 @@ class PloneFixture(Layer):
         ('Products.DateRecurringIndex',          {'loadZCML': False},),
 
         ('Products.CMFUid',                      {'loadZCML': True}, ),
-
-        ('Products.CMFCore',                     {'loadZCML': True},),
-        ('Products.CMFDefault',                  {'loadZCML': True}, ),
+        ('Products.CMFCore',                     {'loadZCML': True}, ),
 
         ('Products.PluggableAuthService',        {'loadZCML': True}, ),
         ('Products.PluginRegistry',              {'loadZCML': True}, ),
