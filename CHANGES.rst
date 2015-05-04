@@ -1,12 +1,6 @@
 Changelog
 =========
 
-y (unreleased)
---------------
-
-- Nothing changed yet.
-
-
 5.0b4 (2015-05-04)
 ------------------
 
