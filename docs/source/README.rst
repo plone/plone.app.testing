@@ -143,6 +143,35 @@ lifecycle or transaction management. Instead, you should use a layer
 created with either the ``IntegrationTesting`` or ``FunctionalTesting``
 classes, as outlined below.
 
+PloneWithPackageLayer class
+---------------------------
+
+Most add-ons do not need more setup than loading a ZCML file and
+running a GenericSetup profile.
+
+With this helper class, a fixture can easily be instantiated::
+
+    from plone.app.testing import PloneWithPackageLayer
+    import my.addon
+    
+    FIXTURE = PloneWithPackageLayer(
+        zcml_package=my.addon,
+        zcml_filename='configure.zcml',
+        gs_profile_id='my.addon:default'
+        name="MyAddonFixture"
+    )
+
+PloneWithPackageLayer constructor takes two other keyword arguments:
+``bases`` and ``additional_z2_products``.
+
+The ``bases`` argument takes a sequence of base layer fixtures.
+It is useful, among other reasons,  
+to pass a fixture which makes other calls to plone.app.testing API.
+The need could arise in the development process.
+
+``additional_z2_products`` argument takes a sequence of package names 
+that need to be installed as Zope2 Products and are dependencies of the tested add-on.
+
 Integration and functional testing test lifecycles
 --------------------------------------------------
 
