@@ -1,7 +1,7 @@
 Changelog
 =========
 
-5.0b5 (unreleased)
+5.0b5 (2015-07-18)
 ------------------
 
 - Do not install CMFDefault.
