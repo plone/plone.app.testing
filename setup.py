@@ -10,7 +10,6 @@ tests_require = ['Products.CMFCore',
                  'Products.CMFPlacefulWorkflow',
                  'selenium',
                  'transaction',
-                 'unittest2',
                  'zope.interface',
                  'zope.publisher',
                  ]
