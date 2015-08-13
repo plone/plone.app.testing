@@ -25,6 +25,7 @@ In short, ``plone.app.testing`` includes:
 Compatibility
 -------------
 
+``plone.app.testing`` 5.x works with Plone 5.
 ``plone.app.testing`` 4.x works with Plone 4 and Zope 2.12. It may work with
 newer versions. It will not work with earlier versions. Use
 ``plone.app.testing`` 3.x for Plone 3 and Zope 2.10.
@@ -153,7 +154,7 @@ With this helper class, a fixture can easily be instantiated::
 
     from plone.app.testing import PloneWithPackageLayer
     import my.addon
-    
+
     FIXTURE = PloneWithPackageLayer(
         zcml_package=my.addon,
         zcml_filename='configure.zcml',
@@ -165,11 +166,11 @@ PloneWithPackageLayer constructor takes two other keyword arguments:
 ``bases`` and ``additional_z2_products``.
 
 The ``bases`` argument takes a sequence of base layer fixtures.
-It is useful, among other reasons,  
+It is useful, among other reasons,
 to pass a fixture which makes other calls to plone.app.testing API.
 The need could arise in the development process.
 
-``additional_z2_products`` argument takes a sequence of package names 
+``additional_z2_products`` argument takes a sequence of package names
 that need to be installed as Zope2 Products and are dependencies of the tested add-on.
 
 Integration and functional testing test lifecycles
