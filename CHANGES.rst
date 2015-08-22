@@ -1,7 +1,7 @@
 Changelog
 =========
 
-5.0b6 (unreleased)
+5.0b6 (2015-08-22)
 ------------------
 
 - No need for unittest2.
