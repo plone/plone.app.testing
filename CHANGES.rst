@@ -4,7 +4,8 @@ Changelog
 5.0b6 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- No need for unittest2.
+  [gforcada]
 
 
 5.0b5 (2015-07-18)
