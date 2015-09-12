@@ -9,30 +9,40 @@ todo
 Text Area
 ---------
 
-HTML::
+HTML:
+
+.. code-block:: html
 
   <textarea name="form.widgets.mytext"></textarea>
 
-Test::
+Test:
+
+.. code-block:: python
 
   self.browser.getControl(name='form.widgets.mytext').value = '<p>Lorem Ipsum</p>'
 
 Radio Buttons
 -------------
 
+.. code-block:: python
+
   self.browser.getControl(name='form.widgets.city:list').value = ['Berlin']
 
 Checkboxes
 ----------
 
-HTML::
+HTML:
+
+.. code-block:: html
 
   <input type="checkbox"
          value="selected"
          checked="checked"
          name="form.widgets.city:list">
 
-Test::
+Test:
+
+.. code-block:: python
 
   self.browser.getControl(
       name="form.widgets.city:list"
@@ -59,6 +69,8 @@ Buttons
 
 Image Upload
 ------------
+
+.. code-block:: python
 
   self.browser.getLink('Image').click()
   self.browser.getControl(name='form.widgets.title')\
