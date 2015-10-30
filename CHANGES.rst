@@ -4,7 +4,13 @@ Changelog
 5.0b7 (unreleased)
 ------------------
 
-- Nothing changed yet.
+New:
+
+- *add item here*
+
+Fixes:
+
+- *add item here*
 
 
 5.0b6 (2015-08-22)
