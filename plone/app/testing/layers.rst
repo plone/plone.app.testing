@@ -367,8 +367,8 @@ When the server is torn down, the ZServer thread is stopped.
 
     >>> runner.tear_down_unneeded(options, [], setupLayers)
     Tear down plone.app.testing.layers.Plone:ZServer in ... seconds.
-    Tear down plone.app.testing.layers.PloneFixture in ... seconds.
     Tear down plone.testing.z2.ZServer in ... seconds.
+    Tear down plone.app.testing.layers.PloneFixture in ... seconds.
     Tear down plone.testing.z2.Startup in ... seconds.
     Tear down plone.testing.zca.LayerCleanup in ... seconds.
 
@@ -486,8 +486,8 @@ When the server is torn down, the FTP server thread is stopped.
 
     >>> runner.tear_down_unneeded(options, [], setupLayers)
     Tear down plone.app.testing.layers.Plone:FTPServer in ... seconds.
-    Tear down plone.app.testing.layers.PloneFixture in ... seconds.
     Tear down plone.testing.z2.FTPServer in ... seconds.
+    Tear down plone.app.testing.layers.PloneFixture in ... seconds.
     Tear down plone.testing.z2.Startup in ... seconds.
     Tear down plone.testing.zca.LayerCleanup in ... seconds.
 
