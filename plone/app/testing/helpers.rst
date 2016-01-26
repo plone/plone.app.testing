@@ -12,7 +12,7 @@ their canonical locations at ``plone.app.testing.helpers``.
 
 For testing, we need a testrunner
 
-    >>> from zope.testing.testrunner import runner
+    >>> from zope.testrunner import runner
 
 Let's create a custom fixture layer that exercises these helpers. In this
 layer, we will perform the following setup:

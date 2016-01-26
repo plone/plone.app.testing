@@ -10,7 +10,8 @@ New:
 
 Fixes:
 
-- *add item here*
+- Depend on ``zope.testrunner`` and fix deprecated usage of ``zope.testing.testrunner``.
+  [thet]
 
 
 5.0b6 (2015-08-22)
