@@ -12,6 +12,7 @@ Welcome to plone.app.testing's documentation!
    README
    views
    zope-testbrowser
+   isolation
 
 
 
