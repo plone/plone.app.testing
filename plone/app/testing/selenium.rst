@@ -44,7 +44,7 @@ and then kill the backgrouned process.
 
 For testing, we need a testrunner
 
-    >>> from zope.testing.testrunner import runner
+    >>> from zope.testrunner import runner
 
 The ``SELENIUM_PLONE_FUNCTIONAL_TESTING`` layer instantiates the
 ``FunctionalTesting`` class with two bases: ``SELENIUM_FIXTURE``, as

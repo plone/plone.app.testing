@@ -12,6 +12,7 @@ tests_require = ['Products.CMFCore',
                  'transaction',
                  'zope.interface',
                  'zope.publisher',
+                 'zope.testrunner',
                  ]
 
 robot_require = ['robotsuite>=1.4.0',
