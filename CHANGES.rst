@@ -10,6 +10,9 @@ New:
 
 Fixes:
 
+- Fix ``layers.rst`` doctest to be compatible with older and newer zope.testrunner layer ordering.
+  [thet]
+
 - Depend on ``zope.testrunner`` and fix deprecated usage of ``zope.testing.testrunner``.
   [thet]
 
