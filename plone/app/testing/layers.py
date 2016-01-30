@@ -2,6 +2,7 @@
 # Layers setting up fixtures with a Plone site. Also importable from
 # plone.app.testing directly
 
+from Acquisition import aq_base
 from plone.app.testing.interfaces import DEFAULT_LANGUAGE
 from plone.app.testing.interfaces import PLONE_SITE_ID
 from plone.app.testing.interfaces import PLONE_SITE_TITLE
@@ -11,10 +12,13 @@ from plone.app.testing.interfaces import TEST_USER_ID
 from plone.app.testing.interfaces import TEST_USER_NAME
 from plone.app.testing.interfaces import TEST_USER_PASSWORD
 from plone.app.testing.interfaces import TEST_USER_ROLES
+from plone.app.testing.utils import MockMailHost
 from plone.testing import Layer
 from plone.testing import z2
 from plone.testing import zca
 from plone.testing import zodb
+from Products.MailHost.interfaces import IMailHost
+from zope.component import getSiteManager
 from zope.event import notify
 from zope.traversing.interfaces import BeforeTraverseEvent
 
@@ -310,6 +314,41 @@ class PloneTestLifecycle(object):
         # Unset the local component site
         from zope.site.hooks import setSite
         setSite(None)
+
+
+class MockMailHostLayer(Layer):
+    """Layer for setting up a MockMailHost to store all sent messages as
+    strings into a list at portal.MailHost.messages
+    """
+    defaultBases = (PLONE_FIXTURE,)
+
+    def setUp(self):
+        with z2.zopeApp() as app:
+            portal = app[PLONE_SITE_ID]
+            portal.email_from_address = 'noreply@example.com'
+            portal.email_from_name = 'Plone Site'
+            portal._original_MailHost = portal.MailHost
+            portal.MailHost = mailhost = MockMailHost('MailHost')
+            portal.MailHost.smtp_host = 'localhost'
+            sm = getSiteManager(context=portal)
+            sm.unregisterUtility(provided=IMailHost)
+            sm.registerUtility(mailhost, provided=IMailHost)
+
+    def tearDown(self):
+        with z2.zopeApp() as app:
+            portal = app[PLONE_SITE_ID]
+            _o_mailhost = getattr(portal, '_original_MailHost', None)
+            if _o_mailhost:
+                portal.MailHost = portal._original_MailHost
+                sm = getSiteManager(context=portal)
+                sm.unregisterUtility(provided=IMailHost)
+                sm.registerUtility(
+                    aq_base(portal._original_MailHost),
+                    provided=IMailHost
+                )
+
+
+MOCK_MAILHOST_FIXTURE = MockMailHostLayer()
 
 
 class IntegrationTesting(PloneTestLifecycle, z2.IntegrationTesting):
