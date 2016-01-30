@@ -1,11 +1,13 @@
+# -*- coding: utf-8 -*-
+from plone.app.testing import FunctionalTesting
+from plone.app.testing import PLONE_FIXTURE
+from plone.app.testing import TEST_USER_NAME
+from plone.app.testing import TEST_USER_PASSWORD
+from plone.testing import Layer
+from plone.testing import z2
+
 import os
 import transaction
-
-from plone.testing import Layer
-from plone.app.testing import PLONE_FIXTURE
-from plone.app.testing import FunctionalTesting
-from plone.app.testing import TEST_USER_NAME, TEST_USER_PASSWORD
-from plone.testing import z2
 
 
 class SeleniumLayer(Layer):
@@ -15,7 +17,9 @@ class SeleniumLayer(Layer):
         # Start up Selenium
         driver = os.environ.get('SELENIUM_DRIVER', '').lower() or 'firefox'
         webdriver = __import__(
-            'selenium.webdriver.%s.webdriver' % driver, fromlist=['WebDriver'])
+            'selenium.webdriver.{0}.webdriver'.format(driver),
+            fromlist=['WebDriver']
+        )
         args = [arg.strip() for arg in
                 os.environ.get('SELENIUM_ARGS', '').split()
                 if arg.strip()]
@@ -28,10 +32,10 @@ class SeleniumLayer(Layer):
 SELENIUM_FIXTURE = SeleniumLayer()
 SELENIUM_FUNCTIONAL_TESTING = FunctionalTesting(
     bases=(SELENIUM_FIXTURE, ),
-    name="SeleniumTesting:Functional")
+    name='SeleniumTesting:Functional')
 SELENIUM_PLONE_FUNCTIONAL_TESTING = FunctionalTesting(
     bases=(SELENIUM_FIXTURE, PLONE_FIXTURE),
-    name="SeleniumTesting:Functional")
+    name='SeleniumTesting:Functional')
 
 
 # Helper functions
@@ -57,13 +61,13 @@ def login(selenium, portal, username=False, password=False):
 
 
 def click(selenium, xpath):
-    if xpath.count("link="):
-        link = xpath.split("link=")[-1]
+    if xpath.count('link='):
+        link = xpath.split('link=')[-1]
         element = selenium.find_element_by_partial_link_text(link)
-    elif xpath.count("//"):
+    elif xpath.count('//'):
         element = selenium.find_element_by_xpath(xpath)
     elif xpath.count('#'):
-        eleName = xpath.split("#")[-1]
+        eleName = xpath.split('#')[-1]
         element = selenium.find_element_by_id(eleName)
     else:
         element = selenium.find_element_by_name(xpath)
@@ -76,16 +80,20 @@ def type(selenium, name, value):
 
 
 def typeMce(selenium, value):
-    '''
-    Text fields with mce are different.We need to go into the frame and update the
-    p element to make this work. Unfortunately the code to get out of the frame is not
-    implemented in python yet. The workaround is to use this handle trick, which
-    is currently unsupported in chrome. See issue #405 for more. In general there
-    are still a lot of open issues on frame support so if this breaks it won't
-    be a surprise.'''
+    """
+    Text fields with mce are different.
+    We need to go into the frame and update the p element to make this work.
+    Unfortunately the code to get out of the frame is not implemented in python
+    yet.
+    The workaround is to use this handle trick,
+    which is currently unsupported in chrome.
+    See issue #405 for more.
+    In general there are still a lot of open issues on frame support so if
+    this breaks it won't be a surprise.
+    """
     handle = selenium.current_window_handle
-    selenium.switch_to_frame("form.text_ifr")
-    ele = selenium.find_element_by_xpath("//p")
+    selenium.switch_to_frame('form.text_ifr')
+    ele = selenium.find_element_by_xpath('//p')
     ele.send_keys(value)
     selenium.switch_to_window(handle)
 
@@ -97,7 +105,7 @@ def clear(selenium, name):
 def select(selenium, xpath1, xpath2=''):
     xpath = xpath1
     if xpath2:
-        xpath = "%s['%s']"%(xpath1, xpath2)
+        xpath = "{0}['{1}']".format(xpath1, xpath2)
         xpath = xpath.replace("select['label=", "select/option['text()=")
     selenium.find_element_by_xpath(xpath).click()
 
@@ -109,7 +117,7 @@ def waitForPageToLoad(selenium, foo):
 
 def publish(selenium):
     click(selenium, "//dl[@id='plone-contentmenu-workflow']/dt/a")
-    click(selenium, "#workflow-transition-publish")
+    click(selenium, '#workflow-transition-publish')
 
 
 def submit(selenium, formId):

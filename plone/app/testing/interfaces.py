@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Constants for names used in layer setup - also importable from
 # plone.app.testing directly
 

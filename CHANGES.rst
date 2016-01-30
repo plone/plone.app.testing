@@ -16,6 +16,8 @@ Fixes:
 - Depend on ``zope.testrunner`` and fix deprecated usage of ``zope.testing.testrunner``.
   [thet]
 
+- Cleanup code, flake8, sort imports, etc.
+  [gforcada]
 
 5.0b6 (2015-08-22)
 ------------------

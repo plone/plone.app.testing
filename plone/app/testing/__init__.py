@@ -1,55 +1,37 @@
+# -*- coding: utf-8 -*-
+# flake8: noqa
 # Layers
-from plone.app.testing.layers import (
-    PloneFixture,
-    PloneTestLifecycle,
-    IntegrationTesting,
-    FunctionalTesting,
-    PLONE_FIXTURE,
-
-    PLONE_INTEGRATION_TESTING,
-    PLONE_FUNCTIONAL_TESTING,
-
-    PLONE_ZSERVER,
-    PLONE_FTP_SERVER,
-)
-
-# Helper functions
-from plone.app.testing.helpers import (
-    login,
-    logout,
-    setRoles,
-
-    quickInstallProduct,
-    applyProfile,
-
-    pushGlobalRegistry,
-    popGlobalRegistry,
-
-    tearDownMultiPluginRegistration,
-
-    ploneSite,
-
-    PloneSandboxLayer,
-    PloneWithPackageLayer
-)
-
-# Constants
-from plone.app.testing.interfaces import (
-    PLONE_SITE_ID,
-    PLONE_SITE_TITLE,
-    DEFAULT_LANGUAGE,
-
-    TEST_USER_NAME,
-    TEST_USER_ID,
-    TEST_USER_PASSWORD,
-    TEST_USER_ROLES,
-
-    SITE_OWNER_NAME,
-    SITE_OWNER_PASSWORD,
-    ROBOT_TEST_LEVEL,
-)
-
 # Cleanup handlers
-from plone.app.testing.cleanup import (
-    cleanUpMultiPlugins,
-)
+# Constants
+# Helper functions
+from plone.app.testing.cleanup import cleanUpMultiPlugins
+from plone.app.testing.helpers import applyProfile
+from plone.app.testing.helpers import login
+from plone.app.testing.helpers import logout
+from plone.app.testing.helpers import PloneSandboxLayer
+from plone.app.testing.helpers import ploneSite
+from plone.app.testing.helpers import PloneWithPackageLayer
+from plone.app.testing.helpers import popGlobalRegistry
+from plone.app.testing.helpers import pushGlobalRegistry
+from plone.app.testing.helpers import quickInstallProduct
+from plone.app.testing.helpers import setRoles
+from plone.app.testing.helpers import tearDownMultiPluginRegistration
+from plone.app.testing.interfaces import DEFAULT_LANGUAGE
+from plone.app.testing.interfaces import PLONE_SITE_ID
+from plone.app.testing.interfaces import PLONE_SITE_TITLE
+from plone.app.testing.interfaces import ROBOT_TEST_LEVEL
+from plone.app.testing.interfaces import SITE_OWNER_NAME
+from plone.app.testing.interfaces import SITE_OWNER_PASSWORD
+from plone.app.testing.interfaces import TEST_USER_ID
+from plone.app.testing.interfaces import TEST_USER_NAME
+from plone.app.testing.interfaces import TEST_USER_PASSWORD
+from plone.app.testing.interfaces import TEST_USER_ROLES
+from plone.app.testing.layers import FunctionalTesting
+from plone.app.testing.layers import IntegrationTesting
+from plone.app.testing.layers import PLONE_FIXTURE
+from plone.app.testing.layers import PLONE_FTP_SERVER
+from plone.app.testing.layers import PLONE_FUNCTIONAL_TESTING
+from plone.app.testing.layers import PLONE_INTEGRATION_TESTING
+from plone.app.testing.layers import PLONE_ZSERVER
+from plone.app.testing.layers import PloneFixture
+from plone.app.testing.layers import PloneTestLifecycle

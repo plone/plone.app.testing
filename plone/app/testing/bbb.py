@@ -1,10 +1,12 @@
+# -*- coding: utf-8 -*-
 """Backwards-compatibility test class for PloneTestCase."""
 
-from plone.testing import z2
-from plone.app import testing
-from Testing.ZopeTestCase.functional import Functional
-from Products.CMFPlone.utils import _createObjectByType
 from AccessControl import getSecurityManager
+from plone.app import testing
+from plone.testing import z2
+from Products.CMFPlone.utils import _createObjectByType
+from Testing.ZopeTestCase.functional import Functional
+
 import transaction
 import unittest
 
@@ -64,7 +66,8 @@ class PloneTestCase(Functional, unittest.TestCase):
         self.beforeSetUp()
         self.app = self.layer['app']
         self.portal = self.layer['portal']
-        self.folder = self.portal.portal_membership.getHomeFolder(testing.TEST_USER_ID)
+        self.folder = self.portal.portal_membership.getHomeFolder(
+            testing.TEST_USER_ID)
         transaction.commit()
         self.afterSetUp()
 
