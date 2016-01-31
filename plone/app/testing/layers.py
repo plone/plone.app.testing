@@ -1,26 +1,22 @@
+# -*- coding: utf-8 -*-
 # Layers setting up fixtures with a Plone site. Also importable from
 # plone.app.testing directly
 
+from plone.app.testing.interfaces import DEFAULT_LANGUAGE
+from plone.app.testing.interfaces import PLONE_SITE_ID
+from plone.app.testing.interfaces import PLONE_SITE_TITLE
+from plone.app.testing.interfaces import SITE_OWNER_NAME
+from plone.app.testing.interfaces import SITE_OWNER_PASSWORD
+from plone.app.testing.interfaces import TEST_USER_ID
+from plone.app.testing.interfaces import TEST_USER_NAME
+from plone.app.testing.interfaces import TEST_USER_PASSWORD
+from plone.app.testing.interfaces import TEST_USER_ROLES
 from plone.testing import Layer
-from plone.testing import zodb, zca, z2
-
+from plone.testing import z2
+from plone.testing import zca
+from plone.testing import zodb
 from zope.event import notify
 from zope.traversing.interfaces import BeforeTraverseEvent
-
-
-from plone.app.testing.interfaces import (
-    PLONE_SITE_ID,
-    PLONE_SITE_TITLE,
-    DEFAULT_LANGUAGE,
-
-    TEST_USER_ID,
-    TEST_USER_NAME,
-    TEST_USER_PASSWORD,
-    TEST_USER_ROLES,
-
-    SITE_OWNER_NAME,
-    SITE_OWNER_PASSWORD
-)
 
 
 class PloneFixture(Layer):
@@ -287,7 +283,6 @@ class PloneTestLifecycle(object):
         portal.clearCurrentSkin()
         portal.setupCurrentSkin(portal.REQUEST)
         notify(BeforeTraverseEvent(portal, portal.REQUEST))
-
 
         # Pseudo-login as the test user
         from plone.app.testing import helpers

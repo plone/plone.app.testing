@@ -1,18 +1,20 @@
+# -*- coding: utf-8 -*-
 # Helper functions for Plone testing. Also importable from plone.app.testing
 # directly
 
-import contextlib
-
+from plone.app.testing import layers
+from plone.app.testing.interfaces import PLONE_SITE_ID
+from plone.app.testing.interfaces import SITE_OWNER_NAME
+from plone.app.testing.interfaces import TEST_USER_NAME
+from plone.testing import Layer
+from plone.testing import security
+from plone.testing import z2
+from plone.testing import zca
+from plone.testing import zodb
 from zope.configuration import xmlconfig
 
-from plone.testing import z2, zodb, zca, security, Layer
+import contextlib
 
-from plone.app.testing import layers
-from plone.app.testing.interfaces import (
-    PLONE_SITE_ID,
-    SITE_OWNER_NAME,
-    TEST_USER_NAME,
-)
 
 # User management
 
@@ -111,7 +113,7 @@ def applyProfile(portal, profileName, purge_old=None,
 
     try:
         setupTool = portal['portal_setup']
-        profileId = 'profile-%s' % (profileName, )
+        profileId = 'profile-{0}'.format(profileName)
         setupTool.runAllImportStepsFromProfile(
             profileId,
             purge_old=purge_old,
@@ -310,15 +312,15 @@ class PloneSandboxLayer(Layer):
             # Push a new database storage so that database changes
             # commited during layer setup can be easily torn down
             self['zodbDB'] = zodb.stackDemoStorage(self.get('zodbDB'),
-                    name=self.__name__)
+                                                   name=self.__name__)
 
-            # Push a new configuration context so that it's possible to re-import
-            # ZCML files after tear-down
+            # Push a new configuration context so that it's possible to
+            # re-import ZCML files after tear-down
             name = self.__name__ if self.__name__ is not None else 'not-named'
-            contextName = "PloneSandboxLayer-%s" % name
+            contextName = 'PloneSandboxLayer-{0}'.format(name)
             self['configurationContext'] = configurationContext = (
                 zca.stackConfigurationContext(self.get('configurationContext'),
-                name=contextName))
+                                              name=contextName))
 
             with ploneSite() as portal:
 
@@ -337,8 +339,7 @@ class PloneSandboxLayer(Layer):
 
                 security.pushCheckers()
 
-                from Products.PluggableAuthService.PluggableAuthService import (
-                        MultiPlugins)
+                from Products.PluggableAuthService.PluggableAuthService import MultiPlugins  # noqa
 
                 preSetupMultiPlugins = MultiPlugins[:]
 
@@ -352,7 +353,7 @@ class PloneSandboxLayer(Layer):
 
             # Keep track of PAS plugins that were added during setup
             self.snapshotMultiPlugins(preSetupMultiPlugins)
-        except:
+        except Exception:
             del self['configurationContext']
             self['zodbDB'].close()
             del self['zodbDB']
@@ -435,7 +436,8 @@ class PloneSandboxLayer(Layer):
 class PloneWithPackageLayer(PloneSandboxLayer):
 
     def __init__(self, bases=None, name=None, module=None, zcml_filename=None,
-        zcml_package=None, gs_profile_id=None, additional_z2_products=()):
+                 zcml_package=None, gs_profile_id=None,
+                 additional_z2_products=()):
         super(PloneWithPackageLayer, self).__init__(bases, name, module)
         self.zcml_filename = zcml_filename
         self.zcml_package = zcml_package
@@ -457,11 +459,12 @@ class PloneWithPackageLayer(PloneSandboxLayer):
         Can be overridden to load more ZCML.
         """
         if self.zcml_filename is None:
-            raise ValueError("ZCML file name has not been provided.")
+            raise ValueError('ZCML file name has not been provided.')
         if self.zcml_package is None:
             raise ValueError(
-                "The package that contains the ZCML file "
-                "has not been provided.")
+                'The package that contains the ZCML file '
+                'has not been provided.'
+            )
         self.loadZCML(self.zcml_filename, package=self.zcml_package)
 
     def setUpPloneSite(self, portal):

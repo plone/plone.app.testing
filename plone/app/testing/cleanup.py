@@ -1,7 +1,9 @@
+# -*- coding: utf-8 -*-
 """Cleanup handlers for various global registries
 """
 
 from zope.testing.cleanup import addCleanUp
+
 
 # Make sure cleanup handlers from GenericSetup are registered
 try:
@@ -18,7 +20,7 @@ except ImportError:
 
 def cleanUpMultiPlugins():
     try:
-        from Products.PluggableAuthService.PluggableAuthService import MultiPlugins
+        from Products.PluggableAuthService.PluggableAuthService import MultiPlugins  # noqa
     except ImportError:
         pass
     else:
