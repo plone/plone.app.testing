@@ -6,7 +6,9 @@ Changelog
 
 New:
 
-- *add item here*
+- Add a MOCK_MAILHOST_FIXTURE fixture that integration and functional tests layers can depend on.
+  This allows to easily check how mails are sent from Plone.
+  [gforcada]
 
 Fixes:
 
