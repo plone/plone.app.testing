@@ -4,7 +4,6 @@
 
 from zope.testing.cleanup import addCleanUp
 
-
 # Make sure cleanup handlers from GenericSetup are registered
 try:
     import Products.GenericSetup.zcml
@@ -13,7 +12,7 @@ except ImportError:
 
 # Make sure cleanup handlers from PAS are registered
 try:
-    import Products.PluggableAuthService.zcml
+    import Products.PluggableAuthService.zcml  # noqa
 except ImportError:
     pass
 
