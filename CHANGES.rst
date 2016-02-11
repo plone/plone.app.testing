@@ -21,6 +21,10 @@ Fixes:
 - Cleanup code, flake8, sort imports, etc.
   [gforcada]
 
+- Fix RAM cache error with bbb.PloneTestCase.
+  [ebrehault]
+
+
 5.0b6 (2015-08-22)
 ------------------
 

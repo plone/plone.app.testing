@@ -308,7 +308,7 @@ class PloneTestLifecycle(object):
         from zope.component import queryUtility
         from plone.memoize.ram import IRAMCache
         cache = queryUtility(IRAMCache)
-        if cache is not None:
+        if cache and getattr(cache, '_cacheId', None):
             cache.invalidateAll()
 
         # Unset the local component site
