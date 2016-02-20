@@ -1,9 +1,5 @@
 # -*- coding: utf-8 -*-
 # flake8: noqa
-# Layers
-# Cleanup handlers
-# Constants
-# Helper functions
 from plone.app.testing.cleanup import cleanUpMultiPlugins
 from plone.app.testing.helpers import applyProfile
 from plone.app.testing.helpers import login
@@ -28,6 +24,7 @@ from plone.app.testing.interfaces import TEST_USER_PASSWORD
 from plone.app.testing.interfaces import TEST_USER_ROLES
 from plone.app.testing.layers import FunctionalTesting
 from plone.app.testing.layers import IntegrationTesting
+from plone.app.testing.layers import MOCK_MAILHOST_FIXTURE
 from plone.app.testing.layers import PLONE_FIXTURE
 from plone.app.testing.layers import PLONE_FTP_SERVER
 from plone.app.testing.layers import PLONE_FUNCTIONAL_TESTING

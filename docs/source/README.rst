@@ -144,6 +144,40 @@ lifecycle or transaction management. Instead, you should use a layer
 created with either the ``IntegrationTesting`` or ``FunctionalTesting``
 classes, as outlined below.
 
+Mock MailHost
+-------------
+
++------------+--------------------------------------------------+
+| Layer:     | ``plone.app.testing.MOCK_MAILHOST_FIXTURE``      |
++------------+--------------------------------------------------+
+| Class:     | ``plone.app.testing.layers.MockMailHostLayer``   |
++------------+--------------------------------------------------+
+| Bases:     | ``plone.app.testing.layers.PLONE_FIXTURE``       |
++------------+--------------------------------------------------+
+| Resources: |                                                  |
++------------+--------------------------------------------------+
+
+This layer builds on top of ``PLONE_FIXTURE`` to patch Plone's MailHost implementation.
+
+With it,
+any attempt to send an email will instead store each of them as a string in a list in ``portal.MailHost.messages``.
+
+You should not use this layer directly, as it does not provide any test
+lifecycle or transaction management. Instead, you should use a layer
+created with either the ``IntegrationTesting`` or ``FunctionalTesting``
+classes, like::
+
+    from plone.app.testing import MOCK_MAILHOST_FIXTURE
+
+    MY_INTEGRATION_TESTING = IntegrationTesting(
+        bases=(
+            MY_FIXTURE,
+            MOCK_MAILHOST_FIXTURE,
+        ),
+        name="MyFixture:Integration"
+    )
+
+
 PloneWithPackageLayer class
 ---------------------------
 

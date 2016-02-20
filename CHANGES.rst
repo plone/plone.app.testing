@@ -6,7 +6,9 @@ Changelog
 
 New:
 
-- *add item here*
+- Add a MOCK_MAILHOST_FIXTURE fixture that integration and functional tests layers can depend on.
+  This allows to easily check how mails are sent from Plone.
+  [gforcada]
 
 Fixes:
 
@@ -18,6 +20,10 @@ Fixes:
 
 - Cleanup code, flake8, sort imports, etc.
   [gforcada]
+
+- Fix RAM cache error with bbb.PloneTestCase.
+  [ebrehault]
+
 
 5.0b6 (2015-08-22)
 ------------------
