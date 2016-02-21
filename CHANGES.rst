@@ -1,7 +1,19 @@
 Changelog
 =========
 
-5.0b7 (unreleased)
+5.0.1 (unreleased)
+------------------
+
+New:
+
+- *add item here*
+
+Fixes:
+
+- *add item here*
+
+
+5.0.0 (2016-02-20)
 ------------------
 
 New:
