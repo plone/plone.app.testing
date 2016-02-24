@@ -19,6 +19,7 @@ from plone.testing import zca
 from plone.testing import zodb
 from Products.MailHost.interfaces import IMailHost
 from zope.component import getSiteManager
+from zope.component.hooks import setSite
 from zope.event import notify
 from zope.traversing.interfaces import BeforeTraverseEvent
 
@@ -280,7 +281,6 @@ class PloneTestLifecycle(object):
         """
 
         # Set up the local site manager
-        from zope.site.hooks import setSite
         setSite(portal)
 
         # Reset skin data
@@ -312,7 +312,6 @@ class PloneTestLifecycle(object):
             cache.invalidateAll()
 
         # Unset the local component site
-        from zope.site.hooks import setSite
         setSite(None)
 
 

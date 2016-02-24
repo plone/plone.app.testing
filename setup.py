@@ -58,7 +58,6 @@ setup(
         'zope.configuration',
         'zope.component',
         'zope.dottedname',
-        'zope.site',
         'zope.testing',
         'five.localsitemanager',
         'plone.memoize',

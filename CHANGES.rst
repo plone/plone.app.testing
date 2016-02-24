@@ -10,7 +10,8 @@ New:
 
 Fixes:
 
-- *add item here*
+- Replace deprecated ``zope.site.hooks`` import with ``zope.component.hooks``.
+  [thet]
 
 
 5.0.0 (2016-02-20)
