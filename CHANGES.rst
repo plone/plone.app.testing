@@ -4,10 +4,6 @@ Changelog
 5.0.1 (unreleased)
 ------------------
 
-New:
-
-- *add item here*
-
 Fixes:
 
 - Replace deprecated ``zope.site.hooks`` import with ``zope.component.hooks``.
