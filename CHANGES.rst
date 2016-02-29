@@ -1,8 +1,12 @@
 Changelog
 =========
 
-5.0.1 (unreleased)
+5.0.2 (unreleased)
 ------------------
+
+Incompatibilities:
+
+- *add item here*
 
 New:
 
@@ -11,6 +15,15 @@ New:
 Fixes:
 
 - *add item here*
+
+
+5.0.1 (2016-02-26)
+------------------
+
+Fixes:
+
+- Replace deprecated ``zope.site.hooks`` import with ``zope.component.hooks``.
+  [thet]
 
 
 5.0.0 (2016-02-20)

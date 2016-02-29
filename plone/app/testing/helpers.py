@@ -11,6 +11,10 @@ from plone.testing import security
 from plone.testing import z2
 from plone.testing import zca
 from plone.testing import zodb
+from zope.component import getGlobalSiteManager
+from zope.component.hooks import getSite
+from zope.component.hooks import setHooks
+from zope.component.hooks import setSite
 from zope.configuration import xmlconfig
 
 import contextlib
@@ -144,8 +148,6 @@ def pushGlobalRegistry(portal, new=None, name=None):
     Also ensure that the persistent component registry at ``portal`` has the
     new global registry as its base.
     """
-
-    from zope.site.hooks import setSite, getSite, setHooks
     site = getSite()
 
     localSiteManager = portal.getSiteManager()
@@ -173,15 +175,9 @@ def popGlobalRegistry(portal):
     # First, check if the component site has the global site manager in its
     # bases. If so, that site manager is about to disappear, so set its
     # base(s) as the new base(s) for the local site manager.
-
-    from zope.component import getGlobalSiteManager
     globalSiteManager = getGlobalSiteManager()
-
     gsmBases = globalSiteManager.__bases__
-
-    from zope.site.hooks import setSite, getSite, setHooks
     site = getSite()
-
     localSiteManager = portal.getSiteManager()
 
     bases = []
@@ -225,10 +221,7 @@ def ploneSite(db=None, connection=None, environ=None):
     pass an open connection as ``connection`` (the connection will not be
     closed).
     """
-
-    from zope.site.hooks import setSite, getSite, setHooks
     setHooks()
-
     site = getSite()
 
     with z2.zopeApp(db, connection, environ) as app:
@@ -323,8 +316,6 @@ class PloneSandboxLayer(Layer):
                                               name=contextName))
 
             with ploneSite() as portal:
-
-                from zope.site.hooks import setSite, setHooks
                 setHooks()
 
                 # Make sure there's no local site manager while we load ZCML
@@ -364,8 +355,6 @@ class PloneSandboxLayer(Layer):
         with z2.zopeApp() as app:
 
             portal = app[PLONE_SITE_ID]
-
-            from zope.site.hooks import setSite, setHooks
             setHooks()
             setSite(portal)
 
