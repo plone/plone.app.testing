@@ -10,7 +10,7 @@ their canonical locations at ``plone.app.testing.layers``.
 For testing, we need a testrunner
 
     >>> from zope.testrunner import runner
-    
+
 
 Plone site fixture
 ~~~~~~~~~~~~~~~~~~
