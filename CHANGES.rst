@@ -14,7 +14,8 @@ New:
 
 Fixes:
 
-- *add item here*
+- Do not use install Products.SecureMailHost in the PloneFixture if it isn't available
+  [vangheem]
 
 
 5.0.1 (2016-02-26)
