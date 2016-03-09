@@ -60,7 +60,6 @@ class PloneFixture(Layer):
         ('Products.ExternalEditor',              {'loadZCML': True}, ),
         ('Products.ExtendedPathIndex',           {'loadZCML': True}, ),
         ('Products.ResourceRegistries',          {'loadZCML': True}, ),
-        ('Products.SecureMailHost',              {'loadZCML': True}, ),
         ('Products.SiteAccess',                  {'loadZCML': False}, ),
 
         ('Products.PasswordResetTool',           {'loadZCML': True}, ),
@@ -78,6 +77,13 @@ class PloneFixture(Layer):
         ('Products.PythonScripts',               {'loadZCML': False}, ),
 
     )
+
+    try:
+        import Products.SecureMailHost  # noqa
+        products = products + (
+            ('Products.SecureMailHost', {'loadZCML': True}, ),)
+    except ImportError:
+        pass
 
     # Extension profiles to be installed with site setup
     extensionProfiles = (
