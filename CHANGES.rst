@@ -4,14 +4,6 @@ Changelog
 5.0.2 (unreleased)
 ------------------
 
-Incompatibilities:
-
-- *add item here*
-
-New:
-
-- *add item here*
-
 Fixes:
 
 - Do not use install Products.SecureMailHost in the PloneFixture if it isn't available
