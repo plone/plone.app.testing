@@ -254,10 +254,13 @@ layer base class which helps implement this pattern.
     ...         from Products.GenericSetup.registry import _profile_registry
     ...         from Products.GenericSetup.registry import _import_step_registry
     ...         from Products.GenericSetup.registry import _export_step_registry
+    ...         from Products.GenericSetup import upgrade
     ...
     ...         _profile_registry.registerProfile('dummy1', u"My package", u"", ".", 'plone.app.testing')
     ...         _import_step_registry.registerStep('import1', version=1, handler='plone.app.testing.tests.dummy', title=u"Dummy import step", description=u"")
     ...         _export_step_registry.registerStep('export1', handler='plone.app.testing.tests.dummy', title=u"Dummy import step", description=u"")
+    ...         upgrade_step = upgrade.UpgradeStep(u'Dummy upgrade step', 'plone.app.testing:default', '1000', '1001', '', 'plone.app.testing.tests.dummy')
+    ...         upgrade._registerUpgradeStep(upgrade_step)
     ...
     ...         # And then pretend to register a PAS multi-plugin
     ...         from Products.PluggableAuthService import PluggableAuthService
@@ -336,6 +339,7 @@ Again, our state should now be available.
     >>> from Products.GenericSetup.registry import _profile_registry
     >>> from Products.GenericSetup.registry import _import_step_registry
     >>> from Products.GenericSetup.registry import _export_step_registry
+    >>> from Products.GenericSetup.upgrade import _upgrade_registry
 
     >>> numProfiles = len(_profile_registry.listProfiles())
     >>> 'plone.app.testing:dummy1' in _profile_registry.listProfiles()
@@ -352,6 +356,10 @@ Again, our state should now be available.
     >>> from Products.PluggableAuthService import PluggableAuthService
     >>> 'dummy_plugin1' in PluggableAuthService.MultiPlugins
     True
+
+    >>> numUpgrades = len(_upgrade_registry.keys())
+    >>> len(_upgrade_registry.getUpgradeStepsForProfile('plone.app.testing:default'))
+    1
 
 We'll now tear down just the ``MY_INTEGRATION_TESTING`` layer. At this
 point, we should still have a Plone site, but none of the changes from our
@@ -384,6 +392,11 @@ layer.
     True
     >>> 'export1' in _export_step_registry.listSteps()
     False
+
+    >>> len(_upgrade_registry.keys()) == numUpgrades - 1
+    True
+    >>> len(_upgrade_registry.getUpgradeStepsForProfile('plone.app.testing:default'))
+    0
 
     >>> from Products.PluggableAuthService import PluggableAuthService
     >>> 'dummy_plugin1' in PluggableAuthService.MultiPlugins
