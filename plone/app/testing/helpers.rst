@@ -70,6 +70,9 @@ need to tear that down as well.
     ...
     ...         with helpers.ploneSite() as portal:
     ...
+    ...             # Persist GenericSetup profile upgrade versions for easy rollback.
+    ...             helpers.persist_profile_upgrade_versions(portal)
+    ...
     ...             # Push a new component registry so that ZCML registations
     ...             # and other global component registry changes are sandboxed
     ...             helpers.pushGlobalRegistry(portal)
@@ -133,9 +136,12 @@ having taken effect.
 We should also see our product installation in the quickinstaller tool
 and the results of the profile having been applied.
 
+    >>> from Products.GenericSetup.tool import UNKNOWN
     >>> with helpers.ploneSite() as portal:
     ...     print portal['portal_quickinstaller'].isProductInstalled('plone.resource')
+    ...     portal.portal_setup.getLastVersionForProfile('plone.resource:default') == UNKNOWN
     True
+    False
 
 Let's now simulate a test.
 
@@ -199,8 +205,10 @@ should not.
     ...     print portal.title
     ...     print portal['portal_quickinstaller'].isProductInstalled('plone.resource')
     ...     'folder1' in portal.objectIds()
+    ...     portal.portal_setup.getLastVersionForProfile('plone.resource:default') == UNKNOWN
     New title
     True
+    False
     False
 
 We'll now tear down just the ``HELPER_DEMOS_INTEGRATION_TESTING`` layer. At this
@@ -217,6 +225,8 @@ component architecture changes from our layer.
     >>> with helpers.ploneSite() as portal:
     ...     print portal.title
     ...     print portal['portal_quickinstaller'].isProductInstalled('plone.resource')
+    ...     # This should be True, but is False:
+    ...     # portal.portal_setup.getLastVersionForProfile('plone.resource:default') == UNKNOWN
     Plone site
     False
 

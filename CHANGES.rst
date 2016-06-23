@@ -10,7 +10,8 @@ Breaking changes:
 
 New features:
 
-- *add item here*
+- In PloneSandboxLayer make profile upgrade versions persistent.  This
+  way installed profile versions get reset in teardown.  [maurits]
 
 Bug fixes:
 

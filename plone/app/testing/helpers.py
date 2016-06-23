@@ -204,6 +204,21 @@ def popGlobalRegistry(portal):
     return previous
 
 
+def persist_profile_upgrade_versions(portal):
+    """Persist the profile_upgrade_versions of portal_setup.
+
+    Until at least Products.GenericSetup 1.8.3 this is a standard
+    non-persistent dictionary, which means a transaction rollback does
+    not rollback changes to this dictionary.  So we make it a persistent
+    mapping.  Call this once in layer setup and you have easy rollback.
+    """
+    from persistent.mapping import PersistentMapping
+    puv = portal.portal_setup._profile_upgrade_versions
+    if isinstance(puv, PersistentMapping):
+        return
+    portal.portal_setup._profile_upgrade_versions = PersistentMapping(puv)
+
+
 @contextlib.contextmanager
 def ploneSite(db=None, connection=None, environ=None):
     """Context manager for working with the Plone portal during layer setup::
@@ -324,6 +339,10 @@ class PloneSandboxLayer(Layer):
                 # Push a new component registry so that ZCML registations
                 # and other global component registry changes are sandboxed
                 pushGlobalRegistry(portal)
+
+                # Persist GenericSetup profile upgrade versions for easy
+                # rollback.
+                persist_profile_upgrade_versions(portal)
 
                 # Make sure zope.security checkers can be set up and torn down
                 # reliably
