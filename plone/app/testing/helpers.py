@@ -84,13 +84,27 @@ def quickInstallProduct(portal, productName, reinstall=False):
     z2.login(app['acl_users'], SITE_OWNER_NAME)
 
     try:
-        quickinstaller = portal['portal_quickinstaller']
+        from Products.CMFPlone.utils import get_installer
+    except ImportError:
+        # BBB For Plone 5.0 and lower.
+        qi = portal['portal_quickinstaller']
+        old_qi = True
+    else:
+        qi = get_installer(portal)
+        old_qi = False
 
-        if quickinstaller.isProductInstalled(productName):
-            if reinstall:
-                quickinstaller.reinstallProducts([productName])
+    try:
+        if old_qi:
+            if not qi.isProductInstalled(productName):
+                qi.installProduct(productName)
+            elif reinstall:
+                qi.reinstallProducts([productName])
         else:
-            quickinstaller.installProduct(productName)
+            if not qi.is_product_installed(productName):
+                qi.install_product(productName, allow_hidden=True)
+            elif reinstall:
+                qi.uninstall_product(productName)
+                qi.install_product(productName, allow_hidden=True)
 
         portal.clearCurrentSkin()
         portal.setupCurrentSkin(portal.REQUEST)

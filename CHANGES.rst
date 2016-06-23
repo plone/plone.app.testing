@@ -10,6 +10,9 @@ Breaking changes:
 
 New features:
 
+- Use get_installer instead of portal_quickinstaller when available, for
+  Plone 5.1 and higher.  [maurits]
+
 - In PloneSandboxLayer make profile upgrade versions persistent.  This
   way installed profile versions get reset in teardown.  [maurits]
 

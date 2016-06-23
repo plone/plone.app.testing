@@ -38,7 +38,7 @@ layer, we will perform the following setup:
 4. Make some persistent changes, to illustrate how these are torn down when
    we pop the ZODB ``DemoStorage``.
 
-5. Install a product using the ``portal_quickinstaller`` tool.
+5. Install a product using the ``get_installer`` view (or the old ``portal_quickinstaller`` tool).
 
 6. Apply a named extension profile.
 
@@ -48,6 +48,17 @@ loaded and so allow them to be loaded again in other layers), and the stacked
 component registry (to roll back all global component registrations). Of
 course, if our setup had changed any other global or external state, we would
 need to tear that down as well.
+
+    >>> def is_installed(portal, product_name):
+    ...     try:
+    ...         from Products.CMFPlone.utils import get_installer
+    ...     except ImportError:
+    ...         # BBB For Plone 5.0 and lower.
+    ...         qi = portal['portal_quickinstaller']
+    ...         return qi.isProductInstalled(product_name)
+    ...     else:
+    ...         qi = get_installer(portal)
+    ...         return qi.is_product_installed(product_name)
 
     >>> from plone.testing import Layer
     >>> from plone.testing import zca, z2, zodb
@@ -73,6 +84,16 @@ need to tear that down as well.
     ...             # Persist GenericSetup profile upgrade versions for easy rollback.
     ...             helpers.persist_profile_upgrade_versions(portal)
     ...
+    ...             # First register dummy default and uninstall profiles for plone.app.testing.
+    ...             # We will use this to test that after teardown the installed profile versions get reset.
+    ...             # We used to test this with plone.resource, but that is already installed by default,
+    ...             # which makes it a pain to test with.
+    ...             from Products.GenericSetup.registry import _profile_registry
+    ...             from Products.GenericSetup.interfaces import EXTENSION
+    ...             # 'profile' points to a path with a metadata.xml so we can have a version.
+    ...             _profile_registry.registerProfile('default', u"Testing", u"", "profile", 'plone.app.testing', EXTENSION)
+    ...             _profile_registry.registerProfile('uninstall', u"Testing uninstall", u"", "profile", 'plone.app.testing', EXTENSION)
+    ...
     ...             # Push a new component registry so that ZCML registations
     ...             # and other global component registry changes are sandboxed
     ...             helpers.pushGlobalRegistry(portal)
@@ -86,7 +107,8 @@ need to tear that down as well.
     ...             portal.title = u"New title"
     ...
     ...             # Install a product using portal_quickinstaller
-    ...             helpers.quickInstallProduct(portal, 'plone.resource')
+    ...             helpers.quickInstallProduct(portal, 'plone.app.testing')
+    ...             assert is_installed(portal, 'plone.app.testing')
     ...
     ...     def tearDown(self):
     ...
@@ -138,8 +160,8 @@ and the results of the profile having been applied.
 
     >>> from Products.GenericSetup.tool import UNKNOWN
     >>> with helpers.ploneSite() as portal:
-    ...     print portal['portal_quickinstaller'].isProductInstalled('plone.resource')
-    ...     portal.portal_setup.getLastVersionForProfile('plone.resource:default') == UNKNOWN
+    ...     print is_installed(portal, 'plone.app.testing')
+    ...     portal.portal_setup.getLastVersionForProfile('plone.app.testing:default') == UNKNOWN
     True
     False
 
@@ -203,9 +225,9 @@ should not.
 
     >>> with helpers.ploneSite() as portal:
     ...     print portal.title
-    ...     print portal['portal_quickinstaller'].isProductInstalled('plone.resource')
+    ...     print is_installed(portal, 'plone.app.testing')
     ...     'folder1' in portal.objectIds()
-    ...     portal.portal_setup.getLastVersionForProfile('plone.resource:default') == UNKNOWN
+    ...     portal.portal_setup.getLastVersionForProfile('plone.app.testing:default') == UNKNOWN
     New title
     True
     False
@@ -224,11 +246,11 @@ component architecture changes from our layer.
 
     >>> with helpers.ploneSite() as portal:
     ...     print portal.title
-    ...     print portal['portal_quickinstaller'].isProductInstalled('plone.resource')
-    ...     # This should be True, but is False:
-    ...     # portal.portal_setup.getLastVersionForProfile('plone.resource:default') == UNKNOWN
+    ...     print is_installed(portal, 'plone.app.testing')
+    ...     portal.portal_setup.getLastVersionForProfile('plone.app.testing:default') == UNKNOWN
     Plone site
     False
+    True
 
 Let's tear down the rest of the layers too.
 
