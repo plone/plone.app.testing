@@ -192,7 +192,7 @@ With this helper class, a fixture can easily be instantiated::
     FIXTURE = PloneWithPackageLayer(
         zcml_package=my.addon,
         zcml_filename='configure.zcml',
-        gs_profile_id='my.addon:default'
+        gs_profile_id='my.addon:default',
         name="MyAddonFixture"
     )
 
