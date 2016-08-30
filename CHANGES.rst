@@ -14,7 +14,9 @@ New features:
 
 Bug fixes:
 
-- *add item here*
+- Load Products.CMFFormController in tests.  It is still used by core
+  Plone, also without Archetypes.  This makes the CMFFormController
+  tests pass.  [maurits]
 
 
 5.0.2 (2016-06-07)
