@@ -4,14 +4,6 @@ Changelog
 5.0.3 (unreleased)
 ------------------
 
-Breaking changes:
-
-- *add item here*
-
-New features:
-
-- *add item here*
-
 Bug fixes:
 
 - Load Products.CMFFormController in tests.  It is still used by core
