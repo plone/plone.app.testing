@@ -45,7 +45,7 @@ setup(
         "Programming Language :: Python :: 2.7",
         "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
     ],
-    keywords='',
+    keywords='plone tests',
     author='Plone Foundation',
     author_email='plone-developers@lists.sourceforge.net',
     url='https://pypi.python.org/pypi/plone.app.testing',
