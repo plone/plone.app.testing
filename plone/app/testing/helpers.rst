@@ -38,7 +38,7 @@ layer, we will perform the following setup:
 4. Make some persistent changes, to illustrate how these are torn down when
    we pop the ZODB ``DemoStorage``.
 
-5. Install a product using the ``portal_quickinstaller`` tool.
+5. Install a product using the ``get_installer`` view (or the old ``portal_quickinstaller`` tool).
 
 6. Apply a named extension profile.
 
@@ -48,6 +48,17 @@ loaded and so allow them to be loaded again in other layers), and the stacked
 component registry (to roll back all global component registrations). Of
 course, if our setup had changed any other global or external state, we would
 need to tear that down as well.
+
+    >>> def is_installed(portal, product_name):
+    ...     try:
+    ...         from Products.CMFPlone.utils import get_installer
+    ...     except ImportError:
+    ...         # BBB For Plone 5.0 and lower.
+    ...         qi = portal['portal_quickinstaller']
+    ...         return qi.isProductInstalled(product_name)
+    ...     else:
+    ...         qi = get_installer(portal)
+    ...         return qi.is_product_installed(product_name)
 
     >>> from plone.testing import Layer
     >>> from plone.testing import zca, z2, zodb
@@ -70,6 +81,19 @@ need to tear that down as well.
     ...
     ...         with helpers.ploneSite() as portal:
     ...
+    ...             # Persist GenericSetup profile upgrade versions for easy rollback.
+    ...             helpers.persist_profile_upgrade_versions(portal)
+    ...
+    ...             # First register dummy default and uninstall profiles for plone.app.testing.
+    ...             # We will use this to test that after teardown the installed profile versions get reset.
+    ...             # We used to test this with plone.resource, but that is already installed by default,
+    ...             # which makes it a pain to test with.
+    ...             from Products.GenericSetup.registry import _profile_registry
+    ...             from Products.GenericSetup.interfaces import EXTENSION
+    ...             # 'profile' points to a path with a metadata.xml so we can have a version.
+    ...             _profile_registry.registerProfile('default', u"Testing", u"", "profile", 'plone.app.testing', EXTENSION)
+    ...             _profile_registry.registerProfile('uninstall', u"Testing uninstall", u"", "profile", 'plone.app.testing', EXTENSION)
+    ...
     ...             # Push a new component registry so that ZCML registations
     ...             # and other global component registry changes are sandboxed
     ...             helpers.pushGlobalRegistry(portal)
@@ -83,7 +107,8 @@ need to tear that down as well.
     ...             portal.title = u"New title"
     ...
     ...             # Install a product using portal_quickinstaller
-    ...             helpers.quickInstallProduct(portal, 'plone.resource')
+    ...             helpers.quickInstallProduct(portal, 'plone.app.testing')
+    ...             assert is_installed(portal, 'plone.app.testing')
     ...
     ...     def tearDown(self):
     ...
@@ -133,9 +158,12 @@ having taken effect.
 We should also see our product installation in the quickinstaller tool
 and the results of the profile having been applied.
 
+    >>> from Products.GenericSetup.tool import UNKNOWN
     >>> with helpers.ploneSite() as portal:
-    ...     print portal['portal_quickinstaller'].isProductInstalled('plone.resource')
+    ...     print is_installed(portal, 'plone.app.testing')
+    ...     portal.portal_setup.getLastVersionForProfile('plone.app.testing:default') == UNKNOWN
     True
+    False
 
 Let's now simulate a test.
 
@@ -197,10 +225,12 @@ should not.
 
     >>> with helpers.ploneSite() as portal:
     ...     print portal.title
-    ...     print portal['portal_quickinstaller'].isProductInstalled('plone.resource')
+    ...     print is_installed(portal, 'plone.app.testing')
     ...     'folder1' in portal.objectIds()
+    ...     portal.portal_setup.getLastVersionForProfile('plone.app.testing:default') == UNKNOWN
     New title
     True
+    False
     False
 
 We'll now tear down just the ``HELPER_DEMOS_INTEGRATION_TESTING`` layer. At this
@@ -216,9 +246,11 @@ component architecture changes from our layer.
 
     >>> with helpers.ploneSite() as portal:
     ...     print portal.title
-    ...     print portal['portal_quickinstaller'].isProductInstalled('plone.resource')
+    ...     print is_installed(portal, 'plone.app.testing')
+    ...     portal.portal_setup.getLastVersionForProfile('plone.app.testing:default') == UNKNOWN
     Plone site
     False
+    True
 
 Let's tear down the rest of the layers too.
 
@@ -254,10 +286,13 @@ layer base class which helps implement this pattern.
     ...         from Products.GenericSetup.registry import _profile_registry
     ...         from Products.GenericSetup.registry import _import_step_registry
     ...         from Products.GenericSetup.registry import _export_step_registry
+    ...         from Products.GenericSetup import upgrade
     ...
     ...         _profile_registry.registerProfile('dummy1', u"My package", u"", ".", 'plone.app.testing')
     ...         _import_step_registry.registerStep('import1', version=1, handler='plone.app.testing.tests.dummy', title=u"Dummy import step", description=u"")
     ...         _export_step_registry.registerStep('export1', handler='plone.app.testing.tests.dummy', title=u"Dummy import step", description=u"")
+    ...         upgrade_step = upgrade.UpgradeStep(u'Dummy upgrade step', 'plone.app.testing:default', '1000', '1001', '', 'plone.app.testing.tests.dummy')
+    ...         upgrade._registerUpgradeStep(upgrade_step)
     ...
     ...         # And then pretend to register a PAS multi-plugin
     ...         from Products.PluggableAuthService import PluggableAuthService
@@ -336,6 +371,7 @@ Again, our state should now be available.
     >>> from Products.GenericSetup.registry import _profile_registry
     >>> from Products.GenericSetup.registry import _import_step_registry
     >>> from Products.GenericSetup.registry import _export_step_registry
+    >>> from Products.GenericSetup.upgrade import _upgrade_registry
 
     >>> numProfiles = len(_profile_registry.listProfiles())
     >>> 'plone.app.testing:dummy1' in _profile_registry.listProfiles()
@@ -352,6 +388,10 @@ Again, our state should now be available.
     >>> from Products.PluggableAuthService import PluggableAuthService
     >>> 'dummy_plugin1' in PluggableAuthService.MultiPlugins
     True
+
+    >>> numUpgrades = len(_upgrade_registry.keys())
+    >>> len(_upgrade_registry.getUpgradeStepsForProfile('plone.app.testing:default'))
+    1
 
 We'll now tear down just the ``MY_INTEGRATION_TESTING`` layer. At this
 point, we should still have a Plone site, but none of the changes from our
@@ -384,6 +424,11 @@ layer.
     True
     >>> 'export1' in _export_step_registry.listSteps()
     False
+
+    >>> len(_upgrade_registry.keys()) == numUpgrades - 1
+    True
+    >>> len(_upgrade_registry.getUpgradeStepsForProfile('plone.app.testing:default'))
+    0
 
     >>> from Products.PluggableAuthService import PluggableAuthService
     >>> 'dummy_plugin1' in PluggableAuthService.MultiPlugins

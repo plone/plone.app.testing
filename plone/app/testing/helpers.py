@@ -84,13 +84,27 @@ def quickInstallProduct(portal, productName, reinstall=False):
     z2.login(app['acl_users'], SITE_OWNER_NAME)
 
     try:
-        quickinstaller = portal['portal_quickinstaller']
+        from Products.CMFPlone.utils import get_installer
+    except ImportError:
+        # BBB For Plone 5.0 and lower.
+        qi = portal['portal_quickinstaller']
+        old_qi = True
+    else:
+        qi = get_installer(portal)
+        old_qi = False
 
-        if quickinstaller.isProductInstalled(productName):
-            if reinstall:
-                quickinstaller.reinstallProducts([productName])
+    try:
+        if old_qi:
+            if not qi.isProductInstalled(productName):
+                qi.installProduct(productName)
+            elif reinstall:
+                qi.reinstallProducts([productName])
         else:
-            quickinstaller.installProduct(productName)
+            if not qi.is_product_installed(productName):
+                qi.install_product(productName, allow_hidden=True)
+            elif reinstall:
+                qi.uninstall_product(productName)
+                qi.install_product(productName, allow_hidden=True)
 
         portal.clearCurrentSkin()
         portal.setupCurrentSkin(portal.REQUEST)
@@ -202,6 +216,21 @@ def popGlobalRegistry(portal):
         setSite(site)
 
     return previous
+
+
+def persist_profile_upgrade_versions(portal):
+    """Persist the profile_upgrade_versions of portal_setup.
+
+    Until at least Products.GenericSetup 1.8.3 this is a standard
+    non-persistent dictionary, which means a transaction rollback does
+    not rollback changes to this dictionary.  So we make it a persistent
+    mapping.  Call this once in layer setup and you have easy rollback.
+    """
+    from persistent.mapping import PersistentMapping
+    puv = portal.portal_setup._profile_upgrade_versions
+    if isinstance(puv, PersistentMapping):
+        return
+    portal.portal_setup._profile_upgrade_versions = PersistentMapping(puv)
 
 
 @contextlib.contextmanager
@@ -324,6 +353,10 @@ class PloneSandboxLayer(Layer):
                 # Push a new component registry so that ZCML registations
                 # and other global component registry changes are sandboxed
                 pushGlobalRegistry(portal)
+
+                # Persist GenericSetup profile upgrade versions for easy
+                # rollback.
+                persist_profile_upgrade_versions(portal)
 
                 # Make sure zope.security checkers can be set up and torn down
                 # reliably
