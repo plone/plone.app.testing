@@ -1,7 +1,7 @@
 Changelog
 =========
 
-5.0.4 (unreleased)
+5.0.4 (2016-09-23)
 ------------------
 
 New features:
