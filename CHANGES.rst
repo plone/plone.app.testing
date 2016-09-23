@@ -4,10 +4,6 @@ Changelog
 5.0.4 (unreleased)
 ------------------
 
-Breaking changes:
-
-- *add item here*
-
 New features:
 
 - Use get_installer instead of portal_quickinstaller when available, for
@@ -15,10 +11,6 @@ New features:
 
 - In PloneSandboxLayer make profile upgrade versions persistent.  This
   way installed profile versions get reset in teardown.  [maurits]
-
-Bug fixes:
-
-- *add item here*
 
 
 5.0.3 (2016-09-07)
