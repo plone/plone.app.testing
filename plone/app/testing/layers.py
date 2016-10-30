@@ -62,9 +62,6 @@ class PloneFixture(Layer):
         ('Products.ExtendedPathIndex',           {'loadZCML': True}, ),
         ('Products.ResourceRegistries',          {'loadZCML': True}, ),
         ('Products.SiteAccess',                  {'loadZCML': False}, ),
-
-        ('Products.PasswordResetTool',           {'loadZCML': True}, ),
-
         ('Products.CMFEditions',                 {'loadZCML': True}, ),
         ('Products.CMFDiffTool',                 {'loadZCML': True}, ),
 

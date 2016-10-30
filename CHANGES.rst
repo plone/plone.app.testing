@@ -14,7 +14,8 @@ New features:
 
 Bug fixes:
 
-- *add item here*
+- Remove PasswordResetTool since it is gone in Plone 5.1 too
+  [tomgross]
 
 
 5.0.4 (2016-09-23)
