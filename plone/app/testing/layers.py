@@ -63,8 +63,6 @@ class PloneFixture(Layer):
         ('Products.ResourceRegistries',          {'loadZCML': True}, ),
         ('Products.SiteAccess',                  {'loadZCML': False}, ),
 
-        ('Products.PasswordResetTool',           {'loadZCML': True}, ),
-
         ('Products.CMFEditions',                 {'loadZCML': True}, ),
         ('Products.CMFDiffTool',                 {'loadZCML': True}, ),
 
@@ -83,6 +81,13 @@ class PloneFixture(Layer):
         import Products.SecureMailHost  # noqa
         products = products + (
             ('Products.SecureMailHost', {'loadZCML': True}, ),)
+    except ImportError:
+        pass
+
+    try:
+        import Products.PasswordResetTool  # noqa
+        products = products + (
+            ('Products.PasswordResetTool', {'loadZCML': True}, ),)
     except ImportError:
         pass
 

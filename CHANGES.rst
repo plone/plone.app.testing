@@ -14,7 +14,8 @@ New features:
 
 Bug fixes:
 
-- *add item here*
+- Do not use install Products.PasswordResetTool in the PloneFixture if it isn't available.
+  [thet]
 
 
 5.0.4 (2016-09-23)
