@@ -4,14 +4,6 @@ Changelog
 5.0.5 (unreleased)
 ------------------
 
-Breaking changes:
-
-- *add item here*
-
-New features:
-
-- *add item here*
-
 Bug fixes:
 
 - Do not use install Products.PasswordResetTool in the PloneFixture if it isn't available.
