@@ -78,13 +78,6 @@ class PloneFixture(Layer):
     )
 
     try:
-        import Products.SecureMailHost  # noqa
-        products = products + (
-            ('Products.SecureMailHost', {'loadZCML': True}, ),)
-    except ImportError:
-        pass
-
-    try:
         import Products.PasswordResetTool  # noqa
         products = products + (
             ('Products.PasswordResetTool', {'loadZCML': True}, ),)

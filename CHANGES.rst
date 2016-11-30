@@ -14,7 +14,8 @@ New features:
 
 Bug fixes:
 
-- *add item here*
+- No longer try to load `Products.SecureMailHost` and its zcml.
+  This is not shipped with Plone 5.0 or higher.  [maurits]
 
 
 5.0.5 (2016-11-19)
