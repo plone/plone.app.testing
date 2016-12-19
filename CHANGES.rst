@@ -4,14 +4,6 @@ Changelog
 5.0.6 (unreleased)
 ------------------
 
-Breaking changes:
-
-- *add item here*
-
-New features:
-
-- *add item here*
-
 Bug fixes:
 
 - No longer try to load `Products.SecureMailHost` and its zcml.
