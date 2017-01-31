@@ -24,8 +24,6 @@ Test::
     def test_view_is_registered(self):
         # Get the view
         view = getMultiAdapter((self.portal, self.portal.REQUEST), name="create-user")
-        # Put the view into the acquisition chain
-        view = view.__of__(self.portal)
         # Call the view
         self.assertTrue(view())
 
@@ -49,7 +47,6 @@ Test::
         self.request.set('term', 'foo')
         view = getMultiAdapter((self.portal, self.request),
                                name="autocomplete-tags")
-        view = view.__of__(self.portal)
         self.assertTrue(view())
 
 
@@ -60,7 +57,6 @@ Test::
 
     def test_view_with_restrictedTraverse_and_params(self):
         view = self.context.restrictedTraverse("comment-statistics-batch")
-        view = view.__of__(self.context)
         view(query, base_number * i, base_number * (i + 1) - 1)
 
 
@@ -99,7 +95,6 @@ Test::
             (self.portal.mi.sec.tx, self.request),
             name="view"
         )
-        view = view.__of__(self.portal.mi.sec)
 
         view()
 
@@ -173,7 +168,6 @@ Test::
             (self.portal.mi, self.request),
             name="view"
         )
-        view = view.__of__(self.portal.mi)
 
         self.assertEqual(len(view.sections()), 2)
         self.assertEqual(
@@ -192,7 +186,6 @@ Test::
             (self.portal.mi.se.tc, self.request),
             name="delete"
         )
-        view.__of__(self.portal.mi.se)
 
         view()
 
