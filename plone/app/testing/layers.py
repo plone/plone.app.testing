@@ -65,7 +65,6 @@ class PloneFixture(Layer):
             ('Products.ExternalEditor'              , {'loadZCML': True}, ),
             ('Products.ExtendedPathIndex'           , {'loadZCML': True}, ),
             ('Products.ResourceRegistries'          , {'loadZCML': True}, ),
-            ('Products.SecureMailHost'              , {'loadZCML': True}, ),
 
             ('Products.PasswordResetTool'           , {'loadZCML': True}, ),
 
