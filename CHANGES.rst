@@ -4,7 +4,8 @@ Changelog
 4.2.6 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Do not load Products.SecureMailHost zcml.
+  It is not needed in Plone 4.  [frisi]
 
 
 4.2.5 (2015-03-17)
