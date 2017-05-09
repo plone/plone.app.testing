@@ -4,6 +4,8 @@ Changelog
 4.2.6 (unreleased)
 ------------------
 
+Bug fixes:
+
 - Do not load Products.SecureMailHost zcml.
   It is not needed in Plone 4.  [frisi]
 
