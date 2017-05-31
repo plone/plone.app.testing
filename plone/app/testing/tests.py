@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import doctest
-import unittest2 as unittest
+import unittest
 
 
 OPTIONFLAGS = doctest.ELLIPSIS | doctest.NORMALIZE_WHITESPACE

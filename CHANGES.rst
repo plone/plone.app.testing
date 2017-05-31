@@ -19,6 +19,9 @@ Bug fixes:
 - Remove deprecated __of__ calls on BrowserViews
   [MrTango]
 
+- Remove unittest2 dependency
+  [kakshay21]
+
 
 5.0.6 (2016-12-19)
 ------------------
