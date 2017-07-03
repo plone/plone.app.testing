@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = '5.0.7'
+version = '5.0.8.dev0'
 
 tests_require = ['Products.CMFCore',
                  'Products.CMFPlone',
