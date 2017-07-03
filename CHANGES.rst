@@ -1,8 +1,10 @@
 Changelog
 =========
 
-5.0.7 (unreleased)
+5.0.7 (2017-07-03)
 ------------------
+
+Bug fixes:
 
 - Remove deprecated __of__ calls on BrowserViews
   [MrTango]
