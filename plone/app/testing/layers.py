@@ -42,6 +42,7 @@ class PloneFixture(Layer):
         ('Products.DCWorkflow',                  {'loadZCML': True}, ),
         ('Products.ZCTextIndex',                 {'loadZCML': True}, ),
         ('Products.DateRecurringIndex',          {'loadZCML': False},),
+        ('Products.PageTemplates',               {'loadZCML': True},),
 
         ('Products.CMFUid',                      {'loadZCML': True}, ),
         ('Products.CMFCore',                     {'loadZCML': True}, ),
