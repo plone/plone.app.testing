@@ -4,14 +4,6 @@ Changelog
 5.0.8 (unreleased)
 ------------------
 
-Breaking changes:
-
-- *add item here*
-
-New features:
-
-- *add item here*
-
 Bug fixes:
 
 - Load Products.PageTemplates ZCML.  [tschorr]
