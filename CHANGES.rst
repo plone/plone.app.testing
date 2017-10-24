@@ -14,7 +14,7 @@ New features:
 
 Bug fixes:
 
-- *add item here*
+- Load Products.PageTemplates ZCML.  [tschorr]
 
 
 5.0.7 (2017-07-03)
