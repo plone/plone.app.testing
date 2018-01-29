@@ -17,10 +17,6 @@ Bug fixes:
 - *add item here*
 
 
-
-- Remove backward compatibility for Products.PlacelessTranslationService [ksuess]
-
-
 5.0.8 (2017-10-25)
 ------------------
 

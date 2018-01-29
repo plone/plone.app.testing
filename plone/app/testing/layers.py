@@ -67,6 +67,8 @@ class PloneFixture(Layer):
         ('Products.CMFEditions',                 {'loadZCML': True}, ),
         ('Products.CMFDiffTool',                 {'loadZCML': True}, ),
 
+        ('Products.PlacelessTranslationService', {'loadZCML': True}, ),
+
         ('plonetheme.barceloneta',               {'loadZCML': True,
                                                   'install': False}, ),
 
