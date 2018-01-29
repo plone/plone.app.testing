@@ -14,6 +14,10 @@ New features:
 
 Bug fixes:
 
+- *add item here*
+
+
+
 - Remove backward compatibility for Products.PlacelessTranslationService [ksuess]
 
 
