@@ -10,7 +10,8 @@ Breaking changes:
 
 New features:
 
-- *add item here*
+- Load negotiator from plone.i18n (PTS removed).
+  [jensens, ksuess]
 
 Bug fixes:
 
