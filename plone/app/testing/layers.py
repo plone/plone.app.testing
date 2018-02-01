@@ -51,7 +51,6 @@ class PloneFixture(Layer):
         ('Products.PluginRegistry',              {'loadZCML': True}, ),
         ('Products.PlonePAS',                    {'loadZCML': True}, ),
 
-        ('Products.CMFQuickInstallerTool',       {'loadZCML': True}, ),
         ('Products.CMFFormController',           {'loadZCML': True}, ),
         ('Products.CMFDynamicViewFTI',           {'loadZCML': True}, ),
         ('Products.CMFPlacefulWorkflow',         {'loadZCML': True}, ),
@@ -83,6 +82,12 @@ class PloneFixture(Layer):
         import Products.PasswordResetTool  # noqa
         products = products + (
             ('Products.PasswordResetTool', {'loadZCML': True}, ),)
+    except ImportError:
+        pass
+    try:
+        import Products.CMFQuickInstallerTool  # noqa
+        products = products + (
+            ('Products.CMFQuickInstallerTool', {'loadZCML': True}, ),)
     except ImportError:
         pass
 

@@ -10,6 +10,9 @@ Breaking changes:
 
 New features:
 
+- Install and load zcml of CMFQuickInstallerTool only when importable.
+  [maurits]
+
 - Load negotiator from plone.i18n (PTS removed).
   [jensens, ksuess]
 
