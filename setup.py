@@ -17,6 +17,7 @@ tests_require = [
     'zope.interface',
     'zope.publisher',
     'zope.testrunner',
+    'zope.testing',
     # XXX unspecified dependency of plone.app.upgrade XXX
     # 'Products.ATContentTypes',
 ]
@@ -34,7 +35,7 @@ def read(*rnames):
 
 
 long_description = \
-    read('docs', 'source', 'README.rst') + \
+    read('docs', 'README.rst') + \
     '\n\n' +\
     read('CHANGES.rst')
 
