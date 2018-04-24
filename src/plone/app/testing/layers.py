@@ -66,17 +66,17 @@ class PloneFixture(Layer):
         ('Products.PythonScripts', {'loadZCML': False}, ),
     )
 
-    #try:
+    # try:
     #    import Products.PasswordResetTool
     #    products = products + (
     #        ('Products.PasswordResetTool', {'loadZCML': True}, ),)
-    #except ImportError:
+    # except ImportError:
     #    pass
-    #try:
+    # try:
     #    import Products.CMFQuickInstallerTool
     #    products = products + (
     #        ('Products.CMFQuickInstallerTool', {'loadZCML': True}, ),)
-    #except ImportError:
+    # except ImportError:
     #    pass
 
     # Extension profiles to be installed with site setup

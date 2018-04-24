@@ -8,7 +8,7 @@
 /build
 /dist
 /local.cfg
-/*.egg-info
+*.egg-info
 /.installed.cfg
 *.py[cod]
 /.Python
