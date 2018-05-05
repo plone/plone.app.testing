@@ -18,8 +18,8 @@ New features:
 
 Bug fixes:
 
-- *add item here*
-
+- Improve compatibility with Python3
+  [loechel, ale-rt]
 
 5.0.8 (2017-10-25)
 ------------------

@@ -138,7 +138,7 @@ Let's now simulate layer setup:
     >>> setupLayers = {}
     >>> runner.setup_layer(options, HELPER_DEMOS_INTEGRATION_TESTING, setupLayers)
     Set up plone.testing.zca.LayerCleanup in ... seconds.
-      Set up plone.testing.z2.Startup in ... seconds.
+      Set up plone.testing.zope.Startup in ... seconds.
       Set up plone.app.testing.layers.PloneFixture in ... seconds.
       Set up HelperDemos in ... seconds.
       Set up plone.app.testing.layers.HelperDemos:Integration in ... seconds.
@@ -256,7 +256,7 @@ Let's tear down the rest of the layers too.
 
     >>> runner.tear_down_unneeded(options, [], setupLayers)
     Tear down plone.app.testing.layers.PloneFixture in ... seconds.
-    Tear down plone.testing.z2.Startup in ... seconds.
+    Tear down plone.testing.zope.Startup in ... seconds.
     Tear down plone.testing.zca.LayerCleanup in ... seconds.
 
 Plone sandbox layer helper
@@ -351,7 +351,7 @@ Let's now simulate layer setup:
     >>> setupLayers = {}
     >>> runner.setup_layer(options, MY_INTEGRATION_TESTING, setupLayers)
     Set up plone.testing.zca.LayerCleanup in ... seconds.
-    Set up plone.testing.z2.Startup in ... seconds.
+    Set up plone.testing.zope.Startup in ... seconds.
     Set up plone.app.testing.layers.PloneFixture in ... seconds.
     Set up MyLayer in ... seconds.
     Set up plone.app.testing.layers.MyLayer:Integration in ... seconds.
@@ -438,7 +438,7 @@ Let's tear down the rest of the layers too.
 
     >>> runner.tear_down_unneeded(options, [], setupLayers)
     Tear down plone.app.testing.layers.PloneFixture in ... seconds.
-    Tear down plone.testing.z2.Startup in ... seconds.
+    Tear down plone.testing.zope.Startup in ... seconds.
     Tear down plone.testing.zca.LayerCleanup in ... seconds.
 
 Other helpers

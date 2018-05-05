@@ -44,10 +44,11 @@ Let's set up the fixture layer and inspect the state of the site.
 
     >>> options = runner.get_options([], [])
     >>> setupLayers = {}
-    >>> runner.setup_layer(options, layers.PLONE_FIXTURE, setupLayers)
-    Set up plone.testing.zca.LayerCleanup in ... seconds.
-    Set up plone.testing.z2.Startup in ... seconds.
-    Set up plone.app.testing.layers.PloneFixture in ... seconds.
+    >>> runner.setup_layer(options, layers.PLONE_FIXTURE, setupLayers)  # doctest: +ELLIPSIS
+      Set up plone.testing.zca.LayerCleanup in ... seconds.
+      Set up plone.testing.zope.Startup in ... seconds.
+      Set up plone.app.testing.layers.PloneFixture in ... seconds.
+
 
 The application root's ``acl_users`` folder will have one user, whose name and
 password are found in the constants ``SITE_OWNER_NAME`` and
@@ -99,7 +100,7 @@ Layer tear-down resets the environment.
 
     >>> runner.tear_down_unneeded(options, [], setupLayers)
     Tear down plone.app.testing.layers.PloneFixture in ... seconds.
-    Tear down plone.testing.z2.Startup in ... seconds.
+    Tear down plone.testing.zope.Startup in ... seconds.
     Tear down plone.testing.zca.LayerCleanup in ... seconds.
 
 Integration testing
@@ -120,7 +121,7 @@ Let's set up the layers and attempt to run a test.
     >>> setupLayers = {}
     >>> runner.setup_layer(options, layers.PLONE_INTEGRATION_TESTING, setupLayers)
     Set up plone.testing.zca.LayerCleanup in ... seconds.
-    Set up plone.testing.z2.Startup in ... seconds.
+    Set up plone.testing.zope.Startup in ... seconds.
     Set up plone.app.testing.layers.PloneFixture in ... seconds.
     Set up plone.app.testing.layers.Plone:Integration in ... seconds.
 
@@ -188,7 +189,7 @@ Layer tear-down resets the environment.
     >>> runner.tear_down_unneeded(options, [], setupLayers)
     Tear down plone.app.testing.layers.Plone:Integration in ... seconds.
     Tear down plone.app.testing.layers.PloneFixture in ... seconds.
-    Tear down plone.testing.z2.Startup in ... seconds.
+    Tear down plone.testing.zope.Startup in ... seconds.
     Tear down plone.testing.zca.LayerCleanup in ... seconds.
 
 Functional testing
@@ -209,7 +210,7 @@ Let's set up the layers and attempt to run a test.
     >>> setupLayers = {}
     >>> runner.setup_layer(options, layers.PLONE_FUNCTIONAL_TESTING, setupLayers)
     Set up plone.testing.zca.LayerCleanup in ... seconds.
-    Set up plone.testing.z2.Startup in ... seconds.
+    Set up plone.testing.zope.Startup in ... seconds.
     Set up plone.app.testing.layers.PloneFixture in ... seconds.
     Set up plone.app.testing.layers.Plone:Functional in ... seconds.
 
@@ -268,7 +269,7 @@ Layer tear-down resets the environment.
     >>> runner.tear_down_unneeded(options, [], setupLayers)
     Tear down plone.app.testing.layers.Plone:Functional in ... seconds.
     Tear down plone.app.testing.layers.PloneFixture in ... seconds.
-    Tear down plone.testing.z2.Startup in ... seconds.
+    Tear down plone.testing.zope.Startup in ... seconds.
     Tear down plone.testing.zca.LayerCleanup in ... seconds.
 
 HTTP server
@@ -288,7 +289,7 @@ two bases: ``PLONE_FIXTURE``, as shown above, and ``ZSERVER_FIXTURE`` from
     >>> setupLayers = {}
     >>> runner.setup_layer(options, layers.PLONE_ZSERVER, setupLayers)
     Set up plone.testing.zca.LayerCleanup in ... seconds.
-    Set up plone.testing.z2.Startup in ... seconds.
+    Set up plone.testing.zope.Startup in ... seconds.
     Set up plone.app.testing.layers.PloneFixture in ... seconds.
     Set up plone.testing.z2.ZServer in ... seconds.
     Set up plone.app.testing.layers.Plone:ZServer in ... seconds.
@@ -368,7 +369,7 @@ When the server is torn down, the ZServer thread is stopped.
     >>> runner.tear_down_unneeded(options, [], setupLayers)
     Tear down plone.app.testing.layers.Plone:ZServer in ... seconds.
     ...Tear down plone.app.testing.layers.PloneFixture in ... seconds.
-    ...Tear down plone.testing.z2.Startup in ... seconds.
+    ...Tear down plone.testing.zope.Startup in ... seconds.
     Tear down plone.testing.zca.LayerCleanup in ... seconds.
 
     >>> conn = urllib2.urlopen(portal_url + '/folder1', timeout=5)
@@ -393,7 +394,7 @@ from ``plone.testing``, which starts up an FTP server thread.
     >>> setupLayers = {}
     >>> runner.setup_layer(options, layers.PLONE_FTP_SERVER, setupLayers)
     Set up plone.testing.zca.LayerCleanup in ... seconds.
-    Set up plone.testing.z2.Startup in ... seconds.
+    Set up plone.testing.zope.Startup in ... seconds.
     Set up plone.app.testing.layers.PloneFixture in ... seconds.
     Set up plone.testing.z2.FTPServer in ... seconds.
     Set up plone.app.testing.layers.Plone:FTPServer in ... seconds.
@@ -486,10 +487,10 @@ When the server is torn down, the FTP server thread is stopped.
     >>> runner.tear_down_unneeded(options, [], setupLayers)
     Tear down plone.app.testing.layers.Plone:FTPServer in ... seconds.
     ...Tear down plone.app.testing.layers.PloneFixture in ... seconds.
-    ...Tear down plone.testing.z2.Startup in ... seconds.
+    ...Tear down plone.testing.zope.Startup in ... seconds.
     Tear down plone.testing.zca.LayerCleanup in ... seconds.
 
     >>> ftpClient.connect(host, port, timeout=5)
     Traceback (most recent call last):
     ...
-    error: [Errno ...] Connection refused
+    ... [Errno ...] Connection refused
