@@ -60,8 +60,8 @@ normally use this for testing, unless you need to manipulate the site itself.
     >>> from plone.app.testing.interfaces import SITE_OWNER_NAME
 
     >>> with z2.zopeApp() as app:
-    ...     print app['acl_users'].getUser(SITE_OWNER_NAME)
-    ...     print app['acl_users'].getUser(SITE_OWNER_NAME).getRolesInContext(app)
+    ...     print(app['acl_users'].getUser(SITE_OWNER_NAME))
+    ...     print(app['acl_users'].getUser(SITE_OWNER_NAME).getRolesInContext(app))
     admin
     ['Manager', 'Authenticated']
 
@@ -69,7 +69,7 @@ Inside the Plone site, the default theme is installed
 
     >>> from plone.app.testing import helpers
     >>> with helpers.ploneSite() as portal:
-    ...     print portal['portal_registry']['plone.app.theming.interfaces.IThemeSettings.rules']
+    ...     print(portal['portal_registry']['plone.app.theming.interfaces.IThemeSettings.rules'])
     /++theme++barceloneta/rules.xml
 
 **Note:** Here, we have used the ``ploneSite`` context manager to get hold of
@@ -83,9 +83,9 @@ the module ``plone.app.testing.interfaces``.
 
     >>> from plone.app.testing.interfaces import TEST_USER_NAME
     >>> with helpers.ploneSite() as portal:
-    ...     print portal['acl_users'].getUser(TEST_USER_NAME).getId()
-    ...     print portal['acl_users'].getUser(TEST_USER_NAME).getUserName()
-    ...     print sorted(portal['acl_users'].getUser(TEST_USER_NAME).getRolesInContext(portal))
+    ...     print(portal['acl_users'].getUser(TEST_USER_NAME).getId())
+    ...     print(portal['acl_users'].getUser(TEST_USER_NAME).getUserName())
+    ...     print(sorted(portal['acl_users'].getUser(TEST_USER_NAME).getRolesInContext(portal)))
     test_user_1_
     test-user
     ['Authenticated', 'Member']
@@ -93,7 +93,7 @@ the module ``plone.app.testing.interfaces``.
 There is no default workflow or content:
 
     >>> with helpers.ploneSite() as portal:
-    ...     print portal['portal_workflow'].getDefaultChain()
+    ...     print(portal['portal_workflow'].getDefaultChain())
     ()
 
 Layer tear-down resets the environment.
@@ -337,10 +337,10 @@ We can now look for this new object through the server.
     >>> portal_url.split(':')[:-1]
     ['http', '//localhost']
 
-    >>> import urllib2
-    >>> conn = urllib2.urlopen(portal_url + '/Title', timeout=10)
+    >>> from six.moves.urllib.request import urlopen
+    >>> conn = urlopen(portal_url + '/Title', timeout=10)
     >>> responseBody = conn.read()
-    >>> "Fancy Portal" in responseBody
+    >>> b"Fancy Portal" in responseBody
     True
     >>> conn.close()
 
@@ -362,7 +362,7 @@ Test tear-down does nothing beyond what the base layers do.
     False
 
     >>> with helpers.ploneSite() as portal:
-    ...     print 'folder1' in portal.objectIds()
+    ...     print('folder1' in portal.objectIds())
     False
 
 When the server is torn down, the ZServer thread is stopped.
@@ -374,10 +374,9 @@ When the server is torn down, the ZServer thread is stopped.
     Tear down plone.testing.zope.Startup in ... seconds.
     Tear down plone.testing.zca.LayerCleanup in ... seconds.
 
-    >>> conn = urllib2.urlopen(portal_url + '/folder1', timeout=5)
+    >>> conn = urlopen(portal_url + '/folder1', timeout=5)
     Traceback (most recent call last):
-    ...
-    URLError: <urlopen error [Errno ...] Connection refused>
+    ...URLError: <urlopen error [Errno ...] Connection refused>
 
 FTP server with Plone site
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -482,7 +481,7 @@ Test tear-down does nothing beyond what the base layers do.
 
     >>> import plone.testing.zserver
     >>> with helpers.ploneSite(flavour=plone.testing.zserver) as portal:
-    ...     print 'folder1' in portal.objectIds()
+    ...     print('folder1' in portal.objectIds())
     False
 
 When the server is torn down, the FTP server thread is stopped.

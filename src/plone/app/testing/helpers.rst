@@ -140,7 +140,7 @@ Let's now simulate layer setup:
     Set up plone.testing.zca.LayerCleanup in ... seconds.
       Set up plone.testing.zope.Startup in ... seconds.
       Set up plone.app.testing.layers.PloneFixture in ... seconds.
-      Set up HelperDemos in ... seconds.
+      Set up...HelperDemos in ... seconds.
       Set up plone.app.testing.layers.HelperDemos:Integration in ... seconds.
 
 We should see the newly registered components and the persistent changes
@@ -152,7 +152,7 @@ having taken effect.
     <object object at ...>
 
     >>> with helpers.ploneSite() as portal:
-    ...     print portal.title
+    ...     print(portal.title)
     New title
 
 We should also see our product installation in the quickinstaller tool
@@ -160,7 +160,7 @@ and the results of the profile having been applied.
 
     >>> from Products.GenericSetup.tool import UNKNOWN
     >>> with helpers.ploneSite() as portal:
-    ...     print is_installed(portal, 'plone.app.testing')
+    ...     print(is_installed(portal, 'plone.app.testing'))
     ...     portal.portal_setup.getLastVersionForProfile('plone.app.testing:default') == UNKNOWN
     True
     False
@@ -224,8 +224,8 @@ should not.
     <object object at ...>
 
     >>> with helpers.ploneSite() as portal:
-    ...     print portal.title
-    ...     print is_installed(portal, 'plone.app.testing')
+    ...     print(portal.title)
+    ...     print(is_installed(portal, 'plone.app.testing'))
     ...     'folder1' in portal.objectIds()
     ...     portal.portal_setup.getLastVersionForProfile('plone.app.testing:default') == UNKNOWN
     New title
@@ -239,14 +239,14 @@ component architecture changes from our layer.
 
     >>> runner.tear_down_unneeded(options, [l for l in setupLayers if l not in (HELPER_DEMOS_INTEGRATION_TESTING, HELPER_DEMOS_FIXTURE,)], setupLayers)
     Tear down plone.app.testing.layers.HelperDemos:Integration in ... seconds.
-    Tear down HelperDemos in ... seconds.
+    Tear down...HelperDemos in ... seconds.
 
     >>> queryUtility(Interface, name="dummy1") is None
     True
 
     >>> with helpers.ploneSite() as portal:
-    ...     print portal.title
-    ...     print is_installed(portal, 'plone.app.testing')
+    ...     print(portal.title)
+    ...     print(is_installed(portal, 'plone.app.testing'))
     ...     portal.portal_setup.getLastVersionForProfile('plone.app.testing:default') == UNKNOWN
     Plone site
     False
@@ -353,7 +353,7 @@ Let's now simulate layer setup:
     Set up plone.testing.zca.LayerCleanup in ... seconds.
     Set up plone.testing.zope.Startup in ... seconds.
     Set up plone.app.testing.layers.PloneFixture in ... seconds.
-    Set up MyLayer in ... seconds.
+    Set up...MyLayer in ... seconds.
     Set up plone.app.testing.layers.MyLayer:Integration in ... seconds.
 
 Again, our state should now be available.
@@ -362,7 +362,7 @@ Again, our state should now be available.
     <object object at ...>
 
     >>> with helpers.ploneSite() as portal:
-    ...     print portal.title
+    ...     print(portal.title)
     New title
 
     >>> someGlobal['test']
@@ -404,7 +404,7 @@ layer.
     True
 
     >>> with helpers.ploneSite() as portal:
-    ...     print portal.title
+    ...     print(portal.title)
     Plone site
 
     >>> 'test' in someGlobal
