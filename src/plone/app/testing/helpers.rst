@@ -194,8 +194,8 @@ the ``ploneSite()`` context manager as shown above.
     >>> helpers.setRoles(portal, TEST_USER_ID, ['Manager'])
     >>> repr(getSecurityManager()) != sm_repr
     True
-    >>> getSecurityManager().getUser().getRolesInContext(portal)
-    ['Manager', 'Authenticated']
+    >>> sorted(getSecurityManager().getUser().getRolesInContext(portal))
+    ['Authenticated', 'Manager']
 
     >>> helpers.logout()
     >>> getSecurityManager().getUser()

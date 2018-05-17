@@ -73,6 +73,7 @@ setup(
     zip_safe=False,
     install_requires=[
         'setuptools',
+        'six',
         'zope.configuration',
         'zope.component',
         'zope.dottedname',
