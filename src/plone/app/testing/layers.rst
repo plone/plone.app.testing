@@ -85,10 +85,10 @@ the module ``plone.app.testing.interfaces``.
     >>> with helpers.ploneSite() as portal:
     ...     print portal['acl_users'].getUser(TEST_USER_NAME).getId()
     ...     print portal['acl_users'].getUser(TEST_USER_NAME).getUserName()
-    ...     print portal['acl_users'].getUser(TEST_USER_NAME).getRolesInContext(portal)
+    ...     print sorted(portal['acl_users'].getUser(TEST_USER_NAME).getRolesInContext(portal))
     test_user_1_
     test-user
-    ['Member', 'Authenticated']
+    ['Authenticated', 'Member']
 
 There is no default workflow or content:
 
@@ -275,35 +275,36 @@ Layer tear-down resets the environment.
 HTTP server
 ~~~~~~~~~~~
 
-The ``PLONE_ZSERVER`` layer instantiates the ``FunctionalTesting`` class with
-two bases: ``PLONE_FIXTURE``, as shown above, and ``ZSERVER_FIXTURE`` from
-``plone.testing``, which starts up a ZServer thread.
+The ``PLONE_WSGISERVER`` layer instantiates the ``FunctionalTesting`` class with
+two bases: ``PLONE_FIXTURE``, as shown above, and ``WSGI_SERVER_FIXTURE`` from
+``plone.testing``, which starts up a WSGI server. (There also the name
+``PLONE_ZSERVER`` in place which is a BBB alias.)
 
-    >>> "%s.%s" % (layers.PLONE_ZSERVER.__module__, layers.PLONE_ZSERVER.__name__,)
-    'plone.app.testing.layers.Plone:ZServer'
+    >>> "%s.%s" % (layers.PLONE_WSGISERVER.__module__, layers.PLONE_WSGISERVER.__name__,)
+    'plone.app.testing.layers.Plone:WSGIServer'
 
-    >>> layers.PLONE_ZSERVER.__bases__
-    (<Layer 'plone.app.testing.layers.PloneFixture'>, <Layer 'plone.testing.z2.ZServer'>)
+    >>> layers.PLONE_WSGISERVER.__bases__
+    (<Layer 'plone.app.testing.layers.PloneFixture'>, <Layer 'plone.testing.zope.WSGIServer'>)
 
     >>> options = runner.get_options([], [])
     >>> setupLayers = {}
-    >>> runner.setup_layer(options, layers.PLONE_ZSERVER, setupLayers)
+    >>> runner.setup_layer(options, layers.PLONE_WSGISERVER, setupLayers)
     Set up plone.testing.zca.LayerCleanup in ... seconds.
     Set up plone.testing.zope.Startup in ... seconds.
     Set up plone.app.testing.layers.PloneFixture in ... seconds.
-    Set up plone.testing.z2.ZServer in ... seconds.
-    Set up plone.app.testing.layers.Plone:ZServer in ... seconds.
+    Set up plone.testing.zope.WSGIServer in ... seconds.
+    Set up plone.app.testing.layers.Plone:WSGIServer in ... seconds.
 
 After layer setup, the resources ``host`` and ``port`` are available, and
 indicate where Zope is running.
 
-    >>> host = layers.PLONE_ZSERVER['host']
+    >>> host = layers.PLONE_WSGISERVER['host']
     >>> host
     'localhost'
 
-    >>> port = layers.PLONE_ZSERVER['port']
+    >>> port = layers.PLONE_WSGISERVER['port']
     >>> import os
-    >>> port == int(os.environ.get('ZSERVER_PORT', 55001))
+    >>> port == int(os.environ.get('WSGI_SERVER_PORT', 55001))
     True
 
 Let's now simulate a test. Test setup does nothing beyond what the base layers
@@ -367,9 +368,10 @@ Test tear-down does nothing beyond what the base layers do.
 When the server is torn down, the ZServer thread is stopped.
 
     >>> runner.tear_down_unneeded(options, [], setupLayers)
-    Tear down plone.app.testing.layers.Plone:ZServer in ... seconds.
-    ...Tear down plone.app.testing.layers.PloneFixture in ... seconds.
-    ...Tear down plone.testing.zope.Startup in ... seconds.
+    Tear down plone.app.testing.layers.Plone:WSGIServer in ... seconds.
+    Tear down plone.testing.zope.WSGIServer in ... seconds.
+    Tear down plone.app.testing.layers.PloneFixture in ... seconds.
+    Tear down plone.testing.zope.Startup in ... seconds.
     Tear down plone.testing.zca.LayerCleanup in ... seconds.
 
     >>> conn = urllib2.urlopen(portal_url + '/folder1', timeout=5)
@@ -388,15 +390,15 @@ from ``plone.testing``, which starts up an FTP server thread.
     'plone.app.testing.layers.Plone:FTPServer'
 
     >>> layers.PLONE_FTP_SERVER.__bases__
-    (<Layer 'plone.app.testing.layers.PloneFixture'>, <Layer 'plone.testing.z2.FTPServer'>)
+    (<Layer 'plone.app.testing.layers.PloneZServerFixture'>, <Layer 'plone.testing.zserver.FTPServer'>)
 
     >>> options = runner.get_options([], [])
     >>> setupLayers = {}
-    >>> runner.setup_layer(options, layers.PLONE_FTP_SERVER, setupLayers)
+    >>> runner.setup_layer(options, layers.PLONE_FTP_SERVER, setupLayers)  # here!
     Set up plone.testing.zca.LayerCleanup in ... seconds.
-    Set up plone.testing.zope.Startup in ... seconds.
-    Set up plone.app.testing.layers.PloneFixture in ... seconds.
-    Set up plone.testing.z2.FTPServer in ... seconds.
+    Set up plone.testing.zserver.Startup in ... seconds.
+    Set up plone.app.testing.layers.PloneZServerFixture in ... seconds.
+    Set up plone.testing.zserver.FTPServer in ... seconds.
     Set up plone.app.testing.layers.Plone:FTPServer in ... seconds.
 
 After layer setup, the resources ``host`` and ``port`` are available, and
@@ -478,7 +480,8 @@ Test tear-down does nothing beyond what the base layers do.
     >>> 'request' in layers.PLONE_FTP_SERVER
     False
 
-    >>> with helpers.ploneSite() as portal:
+    >>> import plone.testing.zserver
+    >>> with helpers.ploneSite(flavour=plone.testing.zserver) as portal:
     ...     print 'folder1' in portal.objectIds()
     False
 
@@ -486,11 +489,11 @@ When the server is torn down, the FTP server thread is stopped.
 
     >>> runner.tear_down_unneeded(options, [], setupLayers)
     Tear down plone.app.testing.layers.Plone:FTPServer in ... seconds.
-    ...Tear down plone.app.testing.layers.PloneFixture in ... seconds.
-    ...Tear down plone.testing.zope.Startup in ... seconds.
+    Tear down plone.testing.zserver.FTPServer in ... seconds.
+    Tear down plone.app.testing.layers.PloneZServerFixture in ... seconds.
+    Tear down plone.testing.zserver.Startup in ... seconds.
     Tear down plone.testing.zca.LayerCleanup in ... seconds.
 
     >>> ftpClient.connect(host, port, timeout=5)
     Traceback (most recent call last):
-    ...
-    ... [Errno ...] Connection refused
+    error: [Errno 61] Connection refused

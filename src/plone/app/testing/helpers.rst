@@ -183,8 +183,8 @@ the ``ploneSite()`` context manager as shown above.
 
     >>> portal = HELPER_DEMOS_INTEGRATION_TESTING['portal'] # would normally be self.layer['portal']
 
-    >>> getSecurityManager().getUser().getRolesInContext(portal)
-    ['Member', 'Authenticated']
+    >>> sorted(getSecurityManager().getUser().getRolesInContext(portal))
+    ['Authenticated', 'Member']
 
     >>> getSecurityManager().getUser().getUserName() == TEST_USER_NAME
     True

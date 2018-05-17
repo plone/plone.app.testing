@@ -234,7 +234,7 @@ def persist_profile_upgrade_versions(portal):
 
 
 @contextlib.contextmanager
-def ploneSite(db=None, connection=None, environ=None):
+def ploneSite(db=None, connection=None, environ=None, flavour=z2):
     """Context manager for working with the Plone portal during layer setup::
 
         with ploneSite() as portal:
@@ -249,11 +249,14 @@ def ploneSite(db=None, connection=None, environ=None):
     Pass a ZODB handle as ``db`` to use a specificdatabase. Alternatively,
     pass an open connection as ``connection`` (the connection will not be
     closed).
+
+    flavour ... either `plone.testing.z2` resp. `plone.testing.zope` for WSGI
+                or `plone.testing.zserver` for ZServer
     """
     setHooks()
     site = getSite()
 
-    with z2.zopeApp(db, connection, environ) as app:
+    with getattr(flavour, 'zopeApp')(db, connection, environ) as app:
         portal = app[PLONE_SITE_ID]
 
         setSite(portal)

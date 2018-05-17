@@ -17,6 +17,8 @@ from plone.testing import Layer
 from plone.testing import z2
 from plone.testing import zca
 from plone.testing import zodb
+from plone.testing import zope
+from plone.testing import zserver
 from Products.MailHost.interfaces import IMailHost
 from zope.component import getSiteManager
 from zope.component.hooks import setSite
@@ -252,6 +254,47 @@ class PloneFixture(Layer):
 PLONE_FIXTURE = PloneFixture()
 
 
+class PloneZServerFixture(PloneFixture):
+    """PloneFixture using ZServer if you really have to.
+
+    e. g. to use the FTP server.
+
+    """
+
+    defaultBases = (zserver.STARTUP,)
+
+    def setUp(self):
+
+        # Stack a new DemoStorage on top of the one from zserver.STARTUP.
+        self['zodbDB'] = zodb.stackDemoStorage(
+            self.get('zodbDB'),
+            name='PloneZServerFixture'
+        )
+
+        self.setUpZCML()
+
+        # Set up products and the default content
+        with zserver.zopeApp() as app:
+            self.setUpProducts(app)
+            self.setUpDefaultContent(app)
+
+    def tearDown(self):
+
+        # Tear down products
+        with zserver.zopeApp() as app:
+            # note: content tear-down happens by squashing the ZODB
+            self.tearDownProducts(app)
+
+        self.tearDownZCML()
+
+        # Zap the stacked ZODB
+        self['zodbDB'].close()
+        del self['zodbDB']
+
+
+PLONE_ZSERVER_FIXTURE = PloneZServerFixture()
+
+
 class PloneTestLifecycle(object):
     """Mixin class for Plone test lifecycle. This exposes the ``portal``
     resource and resets the environment between each test.
@@ -315,6 +358,12 @@ class PloneTestLifecycle(object):
         setSite(None)
 
 
+class PloneZServerTestLifecycle(PloneTestLifecycle):
+    """PloneTestLifecycle if you have to use ZServer."""
+
+    defaultBases = (PLONE_ZSERVER_FIXTURE,)
+
+
 class MockMailHostLayer(Layer):
     """Layer for setting up a MockMailHost to store all sent messages as
     strings into a list at portal.MailHost.messages
@@ -359,6 +408,12 @@ class FunctionalTesting(PloneTestLifecycle, z2.FunctionalTesting):
     """Plone version of the functional testing layer
     """
 
+
+class ZServerFunctionalTesting(
+        PloneZServerTestLifecycle, zserver.FunctionalTesting):
+    """Plone version of the functional testing layer using ZServer.
+    """
+
 #
 # Layer instances
 #
@@ -375,12 +430,12 @@ PLONE_FUNCTIONAL_TESTING = FunctionalTesting(
     name='Plone:Functional'
 )
 
-PLONE_ZSERVER = FunctionalTesting(
-    bases=(PLONE_FIXTURE, z2.ZSERVER_FIXTURE),
-    name='Plone:ZServer'
+PLONE_WSGISERVER = PLONE_ZSERVER = FunctionalTesting(
+    bases=(PLONE_FIXTURE, zope.WSGI_SERVER_FIXTURE),
+    name='Plone:WSGIServer'
 )
 
-PLONE_FTP_SERVER = FunctionalTesting(
-    bases=(PLONE_FIXTURE, z2.FTP_SERVER_FIXTURE),
+PLONE_FTP_SERVER = ZServerFunctionalTesting(
+    bases=(PLONE_ZSERVER_FIXTURE, zserver.FTP_SERVER_FIXTURE),
     name='Plone:FTPServer'
 )
