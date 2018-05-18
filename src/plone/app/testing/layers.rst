@@ -61,9 +61,9 @@ normally use this for testing, unless you need to manipulate the site itself.
 
     >>> with z2.zopeApp() as app:
     ...     print(app['acl_users'].getUser(SITE_OWNER_NAME))
-    ...     print(app['acl_users'].getUser(SITE_OWNER_NAME).getRolesInContext(app))
+    ...     print(sorted(app['acl_users'].getUser(SITE_OWNER_NAME).getRolesInContext(app)))
     admin
-    ['Manager', 'Authenticated']
+    ['Authenticated', 'Manager']
 
 Inside the Plone site, the default theme is installed
 

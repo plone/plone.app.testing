@@ -129,6 +129,6 @@ When the server is torn down, the FTP server thread is stopped.
     Tear down plone.testing.zserver.Startup in ... seconds.
     Tear down plone.testing.zca.LayerCleanup in ... seconds.
 
-    >>> ftpClient.connect(host, port, timeout=5)
+    >>> ftpClient.connect(host, port, timeout=5) # doctest: +IGNORE_EXCEPTION_DETAIL
     Traceback (most recent call last):
     error: [Errno 61] Connection refused

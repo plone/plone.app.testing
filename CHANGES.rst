@@ -6,7 +6,7 @@ Changelog
 
 Breaking changes:
 
-- *add item here*
+- Require `plone.testing >= 7.0`.
 
 New features:
 
@@ -16,10 +16,13 @@ New features:
 - Load negotiator from plone.i18n (PTS removed).
   [jensens, ksuess]
 
+- Add support for Python 3.5 and 3.6.
+  [loechel, ale-rt, icemac]
+
 Bug fixes:
 
-- Improve compatibility with Python3
-  [loechel, ale-rt]
+- *none yet*
+
 
 5.0.8 (2017-10-25)
 ------------------
