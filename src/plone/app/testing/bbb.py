@@ -10,6 +10,12 @@ from Testing.ZopeTestCase.functional import Functional
 import transaction
 import unittest
 
+try:
+    import Products.Archetypes
+    HAVE_AT = True
+except ImportError:
+    HAVE_AT = False
+
 
 def _createMemberarea(portal, user_id):
     mtool = portal.portal_membership
@@ -28,29 +34,41 @@ class PloneTestCaseFixture(testing.PloneSandboxLayer):
     defaultBases = (testing.PLONE_FIXTURE,)
 
     def setUpZope(self, app, configurationContext):
-        import Products.ATContentTypes
-        self.loadZCML(package=Products.ATContentTypes)
+        if HAVE_AT:
+            import Products.ATContentTypes
+            self.loadZCML(package=Products.ATContentTypes)
 
-        z2.installProduct(app, 'Products.Archetypes')
-        z2.installProduct(app, 'Products.ATContentTypes')
-        z2.installProduct(app, 'plone.app.blob')
-        z2.installProduct(app, 'plone.app.collection')
+            z2.installProduct(app, 'Products.Archetypes')
+            z2.installProduct(app, 'Products.ATContentTypes')
+            z2.installProduct(app, 'plone.app.blob')
+            z2.installProduct(app, 'plone.app.collection')
+        else:
+            import plone.app.contenttypes
+            self.loadZCML(package=plone.app.contenttypes)
+            z2.installProduct(app, 'plone.app.contenttypes')
+
 
     def setUpPloneSite(self, portal):
         # restore default workflow
         testing.applyProfile(portal, 'Products.CMFPlone:testfixture')
 
         # add default content
-        testing.applyProfile(portal, 'Products.ATContentTypes:content')
+        if HAVE_AT:
+            testing.applyProfile(portal, 'Products.ATContentTypes:content')
+        else:
+            testing.applyProfile(portal, 'plone.app.contenttypes:default')
 
         # add home folder for default test user
         _createMemberarea(portal, testing.TEST_USER_ID)
 
     def tearDownZope(self, app):
-        z2.uninstallProduct(app, 'plone.app.collection')
-        z2.uninstallProduct(app, 'plone.app.blob')
-        z2.uninstallProduct(app, 'Products.ATContentTypes')
-        z2.uninstallProduct(app, 'Products.Archetypes')
+        if HAVE_AT:
+            z2.uninstallProduct(app, 'plone.app.collection')
+            z2.uninstallProduct(app, 'plone.app.blob')
+            z2.uninstallProduct(app, 'Products.ATContentTypes')
+            z2.uninstallProduct(app, 'Products.Archetypes')
+        else:
+            z2.uninstallProduct(app, 'plone.app.contenttypes')
 
 
 PTC_FIXTURE = PloneTestCaseFixture()
