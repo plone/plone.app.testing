@@ -14,7 +14,6 @@ from plone.app.testing.interfaces import TEST_USER_PASSWORD
 from plone.app.testing.interfaces import TEST_USER_ROLES
 from plone.app.testing.utils import MockMailHost
 from plone.testing import Layer
-from plone.testing import z2
 from plone.testing import zca
 from plone.testing import zodb
 from plone.testing import zope
@@ -36,7 +35,7 @@ class PloneFixture(Layer):
       role, ``Member``.
     """
 
-    defaultBases = (z2.STARTUP,)
+    defaultBases = (zope.STARTUP,)
 
     # Products that will be installed, plus options
     products = (
@@ -90,7 +89,7 @@ class PloneFixture(Layer):
 
     def setUp(self):
 
-        # Stack a new DemoStorage on top of the one from z2.STARTUP.
+        # Stack a new DemoStorage on top of the one from zope.STARTUP.
         self['zodbDB'] = zodb.stackDemoStorage(
             self.get('zodbDB'),
             name='PloneFixture'
@@ -99,14 +98,14 @@ class PloneFixture(Layer):
         self.setUpZCML()
 
         # Set up products and the default content
-        with z2.zopeApp() as app:
+        with zope.zopeApp() as app:
             self.setUpProducts(app)
             self.setUpDefaultContent(app)
 
     def tearDown(self):
 
         # Tear down products
-        with z2.zopeApp() as app:
+        with zope.zopeApp() as app:
             # note: content tear-down happens by squashing the ZODB
             self.tearDownProducts(app)
 
@@ -179,7 +178,7 @@ class PloneFixture(Layer):
 
         for p, config in self.products:
             if config.get('install', True):
-                z2.installProduct(app, p)
+                zope.installProduct(app, p)
 
     def tearDownProducts(self, app):
         """Uninstall all old-style products listed in the the ``products``
@@ -187,7 +186,7 @@ class PloneFixture(Layer):
         """
         for p, config in reversed(self.products):
             if config.get('install', True):
-                z2.uninstallProduct(app, p)
+                zope.uninstallProduct(app, p)
 
         # Clean up Wicked turds
         # XXX: This may tear down too much state
@@ -217,7 +216,7 @@ class PloneFixture(Layer):
             []
         )
 
-        z2.login(app['acl_users'], SITE_OWNER_NAME)
+        zope.login(app['acl_users'], SITE_OWNER_NAME)
 
         # Create the site with the default set of extension profiles
         from Products.CMFPlone.factory import addPloneSite
@@ -246,7 +245,7 @@ class PloneFixture(Layer):
             pas.portal_role_manager.doAssignRoleToPrincipal(TEST_USER_ID, role)
 
         # Log out again
-        z2.logout()
+        zope.logout()
 
 
 # Plone fixture layer instance. Should not be used on its own, but as a base
@@ -371,7 +370,7 @@ class MockMailHostLayer(Layer):
     defaultBases = (PLONE_FIXTURE,)
 
     def setUp(self):
-        with z2.zopeApp() as app:
+        with zope.zopeApp() as app:
             portal = app[PLONE_SITE_ID]
             portal.email_from_address = 'noreply@example.com'
             portal.email_from_name = 'Plone Site'
@@ -383,7 +382,7 @@ class MockMailHostLayer(Layer):
             sm.registerUtility(mailhost, provided=IMailHost)
 
     def tearDown(self):
-        with z2.zopeApp() as app:
+        with zope.zopeApp() as app:
             portal = app[PLONE_SITE_ID]
             _o_mailhost = getattr(portal, '_original_MailHost', None)
             if _o_mailhost:
@@ -399,12 +398,12 @@ class MockMailHostLayer(Layer):
 MOCK_MAILHOST_FIXTURE = MockMailHostLayer()
 
 
-class IntegrationTesting(PloneTestLifecycle, z2.IntegrationTesting):
+class IntegrationTesting(PloneTestLifecycle, zope.IntegrationTesting):
     """Plone version of the integration testing layer
     """
 
 
-class FunctionalTesting(PloneTestLifecycle, z2.FunctionalTesting):
+class FunctionalTesting(PloneTestLifecycle, zope.FunctionalTesting):
     """Plone version of the functional testing layer
     """
 

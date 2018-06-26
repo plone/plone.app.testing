@@ -61,7 +61,7 @@ need to tear that down as well.
     ...         return qi.is_product_installed(product_name)
 
     >>> from plone.testing import Layer
-    >>> from plone.testing import zca, z2, zodb
+    >>> from plone.testing import zca, zope, zodb
 
     >>> from plone.app.testing import PLONE_FIXTURE
     >>> from plone.app.testing import IntegrationTesting
@@ -168,7 +168,7 @@ and the results of the profile having been applied.
 Let's now simulate a test.
 
     >>> zca.LAYER_CLEANUP.testSetUp()
-    >>> z2.STARTUP.testSetUp()
+    >>> zope.STARTUP.testSetUp()
     >>> PLONE_FIXTURE.testSetUp()
     >>> HELPER_DEMOS_FIXTURE.testSetUp()
     >>> HELPER_DEMOS_INTEGRATION_TESTING.testSetUp()
@@ -214,7 +214,7 @@ Let's now tear down the test.
     >>> HELPER_DEMOS_INTEGRATION_TESTING.testTearDown()
     >>> HELPER_DEMOS_FIXTURE.testTearDown()
     >>> PLONE_FIXTURE.testTearDown()
-    >>> z2.STARTUP.testTearDown()
+    >>> zope.STARTUP.testTearDown()
     >>> zca.LAYER_CLEANUP.testTearDown()
 
 Our persistent changes from the layer should remain, but those made in a test
@@ -299,7 +299,7 @@ layer base class which helps implement this pattern.
     ...         PluggableAuthService.registerMultiPlugin("dummy_plugin1")
     ...
     ...         # Finally, this is a good place to load Zope products,
-    ...         # using the plone.testing.z2.installProduct() helper.
+    ...         # using the plone.testing.zope.installProduct() helper.
     ...         # Make some other global changes not stored in the ZODB or
     ...         # the global component registry
     ...         someGlobal['test'] = 1

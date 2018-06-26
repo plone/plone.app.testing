@@ -15,7 +15,7 @@ For testing, we need a testrunner
 Plone site fixture
 ~~~~~~~~~~~~~~~~~~
 
-The ``PLONE_FIXTURE`` layer extends ``STARTUP`` from ``plone.testing.z2`` to
+The ``PLONE_FIXTURE`` layer extends ``STARTUP`` from ``plone.testing.zope`` to
 set up a Plone site.
 
 **Note:** This layer should only be used as a base layer, and not directly in
@@ -56,10 +56,10 @@ password are found in the constants ``SITE_OWNER_NAME`` and
 has the ``Manager`` role, and is the owner of the site object. You should not
 normally use this for testing, unless you need to manipulate the site itself.
 
-    >>> from plone.testing import z2, zca
+    >>> from plone.testing import zope, zca
     >>> from plone.app.testing.interfaces import SITE_OWNER_NAME
 
-    >>> with z2.zopeApp() as app:
+    >>> with zope.zopeApp() as app:
     ...     print(app['acl_users'].getUser(SITE_OWNER_NAME))
     ...     print(sorted(app['acl_users'].getUser(SITE_OWNER_NAME).getRolesInContext(app)))
     admin
@@ -73,7 +73,7 @@ Inside the Plone site, the default theme is installed
     /++theme++barceloneta/rules.xml
 
 **Note:** Here, we have used the ``ploneSite`` context manager to get hold of
-the Plone site root. Like ``z2.zopeApp()``, this is intended for use during
+the Plone site root. Like ``zope.zopeApp()``, this is intended for use during
 layer setup and tear-down, and will automatically commit any changes unless an
 error is raised.
 
@@ -128,7 +128,7 @@ Let's set up the layers and attempt to run a test.
 Let's now simulate a test
 
     >>> zca.LAYER_CLEANUP.testSetUp()
-    >>> z2.STARTUP.testSetUp()
+    >>> zope.STARTUP.testSetUp()
     >>> layers.PLONE_FIXTURE.testSetUp()
     >>> layers.PLONE_INTEGRATION_TESTING.testSetUp()
 
@@ -165,7 +165,7 @@ Let's now simulate test tear-down.
 
     >>> layers.PLONE_INTEGRATION_TESTING.testTearDown()
     >>> layers.PLONE_FIXTURE.testTearDown()
-    >>> z2.STARTUP.testTearDown()
+    >>> zope.STARTUP.testTearDown()
     >>> zca.LAYER_CLEANUP.testTearDown()
 
 At this point, our transaction has been rolled back:
@@ -217,7 +217,7 @@ Let's set up the layers and attempt to run a test.
 Let's now simulate a test
 
     >>> zca.LAYER_CLEANUP.testSetUp()
-    >>> z2.STARTUP.testSetUp()
+    >>> zope.STARTUP.testSetUp()
     >>> layers.PLONE_FIXTURE.testSetUp()
     >>> layers.PLONE_FUNCTIONAL_TESTING.testSetUp()
 
@@ -247,7 +247,7 @@ Let's now simulate test tear-down.
 
     >>> layers.PLONE_FUNCTIONAL_TESTING.testTearDown()
     >>> layers.PLONE_FIXTURE.testTearDown()
-    >>> z2.STARTUP.testTearDown()
+    >>> zope.STARTUP.testTearDown()
     >>> zca.LAYER_CLEANUP.testTearDown()
 
 The previous database state should have been restored.
@@ -311,9 +311,9 @@ Let's now simulate a test. Test setup does nothing beyond what the base layers
 do.
 
     >>> zca.LAYER_CLEANUP.testSetUp()
-    >>> z2.STARTUP.testSetUp()
+    >>> zope.STARTUP.testSetUp()
     >>> layers.PLONE_FIXTURE.testSetUp()
-    >>> z2.ZSERVER_FIXTURE.testSetUp()
+    >>> zope.WSGI_SERVER_FIXTURE.testSetUp()
     >>> layers.PLONE_ZSERVER.testSetUp()
 
 It is common in a test to use the Python API to change the state of the server
@@ -347,9 +347,9 @@ We can now look for this new object through the server.
 Test tear-down does nothing beyond what the base layers do.
 
     >>> layers.PLONE_ZSERVER.testTearDown()
-    >>> z2.ZSERVER_FIXTURE.testTearDown()
+    >>> zope.WSGI_SERVER_FIXTURE.testTearDown()
     >>> layers.PLONE_FIXTURE.testTearDown()
-    >>> z2.STARTUP.testTearDown()
+    >>> zope.STARTUP.testTearDown()
     >>> zca.LAYER_CLEANUP.testTearDown()
 
     >>> 'portal' in layers.PLONE_ZSERVER

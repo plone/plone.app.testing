@@ -3,7 +3,7 @@
 
 from AccessControl import getSecurityManager
 from plone.app import testing
-from plone.testing import z2
+from plone.testing import zope
 from Products.CMFPlone.utils import _createObjectByType
 from Testing.ZopeTestCase.functional import Functional
 
@@ -31,10 +31,10 @@ class PloneTestCaseFixture(testing.PloneSandboxLayer):
         import Products.ATContentTypes
         self.loadZCML(package=Products.ATContentTypes)
 
-        z2.installProduct(app, 'Products.Archetypes')
-        z2.installProduct(app, 'Products.ATContentTypes')
-        z2.installProduct(app, 'plone.app.blob')
-        z2.installProduct(app, 'plone.app.collection')
+        zope.installProduct(app, 'Products.Archetypes')
+        zope.installProduct(app, 'Products.ATContentTypes')
+        zope.installProduct(app, 'plone.app.blob')
+        zope.installProduct(app, 'plone.app.collection')
 
     def setUpPloneSite(self, portal):
         # restore default workflow
@@ -47,10 +47,10 @@ class PloneTestCaseFixture(testing.PloneSandboxLayer):
         _createMemberarea(portal, testing.TEST_USER_ID)
 
     def tearDownZope(self, app):
-        z2.uninstallProduct(app, 'plone.app.collection')
-        z2.uninstallProduct(app, 'plone.app.blob')
-        z2.uninstallProduct(app, 'Products.ATContentTypes')
-        z2.uninstallProduct(app, 'Products.Archetypes')
+        zope.uninstallProduct(app, 'plone.app.collection')
+        zope.uninstallProduct(app, 'plone.app.blob')
+        zope.uninstallProduct(app, 'Products.ATContentTypes')
+        zope.uninstallProduct(app, 'Products.Archetypes')
 
 
 PTC_FIXTURE = PloneTestCaseFixture()
@@ -114,7 +114,7 @@ class PloneTestCase(Functional, unittest.TestCase):
 
     def loginAsPortalOwner(self, userName=testing.SITE_OWNER_NAME):
         """Log in to the portal as the user who created it."""
-        z2.login(self.app['acl_users'], userName)
+        zope.login(self.app['acl_users'], userName)
 
     def logout(self):
         """Log out, i.e. become anonymous."""
