@@ -36,7 +36,7 @@ class PloneTestCaseFixture(testing.PloneSandboxLayer):
         testing.applyProfile(portal, 'Products.CMFPlone:testfixture')
 
         # add default content
-        testing.applyProfile(portal, 'plone.app.contenttypes:default')
+        testing.applyProfile(portal, 'plone.app.contenttypes:plone-content')
 
         # add home folder for default test user
         _createMemberarea(portal, testing.TEST_USER_ID)
