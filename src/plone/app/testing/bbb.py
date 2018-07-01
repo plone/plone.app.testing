@@ -28,29 +28,18 @@ class PloneTestCaseFixture(testing.PloneSandboxLayer):
     defaultBases = (testing.PLONE_FIXTURE,)
 
     def setUpZope(self, app, configurationContext):
-        import Products.ATContentTypes
-        self.loadZCML(package=Products.ATContentTypes)
-
-        zope.installProduct(app, 'Products.Archetypes')
-        zope.installProduct(app, 'Products.ATContentTypes')
-        zope.installProduct(app, 'plone.app.blob')
-        zope.installProduct(app, 'plone.app.collection')
+        import plone.app.contenttypes
+        self.loadZCML(package=plone.app.contenttypes)
 
     def setUpPloneSite(self, portal):
         # restore default workflow
         testing.applyProfile(portal, 'Products.CMFPlone:testfixture')
 
         # add default content
-        testing.applyProfile(portal, 'Products.ATContentTypes:content')
+        testing.applyProfile(portal, 'plone.app.contenttypes:default')
 
         # add home folder for default test user
         _createMemberarea(portal, testing.TEST_USER_ID)
-
-    def tearDownZope(self, app):
-        zope.uninstallProduct(app, 'plone.app.collection')
-        zope.uninstallProduct(app, 'plone.app.blob')
-        zope.uninstallProduct(app, 'Products.ATContentTypes')
-        zope.uninstallProduct(app, 'Products.Archetypes')
 
 
 PTC_FIXTURE = PloneTestCaseFixture()
