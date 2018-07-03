@@ -20,7 +20,7 @@ matrix:
           env: TOXENV=py37
 
 install:
-    - travis_retry pip install -U pip setuptools
+    - travis_retry pip install -r https://raw.githubusercontent.com/plone/buildout.coredev/5.2/requirements.txt
     - travis_retry pip install -U tox coveralls coverage
 
 script:
