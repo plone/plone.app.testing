@@ -24,7 +24,7 @@ install:
     - travis_retry pip install -U tox coveralls coverage
 
 script:
-    - travis_retry tox
+    - tox
 
 after_success:
     - coverage combine

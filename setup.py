@@ -8,7 +8,7 @@ import os
 version = '6.0.0.dev0'
 
 tests_require = [
-    'plone.testing[test]'
+    'plone.testing[test]',
     'Products.CMFCore',
     'Products.CMFPlacefulWorkflow',
     'Products.CMFPlone',
