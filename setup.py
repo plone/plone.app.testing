@@ -8,16 +8,17 @@ import os
 version = '6.0.0.dev0'
 
 tests_require = [
+    'plone.testing[test]'
     'Products.CMFCore',
+    'Products.CMFPlacefulWorkflow',
     'Products.CMFPlone',
     'Products.PluggableAuthService',
-    'Products.CMFPlacefulWorkflow',
     'selenium',
     'transaction',
     'zope.interface',
     'zope.publisher',
-    'zope.testrunner',
     'zope.testing',
+    'zope.testrunner',
     # XXX unspecified dependency of plone.app.upgrade XXX
     # 'Products.ATContentTypes',
 ]
