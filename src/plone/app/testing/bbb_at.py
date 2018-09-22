@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-"""Backwards-compatibility test class for PloneTestCase for Dexterity."""
+"""Backwards-compatibility test class for PloneTestCase for Archetypes."""
 
 from AccessControl import getSecurityManager
 from plone.app import testing
-from plone.testing import zope
+from plone.testing import z2
 from Products.CMFPlone.utils import _createObjectByType
 from Testing.ZopeTestCase.functional import Functional
 
@@ -28,19 +28,29 @@ class PloneTestCaseFixture(testing.PloneSandboxLayer):
     defaultBases = (testing.PLONE_FIXTURE,)
 
     def setUpZope(self, app, configurationContext):
-        import plone.app.contenttypes
-        self.loadZCML(package=plone.app.contenttypes)
+        import Products.ATContentTypes
+        self.loadZCML(package=Products.ATContentTypes)
+
+        z2.installProduct(app, 'Products.Archetypes')
+        z2.installProduct(app, 'Products.ATContentTypes')
+        z2.installProduct(app, 'plone.app.blob')
+        z2.installProduct(app, 'plone.app.collection')
 
     def setUpPloneSite(self, portal):
         # restore default workflow
         testing.applyProfile(portal, 'Products.CMFPlone:testfixture')
 
         # add default content
-        testing.applyProfile(portal, 'plone.app.contenttypes:plone-content')
+        testing.applyProfile(portal, 'Products.ATContentTypes:content')
 
         # add home folder for default test user
         _createMemberarea(portal, testing.TEST_USER_ID)
 
+    def tearDownZope(self, app):
+        z2.uninstallProduct(app, 'plone.app.collection')
+        z2.uninstallProduct(app, 'plone.app.blob')
+        z2.uninstallProduct(app, 'Products.ATContentTypes')
+        z2.uninstallProduct(app, 'Products.Archetypes')
 
 PTC_FIXTURE = PloneTestCaseFixture()
 PTC_FUNCTIONAL_TESTING = testing.FunctionalTesting(
@@ -103,7 +113,7 @@ class PloneTestCase(Functional, unittest.TestCase):
 
     def loginAsPortalOwner(self, userName=testing.SITE_OWNER_NAME):
         """Log in to the portal as the user who created it."""
-        zope.login(self.app['acl_users'], userName)
+        z2.login(self.app['acl_users'], userName)
 
     def logout(self):
         """Log out, i.e. become anonymous."""
