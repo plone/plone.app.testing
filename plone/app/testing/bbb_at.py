@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Backwards-compatibility test class for PloneTestCase for Dexterity."""
+"""Backwards-compatibility test class for PloneTestCase for Archetypes."""
 
 from AccessControl import getSecurityManager
 from plone.app import testing
