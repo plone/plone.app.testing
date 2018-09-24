@@ -16,6 +16,9 @@ New features:
 - Load negotiator from plone.i18n (PTS removed).
   [jensens, ksuess]
 
+- Add copy of bbb.PloneTestCase. For Plone 5.2 the bbb.PloneTestCase will uses Dexterity instead of Archetypes. Adding bbb_at.PloneTestCase for them to use allows to keep the AT tests working. See https://github.com/plone/plone.app.testing/pull/51
+  [pbauer]
+
 Bug fixes:
 
 - *add item here*
