@@ -1,9 +1,5 @@
 # -*- coding: utf-8 -*-
-<<<<<<< HEAD:src/plone/app/testing/bbb_at.py:src/plone/app/testing/bbb_at.py
 """Backwards-compatibility test class for PloneTestCase for Archetypes."""
-=======
-"""Backwards-compatibility test class for PloneTestCase for Dexterity."""
->>>>>>> master:plone/app/testing/bbb.py:plone/app/testing/bbb.py
 
 from AccessControl import getSecurityManager
 from plone.app import testing
