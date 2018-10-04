@@ -40,9 +40,10 @@ indicate where Zope is running.
     >>> host
     'localhost'
 
+The port is auto-allocated
+
     >>> port = layers.PLONE_FTP_SERVER['port']
-    >>> import os
-    >>> port == int(os.environ.get('FTPSERVER_PORT', 55002))
+    >>> bool(port)
     True
 
 Let's now simulate a test. Test setup does nothing beyond what the base layers
