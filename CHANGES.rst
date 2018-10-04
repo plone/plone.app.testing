@@ -14,7 +14,8 @@ New features:
 
 Bug fixes:
 
-- *add item here*
+- Amended the doctests to work with automatical layer port picking from plone.testing.
+  [Rotonen]
 
 
 4.2.6 (2017-05-09)
