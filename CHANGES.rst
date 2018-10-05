@@ -1,6 +1,22 @@
 Changelog
 =========
 
+4.2.8 (unreleased)
+------------------
+
+Breaking changes:
+
+- *add item here*
+
+New features:
+
+- *add item here*
+
+Bug fixes:
+
+- *add item here*
+
+
 4.2.7 (2018-10-05)
 ------------------
 
