@@ -4,14 +4,6 @@ Changelog
 5.0.9 (unreleased)
 ------------------
 
-Breaking changes:
-
-- *add item here*
-
-New features:
-
-- *add item here*
-
 Bug fixes:
 
 - Amended the doctests to work with automatical layer port picking from plone.testing.
