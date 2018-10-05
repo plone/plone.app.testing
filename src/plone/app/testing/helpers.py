@@ -373,6 +373,9 @@ class PloneSandboxLayer(Layer):
                 # Allow subclass to load ZCML and products
                 self.setUpZope(portal.getPhysicalRoot(), configurationContext)
 
+                # Snapshot Dexterity schemas
+                self.snapshotGeneratedSchemas()
+
                 # Allow subclass to configure a persistent fixture
                 setSite(portal)
                 self.setUpPloneSite(portal)
@@ -398,6 +401,9 @@ class PloneSandboxLayer(Layer):
             self.tearDownPloneSite(portal)
 
             setSite(None)
+
+            # Reset Dexterity schemas
+            self.tearDownGeneratedSchemas()
 
             # Make sure zope.security checkers can be set up and torn down
             # reliably
@@ -456,6 +462,23 @@ class PloneSandboxLayer(Layer):
 
         for pluginName in self._addedMultiPlugins:
             tearDownMultiPluginRegistration(pluginName)
+
+    def snapshotGeneratedSchemas(self):
+        """Save a snapshot of the plone.dexterity.schema.generated module"""
+        from plone.dexterity.schema import generated
+        self._generatedSchemas = generated.__dict__.copy()
+        todelete = []
+        for k in generated.__dict__:
+            if not k.startswith('_'):
+                todelete.append(k)
+        for k in todelete:
+            del generated.__dict__[k]
+
+    def tearDownGeneratedSchemas(self):
+        """Reset plone.dexterity.schema.generated to its previous state"""
+        from plone.dexterity.schema import generated
+        generated.__dict__.clear()
+        generated.__dict__.update(self._generatedSchemas)
 
 
 class PloneWithPackageLayer(PloneSandboxLayer):
