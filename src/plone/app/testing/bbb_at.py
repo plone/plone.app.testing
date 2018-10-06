@@ -10,6 +10,13 @@ from Testing.ZopeTestCase.functional import Functional
 import transaction
 import unittest
 
+try:
+    import Products.Archetypes
+except ImportError:
+    HAS_AT = False
+else:
+    HAS_AT = True
+
 
 def _createMemberarea(portal, user_id):
     mtool = portal.portal_membership
@@ -28,6 +35,9 @@ class PloneTestCaseFixture(testing.PloneSandboxLayer):
     defaultBases = (testing.PLONE_FIXTURE,)
 
     def setUpZope(self, app, configurationContext):
+        if not HAS_AT:
+            return
+
         import Products.ATContentTypes
         self.loadZCML(package=Products.ATContentTypes)
 
@@ -37,6 +47,9 @@ class PloneTestCaseFixture(testing.PloneSandboxLayer):
         z2.installProduct(app, 'plone.app.collection')
 
     def setUpPloneSite(self, portal):
+        if not HAS_AT:
+            return
+
         # restore default workflow
         testing.applyProfile(portal, 'Products.CMFPlone:testfixture')
 
@@ -47,10 +60,14 @@ class PloneTestCaseFixture(testing.PloneSandboxLayer):
         _createMemberarea(portal, testing.TEST_USER_ID)
 
     def tearDownZope(self, app):
+        if not HAS_AT:
+            return
+
         z2.uninstallProduct(app, 'plone.app.collection')
         z2.uninstallProduct(app, 'plone.app.blob')
         z2.uninstallProduct(app, 'Products.ATContentTypes')
         z2.uninstallProduct(app, 'Products.Archetypes')
+
 
 PTC_FIXTURE = PloneTestCaseFixture()
 PTC_FUNCTIONAL_TESTING = testing.FunctionalTesting(
@@ -63,6 +80,8 @@ class PloneTestCase(Functional, unittest.TestCase):
 
     def setUp(self):
         """Set up before each test."""
+        if not HAS_AT:
+            raise unittest.SkipTest('PloneTestCase requires Archetypes')
         self.beforeSetUp()
         self.app = self.layer['app']
         self.portal = self.layer['portal']
