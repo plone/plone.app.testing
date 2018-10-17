@@ -1,49 +1,62 @@
-from setuptools import setup, find_packages
+# -*- coding: utf-8 -*-
+from setuptools import find_packages
+from setuptools import setup
+
 import os
 
 version = '6.0.1.dev0'
 
-tests_require = ['Products.CMFCore',
-                 'Products.CMFPlone',
-                 'Products.PluggableAuthService',
-                 'Products.ATContentTypes',  # XXX unspecified dependency of plone.app.upgrade XXX
-                 'Products.CMFPlacefulWorkflow',
-                 'selenium',
-                 'transaction',
-                 'zope.interface',
-                 'zope.publisher',
-                 'zope.testrunner',
-                 ]
+tests_require = [
+    'plone.testing[test]',
+    'Products.CMFCore',
+    'Products.CMFPlacefulWorkflow',
+    'Products.CMFPlone',
+    'Products.PluggableAuthService',
+    'selenium',
+    'transaction',
+    'zope.interface',
+    'zope.publisher',
+    'zope.testing',
+    'zope.testrunner',
+    # XXX unspecified dependency of plone.app.upgrade XXX
+    # 'Products.ATContentTypes',
+]
 
-robot_require = ['robotsuite>=1.4.0',
-                 'robotframework-selenium2library',
-                 'decorator',
-                 'selenium']
+robot_require = [
+    'robotsuite>=1.4.0',
+    'robotframework-selenium2library',
+    'decorator',
+    'selenium',
+]
+
 
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
+
 long_description = \
-    read('docs', 'source','README.rst') + \
+    read('docs', 'README.rst') + \
     '\n\n' +\
     read('CHANGES.rst')
+
 
 setup(
     name='plone.app.testing',
     version=version,
-    description="Testing tools for Plone-the-application, based on plone.testing.",
+    description="Testing tools for Plone-the-application, based on plone.testing.",  # NOQA: E501
     long_description=long_description,
     classifiers=[
         "Environment :: Web Environment",
         "Framework :: Plone",
-        "Framework :: Plone :: 5.0",
-        "Framework :: Plone :: 5.1",
         "Framework :: Plone :: 5.2",
-        "Framework :: Zope2",
+        "Framework :: Zope :: 4",
         "License :: OSI Approved :: GNU General Public License v2 (GPLv2)",
         "Operating System :: OS Independent",
         "Programming Language :: Python",
         "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 3.5",
+        "Programming Language :: Python :: 3.6",
+        # "Programming Language :: Python :: 3.7",
         "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
     ],
     keywords='plone tests',
@@ -57,6 +70,7 @@ setup(
     zip_safe=False,
     install_requires=[
         'setuptools',
+        'six',
         'zope.configuration',
         'zope.component',
         'zope.dottedname',
@@ -68,7 +82,7 @@ setup(
         # 'AccessControl', # Zope 2.13+
         'Products.CMFPlone',
         'Products.GenericSetup',
-        'Zope2',
+        'Zope',
     ],
     tests_require=tests_require,
     extras_require={

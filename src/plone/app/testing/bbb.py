@@ -3,7 +3,7 @@
 
 from AccessControl import getSecurityManager
 from plone.app import testing
-from plone.testing import z2
+from plone.testing import zope
 from Products.CMFPlone.utils import _createObjectByType
 from Testing.ZopeTestCase.functional import Functional
 
@@ -28,29 +28,19 @@ class PloneTestCaseFixture(testing.PloneSandboxLayer):
     defaultBases = (testing.PLONE_FIXTURE,)
 
     def setUpZope(self, app, configurationContext):
-        import Products.ATContentTypes
-        self.loadZCML(package=Products.ATContentTypes)
-
-        z2.installProduct(app, 'Products.Archetypes')
-        z2.installProduct(app, 'Products.ATContentTypes')
-        z2.installProduct(app, 'plone.app.blob')
-        z2.installProduct(app, 'plone.app.collection')
+        import plone.app.contenttypes
+        self.loadZCML(package=plone.app.contenttypes)
 
     def setUpPloneSite(self, portal):
         # restore default workflow
         testing.applyProfile(portal, 'Products.CMFPlone:testfixture')
 
         # add default content
-        testing.applyProfile(portal, 'Products.ATContentTypes:content')
+        testing.applyProfile(portal, 'plone.app.contenttypes:plone-content')
 
         # add home folder for default test user
         _createMemberarea(portal, testing.TEST_USER_ID)
 
-    def tearDownZope(self, app):
-        z2.uninstallProduct(app, 'plone.app.collection')
-        z2.uninstallProduct(app, 'plone.app.blob')
-        z2.uninstallProduct(app, 'Products.ATContentTypes')
-        z2.uninstallProduct(app, 'Products.Archetypes')
 
 PTC_FIXTURE = PloneTestCaseFixture()
 PTC_FUNCTIONAL_TESTING = testing.FunctionalTesting(
@@ -113,7 +103,7 @@ class PloneTestCase(Functional, unittest.TestCase):
 
     def loginAsPortalOwner(self, userName=testing.SITE_OWNER_NAME):
         """Log in to the portal as the user who created it."""
-        z2.login(self.app['acl_users'], userName)
+        zope.login(self.app['acl_users'], userName)
 
     def logout(self):
         """Log out, i.e. become anonymous."""

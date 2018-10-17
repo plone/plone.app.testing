@@ -4,14 +4,14 @@ from plone.app.testing import PLONE_FIXTURE
 from plone.app.testing import TEST_USER_NAME
 from plone.app.testing import TEST_USER_PASSWORD
 from plone.testing import Layer
-from plone.testing import z2
+from plone.testing import zope
 
 import os
 import transaction
 
 
 class SeleniumLayer(Layer):
-    defaultBases = (z2.ZSERVER_FIXTURE, )
+    defaultBases = (zope.ZSERVER_FIXTURE, )
 
     def testSetUp(self):
         # Start up Selenium
@@ -28,6 +28,7 @@ class SeleniumLayer(Layer):
     def testTearDown(self):
         self['selenium'].quit()
         del self['selenium']
+
 
 SELENIUM_FIXTURE = SeleniumLayer()
 SELENIUM_FUNCTIONAL_TESTING = FunctionalTesting(

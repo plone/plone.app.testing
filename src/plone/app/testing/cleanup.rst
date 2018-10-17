@@ -11,8 +11,7 @@ and Plone packages.
 PluggableAuthService MultiPlugins list
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The ``PluggableAuthService`` package maintains a global list of so-called
-multi-plugins.
+The ``PluggableAuthService`` package maintains a global list of so-called multi-plugins.
 
     >>> from Products.PluggableAuthService import PluggableAuthService
     >>> PluggableAuthService.MultiPlugins

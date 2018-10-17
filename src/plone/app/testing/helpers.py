@@ -8,9 +8,9 @@ from plone.app.testing.interfaces import SITE_OWNER_NAME
 from plone.app.testing.interfaces import TEST_USER_NAME
 from plone.testing import Layer
 from plone.testing import security
-from plone.testing import z2
 from plone.testing import zca
 from plone.testing import zodb
+from plone.testing import zope
 from zope.component import getGlobalSiteManager
 from zope.component.hooks import getSite
 from zope.component.hooks import setHooks
@@ -27,14 +27,14 @@ def login(portal, userName):
     """Log in as the given user in the given Plone site
     """
 
-    z2.login(portal['acl_users'], userName)
+    zope.login(portal['acl_users'], userName)
 
 
 def logout():
     """Log out, i.e. become anonymous
     """
 
-    z2.logout()
+    zope.logout()
 
 
 def setRoles(portal, userId, roles):
@@ -42,7 +42,7 @@ def setRoles(portal, userId, roles):
     """
 
     userFolder = portal['acl_users']
-    z2.setRoles(userFolder, userId, roles)
+    zope.setRoles(userFolder, userId, roles)
 
 
 def tearDownMultiPluginRegistration(pluginName):
@@ -81,7 +81,7 @@ def quickInstallProduct(portal, productName, reinstall=False):
     sm = getSecurityManager()
     app = aq_parent(portal)
 
-    z2.login(app['acl_users'], SITE_OWNER_NAME)
+    zope.login(app['acl_users'], SITE_OWNER_NAME)
 
     try:
         from Products.CMFPlone.utils import get_installer
@@ -127,7 +127,7 @@ def applyProfile(portal, profileName, purge_old=None,
     sm = getSecurityManager()
     app = aq_parent(portal)
 
-    z2.login(app['acl_users'], SITE_OWNER_NAME)
+    zope.login(app['acl_users'], SITE_OWNER_NAME)
 
     try:
         setupTool = portal['portal_setup']
@@ -234,13 +234,13 @@ def persist_profile_upgrade_versions(portal):
 
 
 @contextlib.contextmanager
-def ploneSite(db=None, connection=None, environ=None):
+def ploneSite(db=None, connection=None, environ=None, flavour=zope):
     """Context manager for working with the Plone portal during layer setup::
 
         with ploneSite() as portal:
             ...
 
-    This is based on the ``z2.zopeApp()`` context manager. See the module
+    This is based on the ``zope.zopeApp()`` context manager. See the module
      ``plone.testing.z2`` for details.
 
     Do not use this in a test. Use the 'portal' resource from the PloneFixture
@@ -249,11 +249,14 @@ def ploneSite(db=None, connection=None, environ=None):
     Pass a ZODB handle as ``db`` to use a specificdatabase. Alternatively,
     pass an open connection as ``connection`` (the connection will not be
     closed).
+
+    flavour ... either `plone.testing.z2` resp. `plone.testing.zope` for WSGI
+                or `plone.testing.zserver` for ZServer
     """
     setHooks()
     site = getSite()
 
-    with z2.zopeApp(db, connection, environ) as app:
+    with getattr(flavour, 'zopeApp')(db, connection, environ) as app:
         portal = app[PLONE_SITE_ID]
 
         setSite(portal)
@@ -293,7 +296,7 @@ class PloneSandboxLayer(Layer):
         ``configurationContext`` is the ZCML configuration context.
 
         This is the most appropriate place to load ZCML or install Zope 2-
-        style products, using the ``plone.testing.z2.installProduct`` helper.
+        style products, using the ``plone.testing.zope.installProduct`` helper.
         """
         pass
 
@@ -303,7 +306,7 @@ class PloneSandboxLayer(Layer):
         ``app`` is the Zope application root.
 
         This is the most appropriate place to uninstall Zope 2-style products
-        using the ``plone.testing.z2.uninstallProduct`` helper.
+        using the ``plone.testing.zope.uninstallProduct`` helper.
         """
         pass
 
@@ -370,6 +373,9 @@ class PloneSandboxLayer(Layer):
                 # Allow subclass to load ZCML and products
                 self.setUpZope(portal.getPhysicalRoot(), configurationContext)
 
+                # Snapshot Dexterity schemas
+                self.snapshotGeneratedSchemas()
+
                 # Allow subclass to configure a persistent fixture
                 setSite(portal)
                 self.setUpPloneSite(portal)
@@ -385,7 +391,7 @@ class PloneSandboxLayer(Layer):
 
     def tearDown(self):
 
-        with z2.zopeApp() as app:
+        with zope.zopeApp() as app:
 
             portal = app[PLONE_SITE_ID]
             setHooks()
@@ -395,6 +401,9 @@ class PloneSandboxLayer(Layer):
             self.tearDownPloneSite(portal)
 
             setSite(None)
+
+            # Reset Dexterity schemas
+            self.tearDownGeneratedSchemas()
 
             # Make sure zope.security checkers can be set up and torn down
             # reliably
@@ -454,6 +463,23 @@ class PloneSandboxLayer(Layer):
         for pluginName in self._addedMultiPlugins:
             tearDownMultiPluginRegistration(pluginName)
 
+    def snapshotGeneratedSchemas(self):
+        """Save a snapshot of the plone.dexterity.schema.generated module"""
+        from plone.dexterity.schema import generated
+        self._generatedSchemas = generated.__dict__.copy()
+        todelete = []
+        for k in generated.__dict__:
+            if not k.startswith('_'):
+                todelete.append(k)
+        for k in todelete:
+            del generated.__dict__[k]
+
+    def tearDownGeneratedSchemas(self):
+        """Reset plone.dexterity.schema.generated to its previous state"""
+        from plone.dexterity.schema import generated
+        generated.__dict__.clear()
+        generated.__dict__.update(self._generatedSchemas)
+
 
 class PloneWithPackageLayer(PloneSandboxLayer):
 
@@ -473,7 +499,7 @@ class PloneWithPackageLayer(PloneSandboxLayer):
         """
         self.setUpZCMLFiles()
         for z2Product in self.additional_z2_products:
-            z2.installProduct(app, z2Product)
+            zope.installProduct(app, z2Product)
 
     def setUpZCMLFiles(self):
         """Load default ZCML.

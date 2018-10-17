@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import doctest
+import six
 import unittest
 
 
@@ -23,4 +24,9 @@ def test_suite():
         doctest.DocFileSuite('helpers.rst', optionflags=OPTIONFLAGS),
         # seltest,
     ])
+    if six.PY2:
+        suite.addTests([
+            doctest.DocFileSuite(
+                'layers_zserver.rst', optionflags=OPTIONFLAGS),
+        ])
     return suite

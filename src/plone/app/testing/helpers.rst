@@ -61,7 +61,7 @@ need to tear that down as well.
     ...         return qi.is_product_installed(product_name)
 
     >>> from plone.testing import Layer
-    >>> from plone.testing import zca, z2, zodb
+    >>> from plone.testing import zca, zope, zodb
 
     >>> from plone.app.testing import PLONE_FIXTURE
     >>> from plone.app.testing import IntegrationTesting
@@ -138,9 +138,9 @@ Let's now simulate layer setup:
     >>> setupLayers = {}
     >>> runner.setup_layer(options, HELPER_DEMOS_INTEGRATION_TESTING, setupLayers)
     Set up plone.testing.zca.LayerCleanup in ... seconds.
-      Set up plone.testing.z2.Startup in ... seconds.
+      Set up plone.testing.zope.Startup in ... seconds.
       Set up plone.app.testing.layers.PloneFixture in ... seconds.
-      Set up HelperDemos in ... seconds.
+      Set up...HelperDemos in ... seconds.
       Set up plone.app.testing.layers.HelperDemos:Integration in ... seconds.
 
 We should see the newly registered components and the persistent changes
@@ -152,7 +152,7 @@ having taken effect.
     <object object at ...>
 
     >>> with helpers.ploneSite() as portal:
-    ...     print portal.title
+    ...     print(portal.title)
     New title
 
 We should also see our product installation in the quickinstaller tool
@@ -160,7 +160,7 @@ and the results of the profile having been applied.
 
     >>> from Products.GenericSetup.tool import UNKNOWN
     >>> with helpers.ploneSite() as portal:
-    ...     print is_installed(portal, 'plone.app.testing')
+    ...     print(is_installed(portal, 'plone.app.testing'))
     ...     portal.portal_setup.getLastVersionForProfile('plone.app.testing:default') == UNKNOWN
     True
     False
@@ -168,7 +168,7 @@ and the results of the profile having been applied.
 Let's now simulate a test.
 
     >>> zca.LAYER_CLEANUP.testSetUp()
-    >>> z2.STARTUP.testSetUp()
+    >>> zope.STARTUP.testSetUp()
     >>> PLONE_FIXTURE.testSetUp()
     >>> HELPER_DEMOS_FIXTURE.testSetUp()
     >>> HELPER_DEMOS_INTEGRATION_TESTING.testSetUp()
@@ -183,8 +183,8 @@ the ``ploneSite()`` context manager as shown above.
 
     >>> portal = HELPER_DEMOS_INTEGRATION_TESTING['portal'] # would normally be self.layer['portal']
 
-    >>> getSecurityManager().getUser().getRolesInContext(portal)
-    ['Member', 'Authenticated']
+    >>> sorted(getSecurityManager().getUser().getRolesInContext(portal))
+    ['Authenticated', 'Member']
 
     >>> getSecurityManager().getUser().getUserName() == TEST_USER_NAME
     True
@@ -194,8 +194,8 @@ the ``ploneSite()`` context manager as shown above.
     >>> helpers.setRoles(portal, TEST_USER_ID, ['Manager'])
     >>> repr(getSecurityManager()) != sm_repr
     True
-    >>> getSecurityManager().getUser().getRolesInContext(portal)
-    ['Manager', 'Authenticated']
+    >>> sorted(getSecurityManager().getUser().getRolesInContext(portal))
+    ['Authenticated', 'Manager']
 
     >>> helpers.logout()
     >>> getSecurityManager().getUser()
@@ -214,7 +214,7 @@ Let's now tear down the test.
     >>> HELPER_DEMOS_INTEGRATION_TESTING.testTearDown()
     >>> HELPER_DEMOS_FIXTURE.testTearDown()
     >>> PLONE_FIXTURE.testTearDown()
-    >>> z2.STARTUP.testTearDown()
+    >>> zope.STARTUP.testTearDown()
     >>> zca.LAYER_CLEANUP.testTearDown()
 
 Our persistent changes from the layer should remain, but those made in a test
@@ -224,8 +224,8 @@ should not.
     <object object at ...>
 
     >>> with helpers.ploneSite() as portal:
-    ...     print portal.title
-    ...     print is_installed(portal, 'plone.app.testing')
+    ...     print(portal.title)
+    ...     print(is_installed(portal, 'plone.app.testing'))
     ...     'folder1' in portal.objectIds()
     ...     portal.portal_setup.getLastVersionForProfile('plone.app.testing:default') == UNKNOWN
     New title
@@ -239,14 +239,14 @@ component architecture changes from our layer.
 
     >>> runner.tear_down_unneeded(options, [l for l in setupLayers if l not in (HELPER_DEMOS_INTEGRATION_TESTING, HELPER_DEMOS_FIXTURE,)], setupLayers)
     Tear down plone.app.testing.layers.HelperDemos:Integration in ... seconds.
-    Tear down HelperDemos in ... seconds.
+    Tear down...HelperDemos in ... seconds.
 
     >>> queryUtility(Interface, name="dummy1") is None
     True
 
     >>> with helpers.ploneSite() as portal:
-    ...     print portal.title
-    ...     print is_installed(portal, 'plone.app.testing')
+    ...     print(portal.title)
+    ...     print(is_installed(portal, 'plone.app.testing'))
     ...     portal.portal_setup.getLastVersionForProfile('plone.app.testing:default') == UNKNOWN
     Plone site
     False
@@ -256,7 +256,7 @@ Let's tear down the rest of the layers too.
 
     >>> runner.tear_down_unneeded(options, [], setupLayers)
     Tear down plone.app.testing.layers.PloneFixture in ... seconds.
-    Tear down plone.testing.z2.Startup in ... seconds.
+    Tear down plone.testing.zope.Startup in ... seconds.
     Tear down plone.testing.zca.LayerCleanup in ... seconds.
 
 Plone sandbox layer helper
@@ -299,7 +299,7 @@ layer base class which helps implement this pattern.
     ...         PluggableAuthService.registerMultiPlugin("dummy_plugin1")
     ...
     ...         # Finally, this is a good place to load Zope products,
-    ...         # using the plone.testing.z2.installProduct() helper.
+    ...         # using the plone.testing.zope.installProduct() helper.
     ...         # Make some other global changes not stored in the ZODB or
     ...         # the global component registry
     ...         someGlobal['test'] = 1
@@ -351,9 +351,9 @@ Let's now simulate layer setup:
     >>> setupLayers = {}
     >>> runner.setup_layer(options, MY_INTEGRATION_TESTING, setupLayers)
     Set up plone.testing.zca.LayerCleanup in ... seconds.
-    Set up plone.testing.z2.Startup in ... seconds.
+    Set up plone.testing.zope.Startup in ... seconds.
     Set up plone.app.testing.layers.PloneFixture in ... seconds.
-    Set up MyLayer in ... seconds.
+    Set up...MyLayer in ... seconds.
     Set up plone.app.testing.layers.MyLayer:Integration in ... seconds.
 
 Again, our state should now be available.
@@ -362,7 +362,7 @@ Again, our state should now be available.
     <object object at ...>
 
     >>> with helpers.ploneSite() as portal:
-    ...     print portal.title
+    ...     print(portal.title)
     New title
 
     >>> someGlobal['test']
@@ -404,7 +404,7 @@ layer.
     True
 
     >>> with helpers.ploneSite() as portal:
-    ...     print portal.title
+    ...     print(portal.title)
     Plone site
 
     >>> 'test' in someGlobal
@@ -438,7 +438,7 @@ Let's tear down the rest of the layers too.
 
     >>> runner.tear_down_unneeded(options, [], setupLayers)
     Tear down plone.app.testing.layers.PloneFixture in ... seconds.
-    Tear down plone.testing.z2.Startup in ... seconds.
+    Tear down plone.testing.zope.Startup in ... seconds.
     Tear down plone.testing.zca.LayerCleanup in ... seconds.
 
 Other helpers

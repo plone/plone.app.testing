@@ -14,9 +14,10 @@ from plone.app.testing.interfaces import TEST_USER_PASSWORD
 from plone.app.testing.interfaces import TEST_USER_ROLES
 from plone.app.testing.utils import MockMailHost
 from plone.testing import Layer
-from plone.testing import z2
 from plone.testing import zca
 from plone.testing import zodb
+from plone.testing import zope
+from plone.testing import zserver
 from Products.MailHost.interfaces import IMailHost
 from zope.component import getSiteManager
 from zope.component.hooks import setSite
@@ -34,62 +35,50 @@ class PloneFixture(Layer):
       role, ``Member``.
     """
 
-    defaultBases = (z2.STARTUP,)
+    defaultBases = (zope.STARTUP,)
 
     # Products that will be installed, plus options
     products = (
-        ('Products.GenericSetup',                {'loadZCML': True}, ),
-        ('Products.DCWorkflow',                  {'loadZCML': True}, ),
-        ('Products.ZCTextIndex',                 {'loadZCML': True}, ),
-        ('Products.DateRecurringIndex',          {'loadZCML': False},),
-        ('Products.PageTemplates',               {'loadZCML': True},),
-
-        ('Products.CMFUid',                      {'loadZCML': True}, ),
-        ('Products.CMFCore',                     {'loadZCML': True}, ),
-
-        ('Products.PluggableAuthService',        {'loadZCML': True}, ),
-        ('Products.PluginRegistry',              {'loadZCML': True}, ),
-        ('Products.PlonePAS',                    {'loadZCML': True}, ),
-
-        ('Products.CMFFormController',           {'loadZCML': True}, ),
-        ('Products.CMFDynamicViewFTI',           {'loadZCML': True}, ),
-        ('Products.CMFPlacefulWorkflow',         {'loadZCML': True}, ),
-
-        ('Products.MimetypesRegistry',           {'loadZCML': True}, ),
-        ('Products.PortalTransforms',            {'loadZCML': True}, ),
-
-        ('Products.ExternalEditor',              {'loadZCML': True}, ),
-        ('Products.ExtendedPathIndex',           {'loadZCML': True}, ),
-        ('Products.ResourceRegistries',          {'loadZCML': True}, ),
-        ('Products.SiteAccess',                  {'loadZCML': False}, ),
-
-        ('Products.CMFEditions',                 {'loadZCML': True}, ),
-        ('Products.CMFDiffTool',                 {'loadZCML': True}, ),
-
-        ('plone.i18n',                           {'loadZCML': True,
-                                                  'install': False}, ),
-
-        ('plonetheme.barceloneta',               {'loadZCML': True,
-                                                  'install': False}, ),
-
-        ('plone.app.folder',                     {'loadZCML': True}, ),
-        ('Products.CMFPlone',                    {'loadZCML': True}, ),
-        ('Products.PythonScripts',               {'loadZCML': False}, ),
-
+        ('Products.GenericSetup', {'loadZCML': True}, ),
+        ('Products.DCWorkflow', {'loadZCML': True}, ),
+        ('Products.ZCTextIndex', {'loadZCML': True}, ),
+        ('Products.DateRecurringIndex', {'loadZCML': False}, ),
+        ('Products.PageTemplates', {'loadZCML': True}, ),
+        ('Products.CMFUid', {'loadZCML': True}, ),
+        ('Products.CMFCore', {'loadZCML': True}, ),
+        ('Products.PluggableAuthService', {'loadZCML': True}, ),
+        ('Products.PluginRegistry', {'loadZCML': True}, ),
+        ('Products.PlonePAS', {'loadZCML': True}, ),
+        ('Products.CMFFormController', {'loadZCML': True}, ),
+        ('Products.CMFDynamicViewFTI', {'loadZCML': True}, ),
+        ('Products.CMFPlacefulWorkflow', {'loadZCML': True}, ),
+        ('Products.MimetypesRegistry', {'loadZCML': True}, ),
+        ('Products.PortalTransforms', {'loadZCML': True}, ),
+        ('Products.ExternalEditor', {'loadZCML': True}, ),
+        ('Products.ExtendedPathIndex', {'loadZCML': True}, ),
+        ('Products.ResourceRegistries', {'loadZCML': True}, ),
+        ('Products.SiteAccess', {'loadZCML': False}, ),
+        ('Products.CMFEditions', {'loadZCML': True}, ),
+        ('Products.CMFDiffTool', {'loadZCML': True}, ),
+        ('plone.i18n', {'loadZCML': True, 'install': False}, ),
+        ('plonetheme.barceloneta', {'loadZCML': True, 'install': False}, ),
+        ('plone.app.folder', {'loadZCML': True}, ),
+        ('Products.CMFPlone', {'loadZCML': True}, ),
+        ('Products.PythonScripts', {'loadZCML': False}, ),
     )
 
-    try:
-        import Products.PasswordResetTool  # noqa
-        products = products + (
-            ('Products.PasswordResetTool', {'loadZCML': True}, ),)
-    except ImportError:
-        pass
-    try:
-        import Products.CMFQuickInstallerTool  # noqa
-        products = products + (
-            ('Products.CMFQuickInstallerTool', {'loadZCML': True}, ),)
-    except ImportError:
-        pass
+    # try:
+    #    import Products.PasswordResetTool
+    #    products = products + (
+    #        ('Products.PasswordResetTool', {'loadZCML': True}, ),)
+    # except ImportError:
+    #    pass
+    # try:
+    #    import Products.CMFQuickInstallerTool
+    #    products = products + (
+    #        ('Products.CMFQuickInstallerTool', {'loadZCML': True}, ),)
+    # except ImportError:
+    #    pass
 
     # Extension profiles to be installed with site setup
     extensionProfiles = (
@@ -100,7 +89,7 @@ class PloneFixture(Layer):
 
     def setUp(self):
 
-        # Stack a new DemoStorage on top of the one from z2.STARTUP.
+        # Stack a new DemoStorage on top of the one from zope.STARTUP.
         self['zodbDB'] = zodb.stackDemoStorage(
             self.get('zodbDB'),
             name='PloneFixture'
@@ -109,14 +98,14 @@ class PloneFixture(Layer):
         self.setUpZCML()
 
         # Set up products and the default content
-        with z2.zopeApp() as app:
+        with zope.zopeApp() as app:
             self.setUpProducts(app)
             self.setUpDefaultContent(app)
 
     def tearDown(self):
 
         # Tear down products
-        with z2.zopeApp() as app:
+        with zope.zopeApp() as app:
             # note: content tear-down happens by squashing the ZODB
             self.tearDownProducts(app)
 
@@ -189,7 +178,7 @@ class PloneFixture(Layer):
 
         for p, config in self.products:
             if config.get('install', True):
-                z2.installProduct(app, p)
+                zope.installProduct(app, p)
 
     def tearDownProducts(self, app):
         """Uninstall all old-style products listed in the the ``products``
@@ -197,7 +186,7 @@ class PloneFixture(Layer):
         """
         for p, config in reversed(self.products):
             if config.get('install', True):
-                z2.uninstallProduct(app, p)
+                zope.uninstallProduct(app, p)
 
         # Clean up Wicked turds
         # XXX: This may tear down too much state
@@ -227,7 +216,7 @@ class PloneFixture(Layer):
             []
         )
 
-        z2.login(app['acl_users'], SITE_OWNER_NAME)
+        zope.login(app['acl_users'], SITE_OWNER_NAME)
 
         # Create the site with the default set of extension profiles
         from Products.CMFPlone.factory import addPloneSite
@@ -256,12 +245,53 @@ class PloneFixture(Layer):
             pas.portal_role_manager.doAssignRoleToPrincipal(TEST_USER_ID, role)
 
         # Log out again
-        z2.logout()
+        zope.logout()
+
 
 # Plone fixture layer instance. Should not be used on its own, but as a base
 # for other layers.
-
 PLONE_FIXTURE = PloneFixture()
+
+
+class PloneZServerFixture(PloneFixture):
+    """PloneFixture using ZServer if you really have to.
+
+    e. g. to use the FTP server.
+
+    """
+
+    defaultBases = (zserver.STARTUP,)
+
+    def setUp(self):
+
+        # Stack a new DemoStorage on top of the one from zserver.STARTUP.
+        self['zodbDB'] = zodb.stackDemoStorage(
+            self.get('zodbDB'),
+            name='PloneZServerFixture'
+        )
+
+        self.setUpZCML()
+
+        # Set up products and the default content
+        with zserver.zopeApp() as app:
+            self.setUpProducts(app)
+            self.setUpDefaultContent(app)
+
+    def tearDown(self):
+
+        # Tear down products
+        with zserver.zopeApp() as app:
+            # note: content tear-down happens by squashing the ZODB
+            self.tearDownProducts(app)
+
+        self.tearDownZCML()
+
+        # Zap the stacked ZODB
+        self['zodbDB'].close()
+        del self['zodbDB']
+
+
+PLONE_ZSERVER_FIXTURE = PloneZServerFixture()
 
 
 class PloneTestLifecycle(object):
@@ -327,6 +357,12 @@ class PloneTestLifecycle(object):
         setSite(None)
 
 
+class PloneZServerTestLifecycle(PloneTestLifecycle):
+    """PloneTestLifecycle if you have to use ZServer."""
+
+    defaultBases = (PLONE_ZSERVER_FIXTURE,)
+
+
 class MockMailHostLayer(Layer):
     """Layer for setting up a MockMailHost to store all sent messages as
     strings into a list at portal.MailHost.messages
@@ -334,7 +370,7 @@ class MockMailHostLayer(Layer):
     defaultBases = (PLONE_FIXTURE,)
 
     def setUp(self):
-        with z2.zopeApp() as app:
+        with zope.zopeApp() as app:
             portal = app[PLONE_SITE_ID]
             portal.email_from_address = 'noreply@example.com'
             portal.email_from_name = 'Plone Site'
@@ -346,7 +382,7 @@ class MockMailHostLayer(Layer):
             sm.registerUtility(mailhost, provided=IMailHost)
 
     def tearDown(self):
-        with z2.zopeApp() as app:
+        with zope.zopeApp() as app:
             portal = app[PLONE_SITE_ID]
             _o_mailhost = getattr(portal, '_original_MailHost', None)
             if _o_mailhost:
@@ -362,35 +398,43 @@ class MockMailHostLayer(Layer):
 MOCK_MAILHOST_FIXTURE = MockMailHostLayer()
 
 
-class IntegrationTesting(PloneTestLifecycle, z2.IntegrationTesting):
+class IntegrationTesting(PloneTestLifecycle, zope.IntegrationTesting):
     """Plone version of the integration testing layer
     """
 
 
-class FunctionalTesting(PloneTestLifecycle, z2.FunctionalTesting):
+class FunctionalTesting(PloneTestLifecycle, zope.FunctionalTesting):
     """Plone version of the functional testing layer
+    """
+
+
+class ZServerFunctionalTesting(
+        PloneZServerTestLifecycle, zserver.FunctionalTesting):
+    """Plone version of the functional testing layer using ZServer.
     """
 
 #
 # Layer instances
 #
-
 # Note: PLONE_FIXTURE is defined above
 
+
 PLONE_INTEGRATION_TESTING = IntegrationTesting(
-    bases=(PLONE_FIXTURE,),
+    bases=(PLONE_FIXTURE, ),
     name='Plone:Integration'
 )
+
 PLONE_FUNCTIONAL_TESTING = FunctionalTesting(
-    bases=(PLONE_FIXTURE,),
+    bases=(PLONE_FIXTURE, ),
     name='Plone:Functional'
 )
 
-PLONE_ZSERVER = FunctionalTesting(
-    bases=(PLONE_FIXTURE, z2.ZSERVER_FIXTURE),
-    name='Plone:ZServer'
+PLONE_WSGISERVER = PLONE_ZSERVER = FunctionalTesting(
+    bases=(PLONE_FIXTURE, zope.WSGI_SERVER_FIXTURE),
+    name='Plone:WSGIServer'
 )
-PLONE_FTP_SERVER = FunctionalTesting(
-    bases=(PLONE_FIXTURE, z2.FTP_SERVER_FIXTURE),
+
+PLONE_FTP_SERVER = ZServerFunctionalTesting(
+    bases=(PLONE_ZSERVER_FIXTURE, zserver.FTP_SERVER_FIXTURE),
     name='Plone:FTPServer'
 )
