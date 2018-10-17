@@ -24,6 +24,8 @@ from zope.component.hooks import setSite
 from zope.event import notify
 from zope.traversing.interfaces import BeforeTraverseEvent
 
+import six
+
 
 class PloneFixture(Layer):
     """This layer sets up a basic Plone site, with:
@@ -54,7 +56,6 @@ class PloneFixture(Layer):
         ('Products.CMFPlacefulWorkflow', {'loadZCML': True}, ),
         ('Products.MimetypesRegistry', {'loadZCML': True}, ),
         ('Products.PortalTransforms', {'loadZCML': True}, ),
-        ('Products.ExternalEditor', {'loadZCML': True}, ),
         ('Products.ExtendedPathIndex', {'loadZCML': True}, ),
         ('Products.ResourceRegistries', {'loadZCML': True}, ),
         ('Products.SiteAccess', {'loadZCML': False}, ),
@@ -62,10 +63,14 @@ class PloneFixture(Layer):
         ('Products.CMFDiffTool', {'loadZCML': True}, ),
         ('plone.i18n', {'loadZCML': True, 'install': False}, ),
         ('plonetheme.barceloneta', {'loadZCML': True, 'install': False}, ),
-        ('plone.app.folder', {'loadZCML': True}, ),
         ('Products.CMFPlone', {'loadZCML': True}, ),
         ('Products.PythonScripts', {'loadZCML': False}, ),
     )
+    if six.PY2:
+        products += (
+            ('Products.ExternalEditor', {'loadZCML': True}, ),
+            ('plone.app.folder', {'loadZCML': True}, ),
+        )
 
     # try:
     #    import Products.PasswordResetTool
