@@ -4,8 +4,7 @@ from setuptools import setup
 
 import os
 
-
-version = '6.0.0.dev0'
+version = '6.0.1.dev0'
 
 tests_require = [
     'plone.testing[test]',
@@ -63,10 +62,9 @@ setup(
     keywords='plone tests',
     author='Plone Foundation',
     author_email='plone-developers@lists.sourceforge.net',
-    url='https://github.com/plone/plone.app.testing',
+    url='https://pypi.org/project/plone.app.testing',
     license='GPL version 2',
-    packages=find_packages('src'),
-    package_dir={'': 'src'},
+    packages=find_packages(),
     namespace_packages=['plone', 'plone.app'],
     include_package_data=True,
     zip_safe=False,

@@ -1,12 +1,25 @@
 Changelog
 =========
 
-6.0.0 (unreleased)
+6.0.1 (unreleased)
 ------------------
 
 Breaking changes:
 
 - Require `plone.testing >= 7.0`.
+
+New features:
+
+- Add support for Python 3.5 and 3.6.
+  [loechel, ale-rt, icemac, davisagli, pbauer]
+
+Bug fixes:
+
+- *add item here*
+
+
+6.0.0 (2018-10-05)
+------------------
 
 New features:
 
@@ -16,18 +29,16 @@ New features:
 - Load negotiator from plone.i18n (PTS removed).
   [jensens, ksuess]
 
-- Add support for Python 3.5 and 3.6.
-  [loechel, ale-rt, icemac]
-
-- Add copy of bbb.PloneTestCase. 
-  For Plone 5.2 the bbb.PloneTestCase will uses Dexterity instead of Archetypes. 
-  Adding bbb_at.PloneTestCase for them to use allows to keep the AT tests working. 
+- Add copy of bbb.PloneTestCase.
+  For Plone 5.2 the bbb.PloneTestCase will uses Dexterity instead of Archetypes.
+  Adding bbb_at.PloneTestCase for them to use allows to keep the AT tests working.
   See https://github.com/plone/plone.app.testing/pull/51
   [pbauer]
 
 Bug fixes:
 
-- *none yet*
+- Amended the doctests to work with automatical layer port picking from plone.testing.
+  [Rotonen]
 
 
 5.0.8 (2017-10-25)
