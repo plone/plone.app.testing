@@ -65,6 +65,7 @@ setup(
     url='https://pypi.org/project/plone.app.testing',
     license='GPL version 2',
     packages=find_packages('src'),
+    package_dir={'': 'src'},
     namespace_packages=['plone', 'plone.app'],
     include_package_data=True,
     zip_safe=False,
