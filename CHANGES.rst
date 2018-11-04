@@ -4,14 +4,6 @@ Changelog
 6.1.1 (unreleased)
 ------------------
 
-Breaking changes:
-
-- *add item here*
-
-New features:
-
-- *add item here*
-
 Bug fixes:
 
 - Fix the package manifest that was not including some files
