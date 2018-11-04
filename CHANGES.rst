@@ -13,10 +13,6 @@ New features:
 - Add support for Python 3.5 and 3.6.
   [loechel, ale-rt, icemac, davisagli, pbauer]
 
-Bug fixes:
-
-- *add item here*
-
 
 6.0.0 (2018-10-05)
 ------------------
