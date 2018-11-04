@@ -1,6 +1,22 @@
 Changelog
 =========
 
+6.1.2 (unreleased)
+------------------
+
+Breaking changes:
+
+- *add item here*
+
+New features:
+
+- *add item here*
+
+Bug fixes:
+
+- *add item here*
+
+
 6.1.1 (2018-11-05)
 ------------------
 
