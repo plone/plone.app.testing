@@ -14,7 +14,8 @@ New features:
 
 Bug fixes:
 
-- *add item here*
+- Fix the package manifest that was not including some files
+  [ale-rt]
 
 
 6.1.0 (2018-11-04)
