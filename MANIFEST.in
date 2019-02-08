@@ -1,7 +1,11 @@
 exclude .editorconfig
 include *.cfg *.rst
+include pyproject.toml
 
 recursive-include docs *
 recursive-include src *
 
 global-exclude *pyc
+
+recursive-exclude news *
+exclude news
