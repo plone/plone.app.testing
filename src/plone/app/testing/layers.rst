@@ -374,7 +374,8 @@ When the server is torn down, the ZServer thread is stopped.
     Tear down plone.testing.zope.Startup in ... seconds.
     Tear down plone.testing.zca.LayerCleanup in ... seconds.
 
-    >>> conn = urlopen(portal_url + '/folder1', timeout=5) # doctest: +IGNORE_EXCEPTION_DETAIL
+    >>> import requests
+    >>> requests.get(portal_url + '/folder1') # doctest: +IGNORE_EXCEPTION_DETAIL
     Traceback (most recent call last):
     ...
-    urllib.error.URLError: <urlopen error [Errno 61] Connection refused>
+    requests.exceptions.ConnectionError: ...
