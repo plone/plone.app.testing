@@ -1,0 +1,2 @@
+Fixed the travis build checking the Python versions Plone actually supports.
+Also fixed Python versions in setup.py
