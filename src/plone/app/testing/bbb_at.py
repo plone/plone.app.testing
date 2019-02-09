@@ -10,8 +10,9 @@ from Testing.ZopeTestCase.functional import Functional
 import transaction
 import unittest
 
+
 try:
-    import Products.Archetypes
+    import Products.Archetypes  # noqa: F401
 except ImportError:
     HAS_AT = False
 else:
