@@ -8,6 +8,16 @@ Changelog
 
 .. towncrier release notes start
 
+6.1.2 (2019-02-13)
+------------------
+
+Bug fixes:
+
+
+- Fixed the travis build checking the Python versions Plone actually supports.
+  Also fixed Python versions in setup.py (#57)
+
+
 6.1.1 (2018-11-05)
 ------------------
 
