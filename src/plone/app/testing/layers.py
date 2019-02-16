@@ -69,8 +69,16 @@ class PloneFixture(Layer):
     if six.PY2:
         products += (
             ('Products.ExternalEditor', {'loadZCML': True}, ),
-            ('plone.app.folder', {'loadZCML': True}, ),
         )
+
+        try:
+            # Since gopipindex moved to plone.folder only with Archetypes
+            import plone.app.folder
+            products += (
+                ('plone.app.folder', {'loadZCML': True}, ),
+            )
+        except ImportError:
+            pass
 
     # try:
     #    import Products.PasswordResetTool
