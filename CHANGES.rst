@@ -8,6 +8,15 @@ Changelog
 
 .. towncrier release notes start
 
+6.1.3 (2019-02-16)
+------------------
+
+Bug fixes:
+
+
+- Make plone.app.folder a optional product for PloneFixture in py2 (#59)
+
+
 6.1.2 (2019-02-13)
 ------------------
 
