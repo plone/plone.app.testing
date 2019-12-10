@@ -47,6 +47,7 @@ setup(
     description="Testing tools for Plone-the-application, based on plone.testing.",  # NOQA: E501
     long_description=long_description,
     classifiers=[
+        "Development Status :: 5 - Production/Stable",
         "Environment :: Web Environment",
         "Framework :: Plone",
         "Framework :: Plone :: 5.2",
