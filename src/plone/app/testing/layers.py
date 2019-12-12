@@ -13,6 +13,7 @@ from plone.app.testing.interfaces import TEST_USER_NAME
 from plone.app.testing.interfaces import TEST_USER_PASSWORD
 from plone.app.testing.interfaces import TEST_USER_ROLES
 from plone.app.testing.utils import MockMailHost
+from plone.registry.interfaces import IRegistry
 from plone.testing import Layer
 from plone.testing import zca
 from plone.testing import zodb
@@ -20,6 +21,7 @@ from plone.testing import zope
 from plone.testing import zserver
 from Products.MailHost.interfaces import IMailHost
 from zope.component import getSiteManager
+from zope.component import getUtility
 from zope.component.hooks import setSite
 from zope.event import notify
 from zope.traversing.interfaces import BeforeTraverseEvent
@@ -382,19 +384,21 @@ class MockMailHostLayer(Layer):
     """
     defaultBases = (PLONE_FIXTURE,)
 
-    def setUp(self):
+    def testSetUp(self):
         with zope.zopeApp() as app:
             portal = app[PLONE_SITE_ID]
-            portal.email_from_address = 'noreply@example.com'
-            portal.email_from_name = 'Plone Site'
+            registry = getUtility(IRegistry, context=portal)
+            if not registry["plone.email_from_address"]:
+                registry["plone.email_from_address"] = "noreply@example.com"
+            if not registry["plone.email_from_name"]:
+                registry["plone.email_from_name"] = u"Plone site"
             portal._original_MailHost = portal.MailHost
             portal.MailHost = mailhost = MockMailHost('MailHost')
-            portal.MailHost.smtp_host = 'localhost'
             sm = getSiteManager(context=portal)
             sm.unregisterUtility(provided=IMailHost)
             sm.registerUtility(mailhost, provided=IMailHost)
 
-    def tearDown(self):
+    def testTearDown(self):
         with zope.zopeApp() as app:
             portal = app[PLONE_SITE_ID]
             _o_mailhost = getattr(portal, '_original_MailHost', None)
