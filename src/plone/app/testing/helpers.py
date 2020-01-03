@@ -256,18 +256,19 @@ def ploneSite(db=None, connection=None, environ=None, flavour=zope):
     setHooks()
     site = getSite()
 
-    with getattr(flavour, 'zopeApp')(db, connection, environ) as app:
-        portal = app[PLONE_SITE_ID]
+    try:
+        with getattr(flavour, 'zopeApp')(db, connection, environ) as app:
+            portal = app[PLONE_SITE_ID]
 
-        setSite(portal)
-        login(portal, TEST_USER_NAME)
+            setSite(portal)
+            login(portal, TEST_USER_NAME)
 
-        try:
-            yield portal
-        finally:
-            logout()
-            if site is not portal:
-                setSite(site)
+            try:
+                yield portal
+            finally:
+                logout()
+    finally:
+        setSite(site)
 
 
 # Layer base class
@@ -379,7 +380,6 @@ class PloneSandboxLayer(Layer):
                 # Allow subclass to configure a persistent fixture
                 setSite(portal)
                 self.setUpPloneSite(portal)
-                setSite(None)
 
             # Keep track of PAS plugins that were added during setup
             self.snapshotMultiPlugins(preSetupMultiPlugins)
