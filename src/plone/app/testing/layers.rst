@@ -379,3 +379,98 @@ When the server is torn down, the ZServer thread is stopped.
     Traceback (most recent call last):
     ...
     requests.exceptions.ConnectionError: ...
+
+
+Mock MailHost
+~~~~~~~~~~~~~
+
+The fixture ``MOCK_MAILHOST_FIXTURE`` layer
+allows to replace the Zope MailHost with a dummy one.
+
+**Note:** This layer builds on top of ``PLONE_FIXTURE``.
+Like ``PLONE_FIXTURE``, it should only be used as a base layer,
+and not directly in tests.
+See this package's ``README`` file for details.
+
+    >>> layers.MOCK_MAILHOST_FIXTURE.__bases__
+    (<Layer 'plone.app.testing.layers.PloneFixture'>,)
+    >>> options = runner.get_options([], [])
+    >>> setupLayers = {}
+    >>> runner.setup_layer(options, layers.MOCK_MAILHOST_FIXTURE, setupLayers)
+    Set up plone.testing.zca.LayerCleanup in ... seconds.
+    Set up plone.testing.zope.Startup in ... seconds.
+    Set up plone.app.testing.layers.PloneFixture in ... seconds.
+    Set up plone.app.testing.layers.MockMailHostLayer in ... seconds.
+
+Let's now simulate a test.
+Test setup sets a couple of registry records and
+replaces the mail host with a dummy one:
+
+    >>> from zope.component import getUtility
+    >>> from plone.registry.interfaces import IRegistry
+
+    >>> zca.LAYER_CLEANUP.testSetUp()
+    >>> zope.STARTUP.testSetUp()
+    >>> layers.MOCK_MAILHOST_FIXTURE.testSetUp()
+
+    >>> with helpers.ploneSite() as portal:
+    ...     registry = getUtility(IRegistry, context=portal)
+
+    >>> registry["plone.email_from_address"]
+    'noreply@example.com'
+    >>> registry["plone.email_from_name"]
+    'Plone site'
+
+The dummy MailHost, instead of sending the emails,
+stores them in a list of messages:
+
+    >>> with helpers.ploneSite() as portal:
+    ...     portal.MailHost.messages
+    []
+
+If we send a message, we can check it in the list:
+
+    >>> with helpers.ploneSite() as portal:
+    ...     portal.MailHost.send(
+    ...         "Hello world!",
+    ...         mto="foo@example.com",
+    ...         mfrom="bar@example.com",
+    ...         subject="Test",
+    ...         msg_type="text/plain",
+    ...     )
+    >>> with helpers.ploneSite() as portal:
+    ...     for message in portal.MailHost.messages:
+    ...         print(message)
+    MIME-Version: 1.0
+    Content-Type: text/plain
+    Subject: Test
+    To: foo@example.com
+    From: bar@example.com
+    Date: ...
+    <BLANKLINE>
+    Hello world!
+
+The list can be reset:
+
+    >>> with helpers.ploneSite() as portal:
+    ...     portal.MailHost.reset()
+    ...     portal.MailHost.messages
+    []
+
+When the test is torn down the original MaiHost is restored:
+
+    >>> layers.MOCK_MAILHOST_FIXTURE.testTearDown()
+    >>> zope.STARTUP.testTearDown()
+    >>> zca.LAYER_CLEANUP.testTearDown()
+
+    >>> with helpers.ploneSite() as portal:
+    ...     portal.MailHost.messages
+    Traceback (most recent call last):
+    ...
+    AttributeError: 'RequestContainer' object has no attribute 'messages'
+
+    >>> runner.tear_down_unneeded(options, [], setupLayers)
+    Tear down plone.app.testing.layers.MockMailHostLayer in ... seconds.
+    Tear down plone.app.testing.layers.PloneFixture in ... seconds.
+    Tear down plone.testing.zope.Startup in ... seconds.
+    Tear down plone.testing.zca.LayerCleanup in ... seconds.
