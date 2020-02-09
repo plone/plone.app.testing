@@ -388,28 +388,43 @@ class MockMailHostLayer(Layer):
         with zope.zopeApp() as app:
             portal = app[PLONE_SITE_ID]
             registry = getUtility(IRegistry, context=portal)
+
             if not registry["plone.email_from_address"]:
+                portal._original_email_address = registry["plone.email_from_address"]  # noqa: E501
                 registry["plone.email_from_address"] = "noreply@example.com"
+
             if not registry["plone.email_from_name"]:
+                portal._original_email_name = registry["plone.email_from_name"]
                 registry["plone.email_from_name"] = u"Plone site"
+
             portal._original_MailHost = portal.MailHost
             portal.MailHost = mailhost = MockMailHost('MailHost')
+
             sm = getSiteManager(context=portal)
             sm.unregisterUtility(provided=IMailHost)
             sm.registerUtility(mailhost, provided=IMailHost)
 
     def testTearDown(self):
+
         with zope.zopeApp() as app:
             portal = app[PLONE_SITE_ID]
-            _o_mailhost = getattr(portal, '_original_MailHost', None)
-            if _o_mailhost:
-                portal.MailHost = portal._original_MailHost
-                sm = getSiteManager(context=portal)
-                sm.unregisterUtility(provided=IMailHost)
-                sm.registerUtility(
-                    aq_base(portal._original_MailHost),
-                    provided=IMailHost
-                )
+            registry = getUtility(IRegistry, context=portal)
+
+            portal.MailHost = portal._original_MailHost
+
+            sm = getSiteManager(context=portal)
+            sm.unregisterUtility(provided=IMailHost)
+            sm.registerUtility(aq_base(portal.MailHost), provided=IMailHost)
+
+            if hasattr(portal, "_original_email_name"):
+                registry["plone.email_from_name"] = portal._original_email_name
+                delattr(portal, "_original_email_name")
+
+            if hasattr(portal, "_original_email_address"):
+                registry["plone.email_from_address"] = portal._original_email_address  # noqa: E501
+                delattr(portal, "_original_email_address")
+
+            delattr(portal, "_original_MailHost")
 
 
 MOCK_MAILHOST_FIXTURE = MockMailHostLayer()
