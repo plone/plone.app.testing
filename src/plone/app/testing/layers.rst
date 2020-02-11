@@ -98,7 +98,7 @@ There is no default workflow or content:
 
 Layer tear-down resets the environment.
 
-    >>> runner.tear_down_unneeded(options, [], setupLayers)
+    >>> runner.tear_down_unneeded(options, [], setupLayers, [])
     Tear down plone.app.testing.layers.PloneFixture in ... seconds.
     Tear down plone.testing.zope.Startup in ... seconds.
     Tear down plone.testing.zca.LayerCleanup in ... seconds.
@@ -186,7 +186,7 @@ And the component site has been reset:
 
 Layer tear-down resets the environment.
 
-    >>> runner.tear_down_unneeded(options, [], setupLayers)
+    >>> runner.tear_down_unneeded(options, [], setupLayers, [])
     Tear down plone.app.testing.layers.Plone:Integration in ... seconds.
     Tear down plone.app.testing.layers.PloneFixture in ... seconds.
     Tear down plone.testing.zope.Startup in ... seconds.
@@ -266,7 +266,7 @@ Along with the rest of the state:
 
 Layer tear-down resets the environment.
 
-    >>> runner.tear_down_unneeded(options, [], setupLayers)
+    >>> runner.tear_down_unneeded(options, [], setupLayers, [])
     Tear down plone.app.testing.layers.Plone:Functional in ... seconds.
     Tear down plone.app.testing.layers.PloneFixture in ... seconds.
     Tear down plone.testing.zope.Startup in ... seconds.
@@ -367,7 +367,7 @@ Test tear-down does nothing beyond what the base layers do.
 
 When the server is torn down, the ZServer thread is stopped.
 
-    >>> runner.tear_down_unneeded(options, [], setupLayers)
+    >>> runner.tear_down_unneeded(options, [], setupLayers, [])
     Tear down plone.app.testing.layers.Plone:WSGIServer in ... seconds.
     Tear down plone.testing.zope.WSGIServer in ... seconds.
     Tear down plone.app.testing.layers.PloneFixture in ... seconds.
@@ -469,7 +469,7 @@ When the test is torn down the original MaiHost is restored:
     ...
     AttributeError: 'RequestContainer' object has no attribute 'messages'
 
-    >>> runner.tear_down_unneeded(options, [], setupLayers)
+    >>> runner.tear_down_unneeded(options, [], setupLayers, [])
     Tear down plone.app.testing.layers.MockMailHostLayer in ... seconds.
     Tear down plone.app.testing.layers.PloneFixture in ... seconds.
     Tear down plone.testing.zope.Startup in ... seconds.
