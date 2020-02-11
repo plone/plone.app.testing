@@ -237,7 +237,7 @@ We'll now tear down just the ``HELPER_DEMOS_INTEGRATION_TESTING`` layer. At this
 point, we should still have a Plone site, but none of the persistent or
 component architecture changes from our layer.
 
-    >>> runner.tear_down_unneeded(options, [l for l in setupLayers if l not in (HELPER_DEMOS_INTEGRATION_TESTING, HELPER_DEMOS_FIXTURE,)], setupLayers)
+    >>> runner.tear_down_unneeded(options, [l for l in setupLayers if l not in (HELPER_DEMOS_INTEGRATION_TESTING, HELPER_DEMOS_FIXTURE,)], setupLayers, [])
     Tear down plone.app.testing.layers.HelperDemos:Integration in ... seconds.
     Tear down...HelperDemos in ... seconds.
 
@@ -254,7 +254,7 @@ component architecture changes from our layer.
 
 Let's tear down the rest of the layers too.
 
-    >>> runner.tear_down_unneeded(options, [], setupLayers)
+    >>> runner.tear_down_unneeded(options, [], setupLayers, [])
     Tear down plone.app.testing.layers.PloneFixture in ... seconds.
     Tear down plone.testing.zope.Startup in ... seconds.
     Tear down plone.testing.zca.LayerCleanup in ... seconds.
@@ -397,7 +397,7 @@ We'll now tear down just the ``MY_INTEGRATION_TESTING`` layer. At this
 point, we should still have a Plone site, but none of the changes from our
 layer.
 
-    >>> runner.tear_down_unneeded(options, [l for l in setupLayers if l not in (MY_INTEGRATION_TESTING, MY_FIXTURE)], setupLayers)
+    >>> runner.tear_down_unneeded(options, [l for l in setupLayers if l not in (MY_INTEGRATION_TESTING, MY_FIXTURE)], setupLayers, [])
     Tear down plone.app.testing.layers.MyLayer:Integration in ... seconds.
 
     >>> queryUtility(Interface, name="dummy1") is None
@@ -436,7 +436,7 @@ layer.
 
 Let's tear down the rest of the layers too.
 
-    >>> runner.tear_down_unneeded(options, [], setupLayers)
+    >>> runner.tear_down_unneeded(options, [], setupLayers, [])
     Tear down plone.app.testing.layers.PloneFixture in ... seconds.
     Tear down plone.testing.zope.Startup in ... seconds.
     Tear down plone.testing.zca.LayerCleanup in ... seconds.
