@@ -1,1 +1,1 @@
-Properly configure the mail sender setting the appropriate registry records (Fixes #62)
+MockMailHostLayer configures the mail sender setting the appropriate registry records (Fixes #62)

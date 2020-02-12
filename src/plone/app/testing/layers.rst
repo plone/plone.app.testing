@@ -457,7 +457,8 @@ The list can be reset:
     ...     portal.MailHost.messages
     []
 
-When the test is torn down the original MaiHost is restored:
+When the test is torn down the original MaiHost is restored
+and the registry is cleaned up:
 
     >>> layers.MOCK_MAILHOST_FIXTURE.testTearDown()
     >>> zope.STARTUP.testTearDown()
@@ -469,6 +470,8 @@ When the test is torn down the original MaiHost is restored:
     ...
     AttributeError: 'RequestContainer' object has no attribute 'messages'
 
+    >>> registry["plone.email_from_address"]
+    >>> registry["plone.email_from_name"]
     >>> runner.tear_down_unneeded(options, [], setupLayers, [])
     Tear down plone.app.testing.layers.MockMailHostLayer in ... seconds.
     Tear down plone.app.testing.layers.PloneFixture in ... seconds.
