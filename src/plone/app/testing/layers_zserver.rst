@@ -123,7 +123,7 @@ Test tear-down does nothing beyond what the base layers do.
 
 When the server is torn down, the FTP server thread is stopped.
 
-    >>> runner.tear_down_unneeded(options, [], setupLayers)
+    >>> runner.tear_down_unneeded(options, [], setupLayers, [])
     Tear down plone.app.testing.layers.Plone:FTPServer in ... seconds.
     Tear down plone.testing.zserver.FTPServer in ... seconds.
     Tear down plone.app.testing.layers.PloneZServerFixture in ... seconds.
