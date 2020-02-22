@@ -1,0 +1,2 @@
+Do not load Products/ZCML of no longer existing Products.ResourceRegistries.
+[jensens]
