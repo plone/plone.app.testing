@@ -59,7 +59,6 @@ class PloneFixture(Layer):
         ('Products.MimetypesRegistry', {'loadZCML': True}, ),
         ('Products.PortalTransforms', {'loadZCML': True}, ),
         ('Products.ExtendedPathIndex', {'loadZCML': True}, ),
-        ('Products.ResourceRegistries', {'loadZCML': True}, ),
         ('Products.SiteAccess', {'loadZCML': False}, ),
         ('Products.CMFEditions', {'loadZCML': True}, ),
         ('Products.CMFDiffTool', {'loadZCML': True}, ),
