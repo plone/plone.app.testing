@@ -8,6 +8,20 @@ Changelog
 
 .. towncrier release notes start
 
+6.1.4 (2020-03-09)
+------------------
+
+Bug fixes:
+
+
+- Fix a test isolation issue that was preventing the MOCK_MAILHOST_FIXTURE to be used in multiple testcases [ale-rt] (#61)
+- MockMailHostLayer configures the mail sender setting the appropriate registry records (Fixes #62) (#62)
+- Fix tests when using zope.testrunner internals since its version 5.1.
+  [jensens] (#68)
+- Do not load Products/ZCML of no longer existing Products.ResourceRegistries.
+  [jensens] (#69)
+
+
 6.1.3 (2019-02-16)
 ------------------
 

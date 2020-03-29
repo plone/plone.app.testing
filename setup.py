@@ -5,7 +5,7 @@ from setuptools import setup
 import os
 
 
-version = '6.1.4.dev0'
+version = '6.1.5.dev0'
 
 tests_require = [
     'plone.testing[test]',
@@ -51,6 +51,7 @@ setup(
         "Environment :: Web Environment",
         "Framework :: Plone",
         "Framework :: Plone :: 5.2",
+        "Framework :: Plone :: Core",
         "Framework :: Zope :: 4",
         "License :: OSI Approved :: GNU General Public License v2 (GPLv2)",
         "Operating System :: OS Independent",
@@ -58,6 +59,7 @@ setup(
         "Programming Language :: Python :: 2.7",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
         "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
     ],
     keywords='plone tests',
