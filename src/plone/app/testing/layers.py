@@ -81,19 +81,6 @@ class PloneFixture(Layer):
         except ImportError:
             pass
 
-    # try:
-    #    import Products.PasswordResetTool
-    #    products = products + (
-    #        ('Products.PasswordResetTool', {'loadZCML': True}, ),)
-    # except ImportError:
-    #    pass
-    # try:
-    #    import Products.CMFQuickInstallerTool
-    #    products = products + (
-    #        ('Products.CMFQuickInstallerTool', {'loadZCML': True}, ),)
-    # except ImportError:
-    #    pass
-
     # Extension profiles to be installed with site setup
     extensionProfiles = (
         'plonetheme.barceloneta:default',
