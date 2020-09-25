@@ -440,7 +440,7 @@ If we send a message, we can check it in the list:
     ...     )
     >>> with helpers.ploneSite() as portal:
     ...     for message in portal.MailHost.messages:
-    ...         print(message)
+    ...         print(message.decode("utf-8"))
     MIME-Version: 1.0
     Content-Type: text/plain
     Subject: Test
