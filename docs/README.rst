@@ -505,11 +505,11 @@ Product and profile installation
                     ...
 
 ``quickInstallProduct(portal, productName, reinstall=False)``
-    Use this function to install a particular product into the given Plone
-    site, using the ``portal_quickinstaller`` tool. If ``reinstall`` is
-    ``False`` and the product is already installed, nothing will happen; if
-    ``reinstall`` is ``True``, the product will be reinstalled. The
-    ``productName`` should be a full dotted name, e.g. ``Products.MyProduct``,
+    Use this function to install a particular product into the given Plone site,
+    using the add-ons control panel code (portal setup).
+    If ``reinstall`` is ``False`` and the product is already installed, nothing will happen.
+    If ``reinstall`` is true, perform an uninstall and install if the product is installed already.
+    The ``productName`` should be a full dotted name, e.g. ``Products.MyProduct``,
     or ``my.product``.
 
     For example::
@@ -1143,13 +1143,13 @@ To apply a particular extension profile::
 This is the preferred method of installing a product's configuration.
 
 To install an add-on product into the Plone site using the
-``portal_quickinstaller`` tool::
+add-ons control panel::
 
     from plone.app.testing import quickInstallProduct
 
     quickInstallProduct(portal, 'my.product')
 
-To re-install a product using the quick-installer::
+To uninstall and install a product using the add-ons control panel::
 
     quickInstallProduct(portal, 'my.product', reinstall=True)
 
@@ -1164,10 +1164,10 @@ has been applied. Some of the more common such tests are shown below.
 To verify that a product has been installed (e.g. as a dependency via
 ``metadata.xml``)::
 
-    from Products.CMFCore.utils import getToolByName
+    from Products.CMFPlone.utils import get_installer
 
-    quickinstaller = getToolByName(portal, 'portal_quickinstaller')
-    self.assertTrue(quickinstaller.isProductInstalled('my.product'))
+    qi = get_installer(portal)
+    self.assertTrue(qi.is_product_installed('my.product'))
 
 To verify that a particular content type has been installed (e.g. via
 ``types.xml``)::

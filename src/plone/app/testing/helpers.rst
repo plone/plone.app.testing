@@ -38,7 +38,7 @@ layer, we will perform the following setup:
 4. Make some persistent changes, to illustrate how these are torn down when
    we pop the ZODB ``DemoStorage``.
 
-5. Install a product using the ``get_installer`` view (or the old ``portal_quickinstaller`` tool).
+5. Install a product using the ``get_installer`` view.
 
 6. Apply a named extension profile.
 
@@ -50,15 +50,9 @@ course, if our setup had changed any other global or external state, we would
 need to tear that down as well.
 
     >>> def is_installed(portal, product_name):
-    ...     try:
-    ...         from Products.CMFPlone.utils import get_installer
-    ...     except ImportError:
-    ...         # BBB For Plone 5.0 and lower.
-    ...         qi = portal['portal_quickinstaller']
-    ...         return qi.isProductInstalled(product_name)
-    ...     else:
-    ...         qi = get_installer(portal)
-    ...         return qi.is_product_installed(product_name)
+    ...     from Products.CMFPlone.utils import get_installer
+    ...     qi = get_installer(portal)
+    ...     return qi.is_product_installed(product_name)
 
     >>> from plone.testing import Layer
     >>> from plone.testing import zca, zope, zodb
@@ -106,7 +100,7 @@ need to tear that down as well.
     ...             # Make some persistent changes
     ...             portal.title = u"New title"
     ...
-    ...             # Install a product using portal_quickinstaller
+    ...             # Install a product using the addons control panel
     ...             helpers.quickInstallProduct(portal, 'plone.app.testing')
     ...             assert is_installed(portal, 'plone.app.testing')
     ...
@@ -155,7 +149,7 @@ having taken effect.
     ...     print(portal.title)
     New title
 
-We should also see our product installation in the quickinstaller tool
+We should also see our product installation in the add-ons control panel
 and the results of the profile having been applied.
 
     >>> from Products.GenericSetup.tool import UNKNOWN

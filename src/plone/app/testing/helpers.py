@@ -68,9 +68,10 @@ def tearDownMultiPluginRegistration(pluginName):
 
 
 def quickInstallProduct(portal, productName, reinstall=False):
-    """Install a product using the ``portal_quickinstaller`` tool. If
-    ``reinstall`` is false and the product is already installed, do nothing.
-    If ``reinstall`` is true, perform an explicit reinstall if the product
+    """Install a product using the add-ons control panel (portal setup).
+
+    If ``reinstall`` is false and the product is already installed, do nothing.
+    If ``reinstall`` is true, perform an uninstall and install if the product
     is installed already.
     """
 
@@ -83,28 +84,16 @@ def quickInstallProduct(portal, productName, reinstall=False):
 
     zope.login(app['acl_users'], SITE_OWNER_NAME)
 
-    try:
-        from Products.CMFPlone.utils import get_installer
-    except ImportError:
-        # BBB For Plone 5.0 and lower.
-        qi = portal['portal_quickinstaller']
-        old_qi = True
-    else:
-        qi = get_installer(portal)
-        old_qi = False
+    from Products.CMFPlone.utils import get_installer
+
+    qi = get_installer(portal)
 
     try:
-        if old_qi:
-            if not qi.isProductInstalled(productName):
-                qi.installProduct(productName)
-            elif reinstall:
-                qi.reinstallProducts([productName])
-        else:
-            if not qi.is_product_installed(productName):
-                qi.install_product(productName, allow_hidden=True)
-            elif reinstall:
-                qi.uninstall_product(productName)
-                qi.install_product(productName, allow_hidden=True)
+        if not qi.is_product_installed(productName):
+            qi.install_product(productName, allow_hidden=True)
+        elif reinstall:
+            qi.uninstall_product(productName)
+            qi.install_product(productName, allow_hidden=True)
 
         portal.clearCurrentSkin()
         portal.setupCurrentSkin(portal.REQUEST)
