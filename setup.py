@@ -5,7 +5,7 @@ from setuptools import setup
 import os
 
 
-version = '6.1.7'
+version = '6.1.8.dev0'
 
 tests_require = [
     'plone.testing[test]',
