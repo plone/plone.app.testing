@@ -8,6 +8,15 @@ Changelog
 
 .. towncrier release notes start
 
+6.1.8 (2020-11-11)
+------------------
+
+Bug fixes:
+
+
+- Before trying to load the zcml of plone.app.folder, double check if it is a real package or an alias provided by plone.app.upgrade (#72)
+
+
 6.1.7 (2020-10-12)
 ------------------
 

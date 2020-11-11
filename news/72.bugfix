@@ -1,1 +1,0 @@
-Before trying to load the zcml of plone.app.folder, double check if it is a real package or an alias provided by plone.app.upgrade
