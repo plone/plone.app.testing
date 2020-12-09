@@ -8,6 +8,27 @@ Changelog
 
 .. towncrier release notes start
 
+6.1.8 (2020-11-11)
+------------------
+
+Bug fixes:
+
+
+- Before trying to load the zcml of plone.app.folder, double check if it is a real package or an alias provided by plone.app.upgrade (#72)
+
+
+6.1.7 (2020-10-12)
+------------------
+
+New features:
+
+
+- Removed backwards compatibility code for old quickinstaller.
+  Current plone.app.testing is only for Plone 5.2+, so this code was no longer used.
+  See also `PLIP 1775 <https://github.com/plone/Products.CMFPlone/issues/1775>`_.
+  [maurits] (#1775)
+
+
 6.1.6 (2020-09-26)
 ------------------
 

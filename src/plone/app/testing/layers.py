@@ -75,9 +75,11 @@ class PloneFixture(Layer):
         try:
             # Since gopipindex moved to plone.folder only with Archetypes
             import plone.app.folder
-            products += (
-                ('plone.app.folder', {'loadZCML': True}, ),
-            )
+            # Prevent trying to load plone.app.folder if it is a module alias
+            if hasattr(plone.app.folder, "__file__"):
+                products += (
+                    ('plone.app.folder', {'loadZCML': True}, ),
+                )
         except ImportError:
             pass
 
