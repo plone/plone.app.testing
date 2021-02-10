@@ -386,8 +386,7 @@ class MockMailHostLayer(Layer):
                 registry["plone.email_from_name"] = u"Plone site"
 
             portal._original_MailHost = portal.MailHost
-            del portal['MailHost']
-            portal['MailHost'] = mailhost = MockMailHost('MailHost')
+            portal.MailHost = mailhost = MockMailHost('MailHost')
 
             sm = getSiteManager(context=portal)
             sm.unregisterUtility(provided=IMailHost)
@@ -399,8 +398,7 @@ class MockMailHostLayer(Layer):
             portal = app[PLONE_SITE_ID]
             registry = getUtility(IRegistry, context=portal)
 
-            del portal['MailHost']
-            portal['MailHost'] = portal._original_MailHost
+            portal.MailHost = portal._original_MailHost
 
             sm = getSiteManager(context=portal)
             sm.unregisterUtility(provided=IMailHost)
