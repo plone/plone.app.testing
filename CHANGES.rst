@@ -8,6 +8,16 @@ Changelog
 
 .. towncrier release notes start
 
+6.1.9 (2021-09-01)
+------------------
+
+Bug fixes:
+
+
+- Fixed test that failed for dexterity site root.
+  [jaroel, ale-rt] (#60)
+
+
 6.1.8 (2020-11-11)
 ------------------
 
