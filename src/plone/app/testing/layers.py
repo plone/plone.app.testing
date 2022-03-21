@@ -53,7 +53,6 @@ class PloneFixture(Layer):
         ('Products.PluggableAuthService', {'loadZCML': True}, ),
         ('Products.PluginRegistry', {'loadZCML': True}, ),
         ('Products.PlonePAS', {'loadZCML': True}, ),
-        ('Products.CMFFormController', {'loadZCML': True}, ),
         ('Products.CMFDynamicViewFTI', {'loadZCML': True}, ),
         ('Products.CMFPlacefulWorkflow', {'loadZCML': True}, ),
         ('Products.MimetypesRegistry', {'loadZCML': True}, ),
