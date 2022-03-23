@@ -8,6 +8,22 @@ Changelog
 
 .. towncrier release notes start
 
+7.0.0a1 (2022-03-23)
+--------------------
+
+Breaking changes:
+
+
+- Plone 6 only. (#75)
+
+
+New features:
+
+
+- remove CMFFormController
+  [petschki] (#75)
+
+
 6.1.9 (2021-09-01)
 ------------------
 
