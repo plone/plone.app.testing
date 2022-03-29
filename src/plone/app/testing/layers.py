@@ -27,6 +27,7 @@ from zope.event import notify
 from zope.traversing.interfaces import BeforeTraverseEvent
 
 import six
+import transaction
 
 
 class PloneFixture(Layer):
@@ -103,6 +104,7 @@ class PloneFixture(Layer):
         with zope.zopeApp() as app:
             self.setUpProducts(app)
             self.setUpDefaultContent(app)
+            transaction.savepoint(optimistic=True)
 
     def tearDown(self):
 
