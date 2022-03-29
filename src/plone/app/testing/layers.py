@@ -27,6 +27,7 @@ from zope.event import notify
 from zope.traversing.interfaces import BeforeTraverseEvent
 
 import six
+import transaction
 
 
 class PloneFixture(Layer):
@@ -103,6 +104,9 @@ class PloneFixture(Layer):
         with zope.zopeApp() as app:
             self.setUpProducts(app)
             self.setUpDefaultContent(app)
+            # If there is no savepoint most tests fail with a PosKeyError
+            # See https://github.com/plone/Products.CMFPlone/issues/3467
+            transaction.savepoint(optimistic=True)
 
     def tearDown(self):
 
