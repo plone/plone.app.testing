@@ -8,6 +8,17 @@ Changelog
 
 .. towncrier release notes start
 
+7.0.0a2 (2022-04-04)
+--------------------
+
+Bug fixes:
+
+
+- Add savepoint after creating the portal in PloneFixture.
+  Fixes `issue 3467 <https://github.com/plone/Products.CMFPlone/issues/3467>`_.
+  [pbauer] (#76)
+
+
 7.0.0a1 (2022-03-23)
 --------------------
 
