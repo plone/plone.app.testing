@@ -1,2 +1,3 @@
-Add savepoint after creating the portal in PloneFixure. Fixes https://github.com/plone/Products.CMFPlone/issues/3467
+Add savepoint after creating the portal in PloneFixture.
+Fixes `issue 3467 <https://github.com/plone/Products.CMFPlone/issues/3467>`_.
 [pbauer]
