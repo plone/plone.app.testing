@@ -23,6 +23,7 @@ from Products.MailHost.interfaces import IMailHost
 from zope.component import getSiteManager
 from zope.component import getUtility
 from zope.component.hooks import setSite
+from zope.dottedname.resolve import resolve
 from zope.event import notify
 from zope.traversing.interfaces import BeforeTraverseEvent
 
@@ -54,6 +55,8 @@ class PloneFixture(Layer):
         ('Products.PluggableAuthService', {'loadZCML': True}, ),
         ('Products.PluginRegistry', {'loadZCML': True}, ),
         ('Products.PlonePAS', {'loadZCML': True}, ),
+        # product for Plone 5.2 only, be silent when not available on Plone 6:
+        ('Products.CMFFormController', {'loadZCML': True, 'silent': True}, ),
         ('Products.CMFDynamicViewFTI', {'loadZCML': True}, ),
         ('Products.CMFPlacefulWorkflow', {'loadZCML': True}, ),
         ('Products.MimetypesRegistry', {'loadZCML': True}, ),
@@ -148,8 +151,6 @@ class PloneFixture(Layer):
         # Load dependent products's ZCML - Plone doesn't specify dependencies
         # on Products.* packages fully
 
-        from zope.dottedname.resolve import resolve
-
         def loadAll(filename):
             for p, config in self.products:
                 if not config['loadZCML']:
@@ -184,6 +185,12 @@ class PloneFixture(Layer):
 
         for p, config in self.products:
             if config.get('install', True):
+                if config.get('silent'):
+                    # When product is not available, do not complain or warn.
+                    try:
+                        resolve(p)
+                    except ImportError:
+                        continue
                 zope.installProduct(app, p)
 
     def tearDownProducts(self, app):
