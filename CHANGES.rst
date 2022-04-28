@@ -8,6 +8,18 @@ Changelog
 
 .. towncrier release notes start
 
+7.0.0a3 (2022-04-28)
+--------------------
+
+New features:
+
+
+- Load CMFFormController in Plone 5, be silent when this fails in Plone 6.
+  This restores compatibility with Plone 5.2 for now.
+  Note that this ``plone.app.testing`` version is only meant for Python 3.
+  [maurits] (#3467)
+
+
 7.0.0a2 (2022-04-04)
 --------------------
 
