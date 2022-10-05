@@ -12,6 +12,6 @@ TEST_USER_PASSWORD = 'correct horse battery staple'
 TEST_USER_ROLES = ['Member', ]
 
 SITE_OWNER_NAME = 'admin'
-SITE_OWNER_PASSWORD = 'correct horse battery staple'
+SITE_OWNER_PASSWORD = 'secret'
 
 ROBOT_TEST_LEVEL = 5
