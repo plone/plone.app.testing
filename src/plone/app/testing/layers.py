@@ -19,6 +19,7 @@ from plone.testing import zca
 from plone.testing import zodb
 from plone.testing import zope
 from plone.testing import zserver
+from Products.CMFPlone.browser.admin import AddPloneSite
 from Products.MailHost.interfaces import IMailHost
 from zope.component import getSiteManager
 from zope.component import getUtility
@@ -67,6 +68,8 @@ class PloneFixture(Layer):
         ('Products.CMFDiffTool', {'loadZCML': True}, ),
         ('plone.i18n', {'loadZCML': True, 'install': False}, ),
         ('plonetheme.barceloneta', {'loadZCML': True, 'install': False}, ),
+        # product for Plone 6 only, be silent when not available on Plone 5.2:
+        ('plone.volto', {'loadZCML': True, 'silent': True}, ),
         ('Products.CMFPlone', {'loadZCML': True}, ),
         ('Products.PythonScripts', {'loadZCML': False}, ),
     )
@@ -87,9 +90,11 @@ class PloneFixture(Layer):
             pass
 
     # Extension profiles to be installed with site setup
-    extensionProfiles = (
-        'plonetheme.barceloneta:default',
-    )
+    try: 
+        extensionProfiles = AddPloneSite.volto_default_extension_profiles
+    except AttributeError:
+        # BBB: Plone 5.2
+        extensionProfiles = AddPloneSite.default_extension_profiles
 
     # Layer lifecycle
 
