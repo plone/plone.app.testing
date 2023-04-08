@@ -25,11 +25,11 @@ def cleanUpMultiPlugins():
     except ImportError:
         pass
     else:
-
         zap = []
 
         # Don't stomp on the things the other cleanup handler will deal with
         from Products.PluggableAuthService import zcml
+
         for plugin in MultiPlugins:
             if plugin not in zcml._mt_regs:
                 zap.append(plugin)

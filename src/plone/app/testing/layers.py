@@ -44,35 +44,33 @@ class PloneFixture(Layer):
 
     # Products that will be installed, plus options
     products = (
-        ('Products.GenericSetup', {'loadZCML': True}, ),
-        ('Products.DCWorkflow', {'loadZCML': True}, ),
-        ('Products.ZCTextIndex', {'loadZCML': True}, ),
-        ('Products.DateRecurringIndex', {'loadZCML': False}, ),
-        ('Products.PageTemplates', {'loadZCML': True}, ),
-        ('Products.CMFUid', {'loadZCML': True}, ),
-        ('Products.CMFCore', {'loadZCML': True}, ),
-        ('Products.PluggableAuthService', {'loadZCML': True}, ),
-        ('Products.PluginRegistry', {'loadZCML': True}, ),
-        ('Products.PlonePAS', {'loadZCML': True}, ),
+        ("Products.GenericSetup", {"loadZCML": True}),
+        ("Products.DCWorkflow", {"loadZCML": True}),
+        ("Products.ZCTextIndex", {"loadZCML": True}),
+        ("Products.DateRecurringIndex", {"loadZCML": False}),
+        ("Products.PageTemplates", {"loadZCML": True}),
+        ("Products.CMFUid", {"loadZCML": True}),
+        ("Products.CMFCore", {"loadZCML": True}),
+        ("Products.PluggableAuthService", {"loadZCML": True}),
+        ("Products.PluginRegistry", {"loadZCML": True}),
+        ("Products.PlonePAS", {"loadZCML": True}),
         # product for Plone 5.2 only, be silent when not available on Plone 6:
-        ('Products.CMFFormController', {'loadZCML': True, 'silent': True}, ),
-        ('Products.CMFDynamicViewFTI', {'loadZCML': True}, ),
-        ('Products.CMFPlacefulWorkflow', {'loadZCML': True}, ),
-        ('Products.MimetypesRegistry', {'loadZCML': True}, ),
-        ('Products.PortalTransforms', {'loadZCML': True}, ),
-        ('Products.ExtendedPathIndex', {'loadZCML': True}, ),
-        ('Products.SiteAccess', {'loadZCML': False}, ),
-        ('Products.CMFEditions', {'loadZCML': True}, ),
-        ('Products.CMFDiffTool', {'loadZCML': True}, ),
-        ('plone.i18n', {'loadZCML': True, 'install': False}, ),
-        ('plonetheme.barceloneta', {'loadZCML': True, 'install': False}, ),
-        ('Products.CMFPlone', {'loadZCML': True}, ),
-        ('Products.PythonScripts', {'loadZCML': False}, ),
+        ("Products.CMFFormController", {"loadZCML": True, "silent": True}),
+        ("Products.CMFDynamicViewFTI", {"loadZCML": True}),
+        ("Products.CMFPlacefulWorkflow", {"loadZCML": True}),
+        ("Products.MimetypesRegistry", {"loadZCML": True}),
+        ("Products.PortalTransforms", {"loadZCML": True}),
+        ("Products.ExtendedPathIndex", {"loadZCML": True}),
+        ("Products.SiteAccess", {"loadZCML": False}),
+        ("Products.CMFEditions", {"loadZCML": True}),
+        ("Products.CMFDiffTool", {"loadZCML": True}),
+        ("plone.i18n", {"loadZCML": True, "install": False}),
+        ("plonetheme.barceloneta", {"loadZCML": True, "install": False}),
+        ("Products.CMFPlone", {"loadZCML": True}),
+        ("Products.PythonScripts", {"loadZCML": False}),
     )
     if six.PY2:
-        products += (
-            ('Products.ExternalEditor', {'loadZCML': True}, ),
-        )
+        products += (("Products.ExternalEditor", {"loadZCML": True}),)
 
         try:
             # Since gopipindex moved to plone.folder only with Archetypes
@@ -81,25 +79,22 @@ class PloneFixture(Layer):
             # Prevent trying to load plone.app.folder if it is a module alias
             if hasattr(plone.app.folder, "__file__"):
                 products += (
-                    ('plone.app.folder', {'loadZCML': True}, ),
+                    (
+                        "plone.app.folder",
+                        {"loadZCML": True}
+                    ),
                 )
         except ImportError:
             pass
 
     # Extension profiles to be installed with site setup
-    extensionProfiles = (
-        'plonetheme.barceloneta:default',
-    )
+    extensionProfiles = ("plonetheme.barceloneta:default",)
 
     # Layer lifecycle
 
     def setUp(self):
-
         # Stack a new DemoStorage on top of the one from zope.STARTUP.
-        self['zodbDB'] = zodb.stackDemoStorage(
-            self.get('zodbDB'),
-            name='PloneFixture'
-        )
+        self["zodbDB"] = zodb.stackDemoStorage(self.get("zodbDB"), name="PloneFixture")
 
         self.setUpZCML()
 
@@ -112,7 +107,6 @@ class PloneFixture(Layer):
             transaction.savepoint(optimistic=True)
 
     def tearDown(self):
-
         # Tear down products
         with zope.zopeApp() as app:
             # note: content tear-down happens by squashing the ZODB
@@ -121,8 +115,8 @@ class PloneFixture(Layer):
         self.tearDownZCML()
 
         # Zap the stacked ZODB
-        self['zodbDB'].close()
-        del self['zodbDB']
+        self["zodbDB"].close()
+        del self["zodbDB"]
 
     def setUpZCML(self):
         """Stack a new global registry and load ZCML configuration of Plone
@@ -135,25 +129,29 @@ class PloneFixture(Layer):
         zca.pushGlobalRegistry()
 
         from zope.configuration import xmlconfig
-        self['configurationContext'] = context = zca.stackConfigurationContext(
-            self.get('configurationContext')
+
+        self["configurationContext"] = context = zca.stackConfigurationContext(
+            self.get("configurationContext")
         )
 
         # Turn off z3c.autoinclude
 
-        xmlconfig.string("""\
+        xmlconfig.string(
+            """\
 <configure xmlns="http://namespaces.zope.org/zope"
            xmlns:meta="http://namespaces.zope.org/meta">
     <meta:provides feature="disable-autoinclude" />
 </configure>
-""", context=context)
+""",
+            context=context,
+        )
 
         # Load dependent products's ZCML - Plone doesn't specify dependencies
         # on Products.* packages fully
 
         def loadAll(filename):
             for p, config in self.products:
-                if not config['loadZCML']:
+                if not config["loadZCML"]:
                     continue
                 try:
                     package = resolve(p)
@@ -164,9 +162,9 @@ class PloneFixture(Layer):
                 except OSError:
                     pass
 
-        loadAll('meta.zcml')
-        loadAll('configure.zcml')
-        loadAll('overrides.zcml')
+        loadAll("meta.zcml")
+        loadAll("configure.zcml")
+        loadAll("overrides.zcml")
 
     def tearDownZCML(self):
         """Pop the global component registry stack, effectively unregistering
@@ -176,7 +174,7 @@ class PloneFixture(Layer):
         zca.popGlobalRegistry()
 
         # Zap the stacked configuration context
-        del self['configurationContext']
+        del self["configurationContext"]
 
     def setUpProducts(self, app):
         """Install all old-style products listed in the the ``products`` tuple
@@ -184,8 +182,8 @@ class PloneFixture(Layer):
         """
 
         for p, config in self.products:
-            if config.get('install', True):
-                if config.get('silent'):
+            if config.get("install", True):
+                if config.get("silent"):
                     # When product is not available, do not complain or warn.
                     try:
                         resolve(p)
@@ -198,13 +196,14 @@ class PloneFixture(Layer):
         tuple of this class.
         """
         for p, config in reversed(self.products):
-            if config.get('install', True):
+            if config.get("install", True):
                 zope.uninstallProduct(app, p)
 
         # Clean up Wicked turds
         # XXX: This may tear down too much state
         try:
             from wicked.fieldevent import meta
+
             meta.cleanUp()
         except ImportError:
             pass
@@ -222,17 +221,15 @@ class PloneFixture(Layer):
 
         # Create the owner user and "log in" so that the site object gets
         # the right ownership information
-        app['acl_users'].userFolderAddUser(
-            SITE_OWNER_NAME,
-            SITE_OWNER_PASSWORD,
-            ['Manager'],
-            []
+        app["acl_users"].userFolderAddUser(
+            SITE_OWNER_NAME, SITE_OWNER_PASSWORD, ["Manager"], []
         )
 
-        zope.login(app['acl_users'], SITE_OWNER_NAME)
+        zope.login(app["acl_users"], SITE_OWNER_NAME)
 
         # Create the site with the default set of extension profiles
         from Products.CMFPlone.factory import addPloneSite
+
         addPloneSite(
             app,
             PLONE_SITE_ID,
@@ -243,17 +240,13 @@ class PloneFixture(Layer):
         )
 
         # Turn off default workflow
-        app[PLONE_SITE_ID]['portal_workflow'].setDefaultChain('')
+        app[PLONE_SITE_ID]["portal_workflow"].setDefaultChain("")
 
         # Create the test user. (Plone)PAS does not have an API to create a
         # user with different userid and login name, so we call the plugin
         # directly.
-        pas = app[PLONE_SITE_ID]['acl_users']
-        pas.source_users.addUser(
-            TEST_USER_ID,
-            TEST_USER_NAME,
-            TEST_USER_PASSWORD
-        )
+        pas = app[PLONE_SITE_ID]["acl_users"]
+        pas.source_users.addUser(TEST_USER_ID, TEST_USER_NAME, TEST_USER_PASSWORD)
         for role in TEST_USER_ROLES:
             pas.portal_role_manager.doAssignRoleToPrincipal(TEST_USER_ID, role)
 
@@ -276,11 +269,9 @@ class PloneZServerFixture(PloneFixture):
     defaultBases = (zserver.STARTUP,)
 
     def setUp(self):
-
         # Stack a new DemoStorage on top of the one from zserver.STARTUP.
-        self['zodbDB'] = zodb.stackDemoStorage(
-            self.get('zodbDB'),
-            name='PloneZServerFixture'
+        self["zodbDB"] = zodb.stackDemoStorage(
+            self.get("zodbDB"), name="PloneZServerFixture"
         )
 
         self.setUpZCML()
@@ -291,7 +282,6 @@ class PloneZServerFixture(PloneFixture):
             self.setUpDefaultContent(app)
 
     def tearDown(self):
-
         # Tear down products
         with zserver.zopeApp() as app:
             # note: content tear-down happens by squashing the ZODB
@@ -300,8 +290,8 @@ class PloneZServerFixture(PloneFixture):
         self.tearDownZCML()
 
         # Zap the stacked ZODB
-        self['zodbDB'].close()
-        del self['zodbDB']
+        self["zodbDB"].close()
+        del self["zodbDB"]
 
 
 PLONE_ZSERVER_FIXTURE = PloneZServerFixture()
@@ -321,12 +311,12 @@ class PloneTestLifecycle:
     def testSetUp(self):
         super().testSetUp()
 
-        self['portal'] = portal = self['app'][PLONE_SITE_ID]
+        self["portal"] = portal = self["app"][PLONE_SITE_ID]
         self.setUpEnvironment(portal)
 
     def testTearDown(self):
-        self.tearDownEnvironment(self['portal'])
-        del self['portal']
+        self.tearDownEnvironment(self["portal"])
+        del self["portal"]
 
         super().testTearDown()
 
@@ -345,6 +335,7 @@ class PloneTestLifecycle:
 
         # Pseudo-login as the test user
         from plone.app.testing import helpers
+
         helpers.login(portal, TEST_USER_NAME)
 
     def tearDownEnvironment(self, portal):
@@ -354,16 +345,19 @@ class PloneTestLifecycle:
 
         # Clear the security manager
         from plone.app.testing import helpers
+
         helpers.logout()
 
         # Clear any cached data using plone.memoize's RAM caches
         from plone.memoize.ram import global_cache
+
         global_cache.invalidateAll()
 
         from plone.memoize.ram import IRAMCache
         from zope.component import queryUtility
+
         cache = queryUtility(IRAMCache)
-        if cache and getattr(cache, '_cacheId', None):
+        if cache and getattr(cache, "_cacheId", None):
             cache.invalidateAll()
 
         # Unset the local component site
@@ -380,6 +374,7 @@ class MockMailHostLayer(Layer):
     """Layer for setting up a MockMailHost to store all sent messages as
     strings into a list at portal.MailHost.messages
     """
+
     defaultBases = (PLONE_FIXTURE,)
 
     def testSetUp(self):
@@ -388,7 +383,9 @@ class MockMailHostLayer(Layer):
             registry = getUtility(IRegistry, context=portal)
 
             if not registry["plone.email_from_address"]:
-                portal._original_email_address = registry["plone.email_from_address"]  # noqa: E501
+                portal._original_email_address = registry[
+                    "plone.email_from_address"
+                ]  # noqa: E501
                 registry["plone.email_from_address"] = "noreply@example.com"
 
             if not registry["plone.email_from_name"]:
@@ -396,14 +393,13 @@ class MockMailHostLayer(Layer):
                 registry["plone.email_from_name"] = "Plone site"
 
             portal._original_MailHost = portal.MailHost
-            portal.MailHost = mailhost = MockMailHost('MailHost')
+            portal.MailHost = mailhost = MockMailHost("MailHost")
 
             sm = getSiteManager(context=portal)
             sm.unregisterUtility(provided=IMailHost)
             sm.registerUtility(mailhost, provided=IMailHost)
 
     def testTearDown(self):
-
         with zope.zopeApp() as app:
             portal = app[PLONE_SITE_ID]
             registry = getUtility(IRegistry, context=portal)
@@ -419,7 +415,9 @@ class MockMailHostLayer(Layer):
                 delattr(portal, "_original_email_name")
 
             if hasattr(portal, "_original_email_address"):
-                registry["plone.email_from_address"] = portal._original_email_address  # noqa: E501
+                registry[
+                    "plone.email_from_address"
+                ] = portal._original_email_address  # noqa: E501
                 delattr(portal, "_original_email_address")
 
             delattr(portal, "_original_MailHost")
@@ -429,19 +427,16 @@ MOCK_MAILHOST_FIXTURE = MockMailHostLayer()
 
 
 class IntegrationTesting(PloneTestLifecycle, zope.IntegrationTesting):
-    """Plone version of the integration testing layer
-    """
+    """Plone version of the integration testing layer"""
 
 
 class FunctionalTesting(PloneTestLifecycle, zope.FunctionalTesting):
-    """Plone version of the functional testing layer
-    """
+    """Plone version of the functional testing layer"""
 
 
-class ZServerFunctionalTesting(
-        PloneZServerTestLifecycle, zserver.FunctionalTesting):
-    """Plone version of the functional testing layer using ZServer.
-    """
+class ZServerFunctionalTesting(PloneZServerTestLifecycle, zserver.FunctionalTesting):
+    """Plone version of the functional testing layer using ZServer."""
+
 
 #
 # Layer instances
@@ -450,21 +445,17 @@ class ZServerFunctionalTesting(
 
 
 PLONE_INTEGRATION_TESTING = IntegrationTesting(
-    bases=(PLONE_FIXTURE, ),
-    name='Plone:Integration'
+    bases=(PLONE_FIXTURE,), name="Plone:Integration"
 )
 
 PLONE_FUNCTIONAL_TESTING = FunctionalTesting(
-    bases=(PLONE_FIXTURE, ),
-    name='Plone:Functional'
+    bases=(PLONE_FIXTURE,), name="Plone:Functional"
 )
 
 PLONE_WSGISERVER = PLONE_ZSERVER = FunctionalTesting(
-    bases=(PLONE_FIXTURE, zope.WSGI_SERVER_FIXTURE),
-    name='Plone:WSGIServer'
+    bases=(PLONE_FIXTURE, zope.WSGI_SERVER_FIXTURE), name="Plone:WSGIServer"
 )
 
 PLONE_FTP_SERVER = ZServerFunctionalTesting(
-    bases=(PLONE_ZSERVER_FIXTURE, zserver.FTP_SERVER_FIXTURE),
-    name='Plone:FTPServer'
+    bases=(PLONE_ZSERVER_FIXTURE, zserver.FTP_SERVER_FIXTURE), name="Plone:FTPServer"
 )

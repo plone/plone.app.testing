@@ -45,8 +45,9 @@ def test_suite():
         ]
     )
     if six.PY2:
-        suite.addTests([
-            doctest.DocFileSuite(
-                'layers_zserver.rst', optionflags=OPTIONFLAGS),
-        ])
+        suite.addTests(
+            [
+                doctest.DocFileSuite("layers_zserver.rst", optionflags=OPTIONFLAGS),
+            ]
+        )
     return suite
