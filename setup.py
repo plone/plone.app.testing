@@ -8,14 +8,11 @@ version = "7.0.1.dev0"
 
 tests_require = [
     "plone.testing[test]",
-    "Products.CMFCore",
-    "Products.CMFPlacefulWorkflow",
     "Products.CMFPlone",
     "Products.PluggableAuthService",
-    "selenium",
+    "requests",
     "transaction",
     "zope.interface",
-    "zope.publisher",
     "zope.testing",
     "zope.testrunner",
     # XXX unspecified dependency of plone.app.upgrade XXX
@@ -73,19 +70,22 @@ setup(
     zip_safe=False,
     python_requires=">=3.7",
     install_requires=[
+        "Products.CMFPlone",
+        "Products.GenericSetup",
+        "Products.MailHost",
+        "Products.PluggableAuthService",
+        "Zope",
+        "persistent",
+        "plone.app.contenttypes",
+        "plone.dexterity",
+        "plone.memoize",
+        "plone.registry",
+        "plone.testing [zca,security,zodb,z2]",
         "setuptools",
         "zope.configuration",
         "zope.component",
         "zope.dottedname",
         "zope.testing",
-        "five.localsitemanager",
-        "plone.memoize",
-        "plone.testing [zca,security,zodb,z2]",
-        # 'Acquisition', # Zope 2.13+
-        # 'AccessControl', # Zope 2.13+
-        "Products.CMFPlone",
-        "Products.GenericSetup",
-        "Zope",
     ],
     tests_require=tests_require,
     extras_require={
