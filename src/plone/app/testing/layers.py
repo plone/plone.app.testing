@@ -72,21 +72,6 @@ class PloneFixture(Layer):
     if six.PY2:
         products += (("Products.ExternalEditor", {"loadZCML": True}),)
 
-        try:
-            # Since gopipindex moved to plone.folder only with Archetypes
-            import plone.app.folder
-
-            # Prevent trying to load plone.app.folder if it is a module alias
-            if hasattr(plone.app.folder, "__file__"):
-                products += (
-                    (
-                        "plone.app.folder",
-                        {"loadZCML": True}
-                    ),
-                )
-        except ImportError:
-            pass
-
     # Extension profiles to be installed with site setup
     extensionProfiles = ("plonetheme.barceloneta:default",)
 
