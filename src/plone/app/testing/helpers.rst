@@ -66,7 +66,7 @@ need to tear that down as well.
     ...     def setUp(self):
     ...
     ...         # Push a new database storage so that database changes
-    ...         # commited during layer setup can be easily torn down
+    ...         # committed during layer setup can be easily torn down
     ...         self['zodbDB'] = zodb.stackDemoStorage(self.get('zodbDB'), name='HelperDemos')
     ...
     ...         # Push a new configuration context so that it's possible to re-import

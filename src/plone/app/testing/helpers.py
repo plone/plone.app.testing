@@ -317,7 +317,7 @@ class PloneSandboxLayer(Layer):
 
         Implementing this is optional. If the changes made during the
         ``setUpPloneSite()`` method were confined to the ZODB and the global
-        component regsitry, those changes will be torn down automatically.
+        component registry, those changes will be torn down automatically.
         """
 
         pass
@@ -327,7 +327,7 @@ class PloneSandboxLayer(Layer):
     def setUp(self):
         try:
             # Push a new database storage so that database changes
-            # commited during layer setup can be easily torn down
+            # committed during layer setup can be easily torn down
             self["zodbDB"] = zodb.stackDemoStorage(
                 self.get("zodbDB"), name=self.__name__
             )

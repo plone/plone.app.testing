@@ -2,7 +2,7 @@ Test Isolation is hard
 ======================
 
 At the moment, it is not possible to just run all tests at once.
-Therfore we have an alltests script that groups tests together.
+Therefore we have an alltests script that groups tests together.
 
 You may wonder, why and which tests need to be separated.
 
