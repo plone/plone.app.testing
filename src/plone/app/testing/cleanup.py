@@ -19,7 +19,9 @@ except ImportError:
 
 def cleanUpMultiPlugins():
     try:
-        from Products.PluggableAuthService.PluggableAuthService import MultiPlugins  # NOQA: E501
+        from Products.PluggableAuthService.PluggableAuthService import (
+            MultiPlugins,  # NOQA: E501
+        )
     except ImportError:
         pass
     else:

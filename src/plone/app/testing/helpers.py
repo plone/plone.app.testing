@@ -74,9 +74,9 @@ def quickInstallProduct(portal, productName, reinstall=False):
     is installed already.
     """
 
-    from Acquisition import aq_parent
     from AccessControl import getSecurityManager
     from AccessControl.SecurityManagement import setSecurityManager
+    from Acquisition import aq_parent
 
     sm = getSecurityManager()
     app = aq_parent(portal)
@@ -108,9 +108,9 @@ def applyProfile(portal, profileName, purge_old=None,
     should be a package name and a profile name, e.g. 'my.product:default'.
     """
 
-    from Acquisition import aq_parent
     from AccessControl import getSecurityManager
     from AccessControl.SecurityManagement import setSecurityManager
+    from Acquisition import aq_parent
 
     sm = getSecurityManager()
     app = aq_parent(portal)
@@ -354,7 +354,9 @@ class PloneSandboxLayer(Layer):
 
                 security.pushCheckers()
 
-                from Products.PluggableAuthService.PluggableAuthService import MultiPlugins  # noqa
+                from Products.PluggableAuthService.PluggableAuthService import (  # noqa
+                    MultiPlugins,
+                )
 
                 preSetupMultiPlugins = MultiPlugins[:]
 
@@ -435,9 +437,7 @@ class PloneSandboxLayer(Layer):
 
         self._addedMultiPlugins = set()
 
-        from Products.PluggableAuthService.PluggableAuthService import (
-            MultiPlugins
-        )
+        from Products.PluggableAuthService.PluggableAuthService import MultiPlugins
 
         for plugin in MultiPlugins:
             if plugin not in preSetupMultiPlugins:

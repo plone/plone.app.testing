@@ -77,6 +77,7 @@ class PloneFixture(Layer):
         try:
             # Since gopipindex moved to plone.folder only with Archetypes
             import plone.app.folder
+
             # Prevent trying to load plone.app.folder if it is a module alias
             if hasattr(plone.app.folder, "__file__"):
                 products += (
@@ -359,8 +360,8 @@ class PloneTestLifecycle:
         from plone.memoize.ram import global_cache
         global_cache.invalidateAll()
 
-        from zope.component import queryUtility
         from plone.memoize.ram import IRAMCache
+        from zope.component import queryUtility
         cache = queryUtility(IRAMCache)
         if cache and getattr(cache, '_cacheId', None):
             cache.invalidateAll()
