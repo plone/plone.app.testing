@@ -26,7 +26,6 @@ from zope.dottedname.resolve import resolve
 from zope.event import notify
 from zope.traversing.interfaces import BeforeTraverseEvent
 
-import six
 import transaction
 
 
@@ -69,8 +68,6 @@ class PloneFixture(Layer):
         ("Products.CMFPlone", {"loadZCML": True}),
         ("Products.PythonScripts", {"loadZCML": False}),
     )
-    if six.PY2:
-        products += (("Products.ExternalEditor", {"loadZCML": True}),)
 
     # Extension profiles to be installed with site setup
     extensionProfiles = ("plonetheme.barceloneta:default",)

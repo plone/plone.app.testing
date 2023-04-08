@@ -74,7 +74,6 @@ setup(
     python_requires=">=3.7",
     install_requires=[
         "setuptools",
-        "six",
         "zope.configuration",
         "zope.component",
         "zope.dottedname",
