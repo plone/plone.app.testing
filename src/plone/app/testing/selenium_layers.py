@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.app.testing import FunctionalTesting
 from plone.app.testing import PLONE_FIXTURE
 from plone.app.testing import TEST_USER_NAME
@@ -17,7 +16,7 @@ class SeleniumLayer(Layer):
         # Start up Selenium
         driver = os.environ.get('SELENIUM_DRIVER', '').lower() or 'firefox'
         webdriver = __import__(
-            'selenium.webdriver.{0}.webdriver'.format(driver),
+            f'selenium.webdriver.{driver}.webdriver',
             fromlist=['WebDriver']
         )
         args = [arg.strip() for arg in
@@ -106,7 +105,7 @@ def clear(selenium, name):
 def select(selenium, xpath1, xpath2=''):
     xpath = xpath1
     if xpath2:
-        xpath = "{0}['{1}']".format(xpath1, xpath2)
+        xpath = f"{xpath1}['{xpath2}']"
         xpath = xpath.replace("select['label=", "select/option['text()=")
     selenium.find_element_by_xpath(xpath).click()
 

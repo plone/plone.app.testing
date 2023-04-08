@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Cleanup handlers for various global registries
 """
 

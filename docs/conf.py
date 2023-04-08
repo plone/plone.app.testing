@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # plone.app.testing documentation build configuration file, created by
 # sphinx-quickstart on Sat Feb  9 11:31:41 2013.
@@ -40,8 +39,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'plone.app.testing'
-copyright = u'2018, Plone Foundation'
+project = 'plone.app.testing'
+copyright = '2018, Plone Foundation'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -178,8 +177,8 @@ htmlhelp_basename = 'ploneapptestingdoc'
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'ploneapptesting.tex', u'plone.app.testing Documentation',
-   u'Plone Foundation', 'manual'),
+  ('index', 'ploneapptesting.tex', 'plone.app.testing Documentation',
+   'Plone Foundation', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -211,6 +210,6 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'ploneapptesting', u'plone.app.testing Documentation',
-     [u'Plone Foundation'], 1)
+    ('index', 'ploneapptesting', 'plone.app.testing Documentation',
+     ['Plone Foundation'], 1)
 ]

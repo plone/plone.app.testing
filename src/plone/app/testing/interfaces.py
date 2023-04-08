@@ -1,9 +1,8 @@
-# -*- coding: utf-8 -*-
 # Constants for names used in layer setup - also importable from
 # plone.app.testing directly
 
 PLONE_SITE_ID = 'plone'
-PLONE_SITE_TITLE = u'Plone site'
+PLONE_SITE_TITLE = 'Plone site'
 DEFAULT_LANGUAGE = 'en'
 
 TEST_USER_NAME = 'test-user'

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Helper functions for Plone testing. Also importable from plone.app.testing
 # directly
 
@@ -120,7 +119,7 @@ def applyProfile(portal, profileName, purge_old=None,
 
     try:
         setupTool = portal['portal_setup']
-        profileId = 'profile-{0}'.format(profileName)
+        profileId = f'profile-{profileName}'
         setupTool.runAllImportStepsFromProfile(
             profileId,
             purge_old=purge_old,
@@ -331,7 +330,7 @@ class PloneSandboxLayer(Layer):
             # Push a new configuration context so that it's possible to
             # re-import ZCML files after tear-down
             name = self.__name__ if self.__name__ is not None else 'not-named'
-            contextName = 'PloneSandboxLayer-{0}'.format(name)
+            contextName = f'PloneSandboxLayer-{name}'
             self['configurationContext'] = configurationContext = (
                 zca.stackConfigurationContext(self.get('configurationContext'),
                                               name=contextName))
@@ -475,7 +474,7 @@ class PloneWithPackageLayer(PloneSandboxLayer):
     def __init__(self, bases=None, name=None, module=None, zcml_filename=None,
                  zcml_package=None, gs_profile_id=None,
                  additional_z2_products=()):
-        super(PloneWithPackageLayer, self).__init__(bases, name, module)
+        super().__init__(bases, name, module)
         self.zcml_filename = zcml_filename
         self.zcml_package = zcml_package
         self.gs_profile_id = gs_profile_id

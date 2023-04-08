@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Backwards-compatibility test class for PloneTestCase for Dexterity."""
 
 from AccessControl import getSecurityManager
@@ -72,7 +71,7 @@ class PloneTestCase(Functional, unittest.TestCase):
         """Tear down after each test."""
         self.beforeTearDown()
         transaction.abort()
-        super(PloneTestCase, self).tearDown()
+        super().tearDown()
         self.afterTearDown()
 
     def beforeTearDown(self):

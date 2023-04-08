@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # flake8: NOQA: F401
 from plone.app.testing.cleanup import cleanUpMultiPlugins
 from plone.app.testing.helpers import applyProfile

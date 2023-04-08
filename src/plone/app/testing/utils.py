@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from persistent.list import PersistentList
 from Products.MailHost.MailHost import _mungeHeaders
 from Products.MailHost.MailHost import MailBase

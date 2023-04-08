@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Layers setting up fixtures with a Plone site. Also importable from
 # plone.app.testing directly
 
@@ -161,7 +160,7 @@ class PloneFixture(Layer):
                     continue
                 try:
                     xmlconfig.file(filename, package, context=context)
-                except IOError:
+                except OSError:
                     pass
 
         loadAll('meta.zcml')
@@ -307,7 +306,7 @@ class PloneZServerFixture(PloneFixture):
 PLONE_ZSERVER_FIXTURE = PloneZServerFixture()
 
 
-class PloneTestLifecycle(object):
+class PloneTestLifecycle:
     """Mixin class for Plone test lifecycle. This exposes the ``portal``
     resource and resets the environment between each test.
 
@@ -319,7 +318,7 @@ class PloneTestLifecycle(object):
     defaultBases = (PLONE_FIXTURE,)
 
     def testSetUp(self):
-        super(PloneTestLifecycle, self).testSetUp()
+        super().testSetUp()
 
         self['portal'] = portal = self['app'][PLONE_SITE_ID]
         self.setUpEnvironment(portal)
@@ -328,7 +327,7 @@ class PloneTestLifecycle(object):
         self.tearDownEnvironment(self['portal'])
         del self['portal']
 
-        super(PloneTestLifecycle, self).testTearDown()
+        super().testTearDown()
 
     def setUpEnvironment(self, portal):
         """Set up the local component site, reset skin data and log in as
@@ -393,7 +392,7 @@ class MockMailHostLayer(Layer):
 
             if not registry["plone.email_from_name"]:
                 portal._original_email_name = registry["plone.email_from_name"]
-                registry["plone.email_from_name"] = u"Plone site"
+                registry["plone.email_from_name"] = "Plone site"
 
             portal._original_MailHost = portal.MailHost
             portal.MailHost = mailhost = MockMailHost('MailHost')
