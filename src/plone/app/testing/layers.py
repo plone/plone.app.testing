@@ -365,9 +365,7 @@ class MockMailHostLayer(Layer):
             registry = getUtility(IRegistry, context=portal)
 
             if not registry["plone.email_from_address"]:
-                portal._original_email_address = registry[
-                    "plone.email_from_address"
-                ]  # noqa: E501
+                portal._original_email_address = registry["plone.email_from_address"]
                 registry["plone.email_from_address"] = "noreply@example.com"
 
             if not registry["plone.email_from_name"]:
@@ -397,9 +395,7 @@ class MockMailHostLayer(Layer):
                 delattr(portal, "_original_email_name")
 
             if hasattr(portal, "_original_email_address"):
-                registry[
-                    "plone.email_from_address"
-                ] = portal._original_email_address  # noqa: E501
+                registry["plone.email_from_address"] = portal._original_email_address
                 delattr(portal, "_original_email_address")
 
             delattr(portal, "_original_MailHost")

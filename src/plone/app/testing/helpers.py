@@ -361,7 +361,7 @@ class PloneSandboxLayer(Layer):
 
                 security.pushCheckers()
 
-                from Products.PluggableAuthService.PluggableAuthService import (  # noqa
+                from Products.PluggableAuthService.PluggableAuthService import (
                     MultiPlugins,
                 )
 

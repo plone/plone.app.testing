@@ -40,7 +40,7 @@ long_description = read("docs", "README.rst") + "\n\n" + read("CHANGES.rst")
 setup(
     name="plone.app.testing",
     version=version,
-    description="Testing tools for Plone-the-application, based on plone.testing.",  # NOQA: E501
+    description="Testing tools for Plone-the-application, based on plone.testing.",
     long_description=long_description,
     classifiers=[
         "Development Status :: 5 - Production/Stable",

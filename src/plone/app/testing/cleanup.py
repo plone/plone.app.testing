@@ -12,16 +12,15 @@ except ImportError:
 
 # Make sure cleanup handlers from PAS are registered
 try:
-    import Products.PluggableAuthService.zcml  # NOQA: F401
+    import Products.PluggableAuthService.zcml
 except ImportError:
     pass
 
 
 def cleanUpMultiPlugins():
     try:
-        from Products.PluggableAuthService.PluggableAuthService import (
-            MultiPlugins,  # NOQA: E501
-        )
+        from Products.PluggableAuthService.PluggableAuthService import MultiPlugins
+
     except ImportError:
         pass
     else:
