@@ -12,7 +12,7 @@ except ImportError:
 
 # Make sure cleanup handlers from PAS are registered
 try:
-    import Products.PluggableAuthService.zcml
+    import Products.PluggableAuthService.zcml  # noqa: F401
 except ImportError:
     pass
 
