@@ -1,3 +1,6 @@
+# Generated from:
+# https://github.com/plone/meta/tree/master/config/default
+#
 # EditorConfig Configuration file, for more details see:
 # http://EditorConfig.org
 # EditorConfig is a convention description, that could be interpreted
@@ -25,7 +28,7 @@ max_line_length = off
 # 4 space indentation
 indent_size = 4
 
-[*.{yml}]
+[*.{yml,zpt,pt,dtml,zcml}]
 # 2 space indentation
 indent_size = 2
 

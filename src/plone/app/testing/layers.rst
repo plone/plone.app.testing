@@ -337,7 +337,7 @@ We can now look for this new object through the server.
     >>> portal_url.split(':')[:-1]
     ['http', '//localhost']
 
-    >>> from six.moves.urllib.request import urlopen
+    >>> from urllib.request import urlopen
     >>> conn = urlopen(portal_url, timeout=10)
     >>> responseBody = conn.read()
     >>> b"Fancy Portal" in responseBody

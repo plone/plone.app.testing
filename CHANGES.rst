@@ -198,7 +198,7 @@ New features:
 
 Bug fixes:
 
-- Amended the doctests to work with automatical layer port picking from plone.testing.
+- Amended the doctests to work with automatically layer port picking from plone.testing.
   [Rotonen]
 
 
@@ -352,7 +352,7 @@ Fixes:
   profile is applied (which installs the index to catalog). At the moment
   CMFPlone therefore registers the index itself, but plone.app.folder
   registers it too, which resulted in plone/Products.CMFPlone#313
-  "GopipIndex registered twice" In tests the registration does not succedd,
+  "GopipIndex registered twice" In tests the registration does not succeed,
   because plone.app.folder was never initialized as z2 products. In order to
   remove the misleading regisatration from CMFPlone we must take care that the
   index is available, which is achieved with this change. Also minor pep8

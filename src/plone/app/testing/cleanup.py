@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Cleanup handlers for various global registries
 """
 
@@ -13,22 +12,23 @@ except ImportError:
 
 # Make sure cleanup handlers from PAS are registered
 try:
-    import Products.PluggableAuthService.zcml  # NOQA: F401
+    import Products.PluggableAuthService.zcml  # noqa: F401
 except ImportError:
     pass
 
 
 def cleanUpMultiPlugins():
     try:
-        from Products.PluggableAuthService.PluggableAuthService import MultiPlugins  # NOQA: E501
+        from Products.PluggableAuthService.PluggableAuthService import MultiPlugins
+
     except ImportError:
         pass
     else:
-
         zap = []
 
         # Don't stomp on the things the other cleanup handler will deal with
         from Products.PluggableAuthService import zcml
+
         for plugin in MultiPlugins:
             if plugin not in zcml._mt_regs:
                 zap.append(plugin)

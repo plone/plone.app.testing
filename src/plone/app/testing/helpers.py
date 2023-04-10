@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Helper functions for Plone testing. Also importable from plone.app.testing
 # directly
 
@@ -24,24 +23,21 @@ import contextlib
 
 
 def login(portal, userName):
-    """Log in as the given user in the given Plone site
-    """
+    """Log in as the given user in the given Plone site"""
 
-    zope.login(portal['acl_users'], userName)
+    zope.login(portal["acl_users"], userName)
 
 
 def logout():
-    """Log out, i.e. become anonymous
-    """
+    """Log out, i.e. become anonymous"""
 
     zope.logout()
 
 
 def setRoles(portal, userId, roles):
-    """Set the given user's roles to a tuple of roles.
-    """
+    """Set the given user's roles to a tuple of roles."""
 
-    userFolder = portal['acl_users']
+    userFolder = portal["acl_users"]
     zope.setRoles(userFolder, userId, roles)
 
 
@@ -75,14 +71,14 @@ def quickInstallProduct(portal, productName, reinstall=False):
     is installed already.
     """
 
-    from Acquisition import aq_parent
     from AccessControl import getSecurityManager
     from AccessControl.SecurityManagement import setSecurityManager
+    from Acquisition import aq_parent
 
     sm = getSecurityManager()
     app = aq_parent(portal)
 
-    zope.login(app['acl_users'], SITE_OWNER_NAME)
+    zope.login(app["acl_users"], SITE_OWNER_NAME)
 
     from Products.CMFPlone.utils import get_installer
 
@@ -102,31 +98,37 @@ def quickInstallProduct(portal, productName, reinstall=False):
         setSecurityManager(sm)
 
 
-def applyProfile(portal, profileName, purge_old=None,
-                 ignore_dependencies=False, archive=None,
-                 blacklisted_steps=None):
+def applyProfile(
+    portal,
+    profileName,
+    purge_old=None,
+    ignore_dependencies=False,
+    archive=None,
+    blacklisted_steps=None,
+):
     """Install an extension profile into the portal. The profile name
     should be a package name and a profile name, e.g. 'my.product:default'.
     """
 
-    from Acquisition import aq_parent
     from AccessControl import getSecurityManager
     from AccessControl.SecurityManagement import setSecurityManager
+    from Acquisition import aq_parent
 
     sm = getSecurityManager()
     app = aq_parent(portal)
 
-    zope.login(app['acl_users'], SITE_OWNER_NAME)
+    zope.login(app["acl_users"], SITE_OWNER_NAME)
 
     try:
-        setupTool = portal['portal_setup']
-        profileId = 'profile-{0}'.format(profileName)
+        setupTool = portal["portal_setup"]
+        profileId = f"profile-{profileName}"
         setupTool.runAllImportStepsFromProfile(
             profileId,
             purge_old=purge_old,
             ignore_dependencies=ignore_dependencies,
             archive=archive,
-            blacklisted_steps=blacklisted_steps)
+            blacklisted_steps=blacklisted_steps,
+        )
 
         portal.clearCurrentSkin()
         portal.setupCurrentSkin(portal.REQUEST)
@@ -158,7 +160,7 @@ def pushGlobalRegistry(portal, new=None, name=None):
     current = zca.pushGlobalRegistry(new=new)
 
     if current not in localSiteManager.__bases__:
-        localSiteManager.__bases__ = (current, )
+        localSiteManager.__bases__ = (current,)
 
     if site is not None:
         setHooks()
@@ -216,6 +218,7 @@ def persist_profile_upgrade_versions(portal):
     mapping.  Call this once in layer setup and you have easy rollback.
     """
     from persistent.mapping import PersistentMapping
+
     puv = portal.portal_setup._profile_upgrade_versions
     if isinstance(puv, PersistentMapping):
         return
@@ -245,7 +248,7 @@ def ploneSite(db=None, connection=None, environ=None, flavour=zope):
     setHooks()
     site = getSite()
 
-    with getattr(flavour, 'zopeApp')(db, connection, environ) as app:
+    with getattr(flavour, "zopeApp")(db, connection, environ) as app:
         portal = app[PLONE_SITE_ID]
 
         setSite(portal)
@@ -273,7 +276,7 @@ class PloneSandboxLayer(Layer):
 
     # The default list of bases.
 
-    defaultBases = (layers.PLONE_FIXTURE, )
+    defaultBases = (layers.PLONE_FIXTURE,)
 
     # Hooks
 
@@ -314,7 +317,7 @@ class PloneSandboxLayer(Layer):
 
         Implementing this is optional. If the changes made during the
         ``setUpPloneSite()`` method were confined to the ZODB and the global
-        component regsitry, those changes will be torn down automatically.
+        component registry, those changes will be torn down automatically.
         """
 
         pass
@@ -324,17 +327,20 @@ class PloneSandboxLayer(Layer):
     def setUp(self):
         try:
             # Push a new database storage so that database changes
-            # commited during layer setup can be easily torn down
-            self['zodbDB'] = zodb.stackDemoStorage(self.get('zodbDB'),
-                                                   name=self.__name__)
+            # committed during layer setup can be easily torn down
+            self["zodbDB"] = zodb.stackDemoStorage(
+                self.get("zodbDB"), name=self.__name__
+            )
 
             # Push a new configuration context so that it's possible to
             # re-import ZCML files after tear-down
-            name = self.__name__ if self.__name__ is not None else 'not-named'
-            contextName = 'PloneSandboxLayer-{0}'.format(name)
-            self['configurationContext'] = configurationContext = (
-                zca.stackConfigurationContext(self.get('configurationContext'),
-                                              name=contextName))
+            name = self.__name__ if self.__name__ is not None else "not-named"
+            contextName = f"PloneSandboxLayer-{name}"
+            self[
+                "configurationContext"
+            ] = configurationContext = zca.stackConfigurationContext(
+                self.get("configurationContext"), name=contextName
+            )
 
             with ploneSite() as portal:
                 setHooks()
@@ -355,7 +361,9 @@ class PloneSandboxLayer(Layer):
 
                 security.pushCheckers()
 
-                from Products.PluggableAuthService.PluggableAuthService import MultiPlugins  # noqa
+                from Products.PluggableAuthService.PluggableAuthService import (
+                    MultiPlugins,
+                )
 
                 preSetupMultiPlugins = MultiPlugins[:]
 
@@ -373,15 +381,13 @@ class PloneSandboxLayer(Layer):
             # Keep track of PAS plugins that were added during setup
             self.snapshotMultiPlugins(preSetupMultiPlugins)
         except Exception:
-            del self['configurationContext']
-            self['zodbDB'].close()
-            del self['zodbDB']
+            del self["configurationContext"]
+            self["zodbDB"].close()
+            del self["zodbDB"]
             raise
 
     def tearDown(self):
-
         with zope.zopeApp() as app:
-
             portal = app[PLONE_SITE_ID]
             setHooks()
             setSite(portal)
@@ -410,23 +416,34 @@ class PloneSandboxLayer(Layer):
             self.tearDownZope(app)
 
         # Zap the configuration context
-        del self['configurationContext']
+        del self["configurationContext"]
 
         # Pop the demo storage, thus restoring the database to the
         # previous state
-        self['zodbDB'].close()
-        del self['zodbDB']
+        self["zodbDB"].close()
+        del self["zodbDB"]
 
     # Helpers
-    def applyProfile(self, portal, profileName, purge_old=None,
-                     ignore_dependencies=False, archive=None,
-                     blacklisted_steps=None):
-        return applyProfile(portal, profileName, purge_old,
-                            ignore_dependencies, archive,
-                            blacklisted_steps)
+    def applyProfile(
+        self,
+        portal,
+        profileName,
+        purge_old=None,
+        ignore_dependencies=False,
+        archive=None,
+        blacklisted_steps=None,
+    ):
+        return applyProfile(
+            portal,
+            profileName,
+            purge_old,
+            ignore_dependencies,
+            archive,
+            blacklisted_steps,
+        )
 
-    def loadZCML(self, name='configure.zcml', **kw):
-        kw.setdefault('context', self['configurationContext'])
+    def loadZCML(self, name="configure.zcml", **kw):
+        kw.setdefault("context", self["configurationContext"])
         return xmlconfig.file(name, **kw)
 
     def snapshotMultiPlugins(self, preSetupMultiPlugins):
@@ -436,9 +453,7 @@ class PloneSandboxLayer(Layer):
 
         self._addedMultiPlugins = set()
 
-        from Products.PluggableAuthService.PluggableAuthService import (
-            MultiPlugins
-        )
+        from Products.PluggableAuthService.PluggableAuthService import MultiPlugins
 
         for plugin in MultiPlugins:
             if plugin not in preSetupMultiPlugins:
@@ -455,10 +470,11 @@ class PloneSandboxLayer(Layer):
     def snapshotGeneratedSchemas(self):
         """Save a snapshot of the plone.dexterity.schema.generated module"""
         from plone.dexterity.schema import generated
+
         self._generatedSchemas = generated.__dict__.copy()
         todelete = []
         for k in generated.__dict__:
-            if not k.startswith('_'):
+            if not k.startswith("_"):
                 todelete.append(k)
         for k in todelete:
             del generated.__dict__[k]
@@ -466,16 +482,23 @@ class PloneSandboxLayer(Layer):
     def tearDownGeneratedSchemas(self):
         """Reset plone.dexterity.schema.generated to its previous state"""
         from plone.dexterity.schema import generated
+
         generated.__dict__.clear()
         generated.__dict__.update(self._generatedSchemas)
 
 
 class PloneWithPackageLayer(PloneSandboxLayer):
-
-    def __init__(self, bases=None, name=None, module=None, zcml_filename=None,
-                 zcml_package=None, gs_profile_id=None,
-                 additional_z2_products=()):
-        super(PloneWithPackageLayer, self).__init__(bases, name, module)
+    def __init__(
+        self,
+        bases=None,
+        name=None,
+        module=None,
+        zcml_filename=None,
+        zcml_package=None,
+        gs_profile_id=None,
+        additional_z2_products=(),
+    ):
+        super().__init__(bases, name, module)
         self.zcml_filename = zcml_filename
         self.zcml_package = zcml_package
         self.gs_profile_id = gs_profile_id
@@ -496,11 +519,10 @@ class PloneWithPackageLayer(PloneSandboxLayer):
         Can be overridden to load more ZCML.
         """
         if self.zcml_filename is None:
-            raise ValueError('ZCML file name has not been provided.')
+            raise ValueError("ZCML file name has not been provided.")
         if self.zcml_package is None:
             raise ValueError(
-                'The package that contains the ZCML file '
-                'has not been provided.'
+                "The package that contains the ZCML file " "has not been provided."
             )
         self.loadZCML(self.zcml_filename, package=self.zcml_package)
 
