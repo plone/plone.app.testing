@@ -1,10 +1,14 @@
+from pathlib import Path
 from setuptools import find_packages
 from setuptools import setup
 
-import os
-
 
 version = "7.0.2.dev0"
+
+long_description = (
+    f"{(Path('docs') / 'README.rst').read_text()}\n"
+    f"{Path('CHANGES.rst').read_text()}"
+)
 
 tests_require = [
     "plone.testing[test]",
@@ -26,19 +30,14 @@ robot_require = [
     "selenium",
 ]
 
-
-def read(*rnames):
-    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
-
-
-long_description = read("docs", "README.rst") + "\n\n" + read("CHANGES.rst")
-
-
 setup(
     name="plone.app.testing",
     version=version,
     description="Testing tools for Plone-the-application, based on plone.testing.",
     long_description=long_description,
+    long_description_content_type="text/x-rst",
+    # Get more strings from
+    # https://pypi.org/classifiers/
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Environment :: Web Environment",
