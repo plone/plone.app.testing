@@ -1,5 +1,24 @@
 # Generated from:
 # https://github.com/plone/meta/tree/master/config/default
+# See the inline comments on how to expand/tweak this configuration file
 [meta]
 template = "default"
-commit-id = "434550cc"
+commit-id = "68cda6e4"
+
+[flake8]
+extra_lines = """
+per-file-ignores =
+    src/plone/app/testing/__init__.py:F401
+"""
+
+[pyproject]
+dependencies_ignores = "['decorator', 'robotframework-selenium2library', 'robotsuite', 'selenium']"
+
+[github]
+jobs = [
+    "qa",
+    "test",
+    "coverage",
+    "dependencies",
+    "release_ready",
+    ]
