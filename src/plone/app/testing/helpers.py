@@ -348,7 +348,7 @@ class PloneSandboxLayer(Layer):
                 # Make sure there's no local site manager while we load ZCML
                 setSite(None)
 
-                # Push a new component registry so that ZCML registations
+                # Push a new component registry so that ZCML registrations
                 # and other global component registry changes are sandboxed
                 pushGlobalRegistry(portal)
 

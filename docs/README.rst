@@ -922,11 +922,11 @@ To make assertions against the search results::
 
 To get the path of a given item in the search results::
 
-    self.assertEqual(resuls[0].getPath(), portal.absolute_url_path() + '/f1/d1')
+    self.assertEqual(results[0].getPath(), portal.absolute_url_path() + '/f1/d1')
 
 To get an absolute URL::
 
-    self.assertEqual(resuls[0].getURL(), portal.absolute_url() + '/f1/d1')
+    self.assertEqual(results[0].getURL(), portal.absolute_url() + '/f1/d1')
 
 To get the original object::
 
@@ -1477,7 +1477,7 @@ differences to bear in mind.
   moves shared state to layers and layer resources, and does not impose any
   particular base class for tests. This does sometimes mean a little more
   typing (e.g. ``self.layer['portal']`` vs. ``self.portal``), but it makes
-  it much easier to control and re-use test fixtures. It also makes your
+  it much easier to control and reuse test fixtures. It also makes your
   test code simpler and more explicit.
 
 * ``ZopeTestCase`` has an ``installProduct()`` function and a corresponding

@@ -88,7 +88,7 @@ need to tear that down as well.
     ...             _profile_registry.registerProfile('default', u"Testing", u"", "profile", 'plone.app.testing', EXTENSION)
     ...             _profile_registry.registerProfile('uninstall', u"Testing uninstall", u"", "profile", 'plone.app.testing', EXTENSION)
     ...
-    ...             # Push a new component registry so that ZCML registations
+    ...             # Push a new component registry so that ZCML registrations
     ...             # and other global component registry changes are sandboxed
     ...             helpers.pushGlobalRegistry(portal)
     ...
