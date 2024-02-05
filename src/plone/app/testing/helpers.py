@@ -336,10 +336,10 @@ class PloneSandboxLayer(Layer):
             # re-import ZCML files after tear-down
             name = self.__name__ if self.__name__ is not None else "not-named"
             contextName = f"PloneSandboxLayer-{name}"
-            self[
-                "configurationContext"
-            ] = configurationContext = zca.stackConfigurationContext(
-                self.get("configurationContext"), name=contextName
+            self["configurationContext"] = configurationContext = (
+                zca.stackConfigurationContext(
+                    self.get("configurationContext"), name=contextName
+                )
             )
 
             with ploneSite() as portal:
