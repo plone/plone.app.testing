@@ -70,7 +70,10 @@ class PloneFixture(Layer):
     )
 
     # Extension profiles to be installed with site setup
-    extensionProfiles = ("plonetheme.barceloneta:default",)
+    extensionProfiles = (
+        "plone.app.contenttypes:default",
+        "plonetheme.barceloneta:default",
+    )
 
     # Layer lifecycle
 
