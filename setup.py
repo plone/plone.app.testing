@@ -86,7 +86,6 @@ setup(
         "zope.dottedname",
         "zope.testing",
     ],
-    tests_require=tests_require,
     extras_require={
         "test": tests_require,
         "robot": robot_require,
