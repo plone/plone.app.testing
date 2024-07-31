@@ -8,6 +8,24 @@ Changelog
 
 .. towncrier release notes start
 
+7.1.0 (2024-07-31)
+------------------
+
+New features:
+
+
+- PloneFixture: explicitly install plone.app.contenttypes:default.
+  The `addPloneSite` factory in Plone 6.1 no longer installs this by default.
+  [maurits] (#3961)
+
+
+Bug fixes:
+
+
+- Remove setuptools fossils.
+  [maurits] (#72)
+
+
 7.0.2 (2024-01-19)
 ------------------
 
