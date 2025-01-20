@@ -10,7 +10,7 @@ import transaction
 
 
 class SeleniumLayer(Layer):
-    defaultBases = (zope.ZSERVER_FIXTURE,)
+    defaultBases = (zope.WSGI_SERVER_FIXTURE,)
 
     def testSetUp(self):
         # Start up Selenium

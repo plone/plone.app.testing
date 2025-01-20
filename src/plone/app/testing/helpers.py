@@ -233,7 +233,7 @@ def ploneSite(db=None, connection=None, environ=None, flavour=zope):
             ...
 
     This is based on the ``zope.zopeApp()`` context manager. See the module
-     ``plone.testing.z2`` for details.
+     ``plone.testing.zope`` for details.
 
     Do not use this in a test. Use the 'portal' resource from the PloneFixture
     layer instead!
@@ -242,7 +242,7 @@ def ploneSite(db=None, connection=None, environ=None, flavour=zope):
     pass an open connection as ``connection`` (the connection will not be
     closed).
 
-    flavour ... either `plone.testing.z2` resp. `plone.testing.zope` for WSGI
+    flavour ... either `plone.testing.zope` for WSGI
                 or `plone.testing.zserver` for ZServer
     """
     setHooks()

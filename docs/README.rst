@@ -47,7 +47,7 @@ In ``setup.py``, add or modify the ``extras_require`` option, like so::
             ]
     },
 
-This will also include ``plone.testing``, with the ``[z2]``, ``[zca]`` and
+This will also include ``plone.testing``, with the ``[security]``, ``[zca]`` and
 ``[zodb]`` extras (which ``plone.app.testing`` itself relies on).
 
 Please see the `plone.testing`_ documentation for more details about how to
@@ -131,12 +131,12 @@ Plone site fixture
 +------------+--------------------------------------------------+
 | Class:     | ``plone.app.testing.layers.PloneFixture``        |
 +------------+--------------------------------------------------+
-| Bases:     | ``plone.testing.z2.STARTUP``                     |
+| Bases:     | ``plone.testing.zope.STARTUP``                   |
 +------------+--------------------------------------------------+
 | Resources: |                                                  |
 +------------+--------------------------------------------------+
 
-This layer sets up the Plone site fixture on top of the ``z2.STARTUP``
+This layer sets up the Plone site fixture on top of the ``zope.STARTUP``
 fixture.
 
 You should not use this layer directly, as it does not provide any test
@@ -212,7 +212,7 @@ Integration and functional testing test lifecycles
 
 ``plone.app.testing`` comes with two layer classes, ``IntegrationTesting``
 and ``FunctionalTesting``, which derive from the corresponding layer classes
-in ``plone.testing.z2``.
+in ``plone.testing.zope``.
 
 These classes set up the ``app``, ``request`` and ``portal`` resources, and
 reset the fixture (including various global caches) between each test run.
@@ -299,7 +299,7 @@ Plone ZServer
 +------------+--------------------------------------------------+
 | Layer:     | ``plone.app.testing.PLONE_ZSERVER``              |
 +------------+--------------------------------------------------+
-| Class:     | ``plone.testing.z2.ZServer``                     |
+| Class:     | ``plone.testing.zope.ZServer``                   |
 +------------+--------------------------------------------------+
 | Bases:     | ``plone.app.testing.PLONE_FUNCTIONAL_TESTING``   |
 +------------+--------------------------------------------------+
@@ -313,7 +313,7 @@ Again, you would not normally extend this layer. To create a custom layer
 that has a running ZServer, you can use the same pattern as this one, e.g.::
 
     from plone.testing import Layer
-    from plone.testing import z2
+    from plone.testing import zserver
     from plone.app.testing import PLONE_FIXTURE
     from plone.app.testing import FunctionalTesting
 
@@ -323,9 +323,9 @@ that has a running ZServer, you can use the same pattern as this one, e.g.::
         ...
 
     MY_FIXTURE = MyFixture()
-    MY_ZSERVER = FunctionalTesting(bases=(MY_FIXTURE, z2.ZSERVER_FIXTURE), name='MyFixture:ZServer')
+    MY_ZSERVER = FunctionalTesting(bases=(MY_FIXTURE, zserver.ZSERVER_FIXTURE), name='MyFixture:ZServer')
 
-See the description of the ``z2.ZSERVER`` layer in `plone.testing`_
+See the description of the ``zserver.ZSERVER`` layer in `plone.testing`_
 for further details.
 
 Plone FTP server
@@ -337,7 +337,7 @@ Plone FTP server
 | Class:     | ``plone.app.testing.layers.FunctionalTesting``   |
 +------------+--------------------------------------------------+
 | Bases:     | ``plone.app.testing.PLONE_FIXTURE``              |
-|            | ``plone.testing.z2.ZSERVER_FIXTURE``             |
+|            | ``plone.testing.zserver.ZSERVER_FIXTURE``        |
 +------------+--------------------------------------------------+
 | Resources: | ``portal`` (test setup only)                     |
 +------------+--------------------------------------------------+
@@ -346,7 +346,7 @@ This is layer is intended for functional testing using a live FTP server.
 
 It is semantically equivalent to the ``PLONE_ZSERVER`` layer.
 
-See the description of the ``z2.FTP_SERVER`` layer in `plone.testing`_
+See the description of the ``zserver.FTP_SERVER`` layer in `plone.testing`_
 for further details.
 
 Helper functions
@@ -406,7 +406,7 @@ User management
 ---------------
 
 ``login(portal, userName)``
-    Simulate login as the given user. This is based on the ``z2.login()``
+    Simulate login as the given user. This is based on the ``zope.login()``
     helper in `plone.testing`_, but instead of passing a specific user folder,
     you pass the portal (e.g. as obtained via the ``portal`` layer resource).
 
@@ -432,7 +432,7 @@ User management
 
 ``logout()``
     Simulate logging out, i.e. becoming the anonymous user. This is equivalent
-    to the ``z2.logout()`` helper in `plone.testing`_.
+    to the ``zope.logout()`` helper in `plone.testing`_.
 
     For example::
 
@@ -668,7 +668,7 @@ following methods:
     This is called during setup. ``app`` is the Zope application root.
     ``configurationContext`` is a newly stacked ZCML configuration context.
     Use this to load ZCML, install products using the helper
-    ``plone.testing.z2.installProduct()``, or manipulate other global state.
+    ``plone.testing.zope.installProduct()``, or manipulate other global state.
 
 ``setUpPloneSite(self, portal)``
     This is called during setup. ``portal`` is the Plone site root as
@@ -709,7 +709,7 @@ the package, i.e. ``my.product.testing``::
     from plone.app.testing import PLONE_FIXTURE
     from plone.app.testing import IntegrationTesting
 
-    from plone.testing import z2
+    from plone.testing import zope
 
     class MyProduct(PloneSandboxLayer):
 
@@ -721,7 +721,7 @@ the package, i.e. ``my.product.testing``::
             self.loadZCML(package=my.product)
 
             # Install product and call its initialize() function
-            z2.installProduct(app, 'my.product')
+            zope.installProduct(app, 'my.product')
 
             # Note: you can skip this if my.product is not a Zope 2-style
             # product, i.e. it is not in the Products.* namespace and it
@@ -734,7 +734,7 @@ the package, i.e. ``my.product.testing``::
 
         def tearDownZope(self, app):
             # Uninstall product
-            z2.uninstallProduct(app, 'my.product')
+            zope.uninstallProduct(app, 'my.product')
 
             # Note: Again, you can skip this if my.product is not a Zope 2-
             # style product
@@ -1356,7 +1356,7 @@ case, you need to commit the transaction before it becomes available, e.g.::
 
 To obtain a new test browser client::
 
-    from plone.testing.z2 import Browser
+    from plone.testing.zope import Browser
 
     # This is usually self.app (Zope root) or site.portal (test Plone site root)
     browser = Browser(app)
@@ -1541,7 +1541,7 @@ differences to bear in mind.
   ``FunctionalTesting`` test lifecycle layer (see example above), and then
   use::
 
-        from plone.testing.z2 import Browser
+        from plone.testing.zope import Browser
         browser = Browser(self.layer['app'])
 
   Also note that if you have made changes to the fixture prior to calling

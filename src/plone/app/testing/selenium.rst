@@ -63,8 +63,8 @@ shown above, and ``PLONE_FIXTURE``.
     >>> runner.setup_layer(
     ...     options, layers.SELENIUM_PLONE_FUNCTIONAL_TESTING, setupLayers)
     Set up plone.testing.zca.LayerCleanup in ... seconds.
-    Set up plone.testing.z2.Startup in ... seconds.
-    Set up plone.testing.z2.ZServer in ... seconds.
+    Set up plone.testing.zope.Startup in ... seconds.
+    Set up plone.testing.zope.WSGIServer in ... seconds.
     Set up plone.app.testing.selenium_layers.SeleniumLayer in ... seconds.
     Set up plone.app.testing.layers.PloneFixture in ... seconds.
     Set up plone.app.testing.selenium_layers.SeleniumTesting:Functional in ... seconds.
@@ -84,9 +84,9 @@ indicate where Zope is running.
 Let's now simulate a test. Test setup does nothing beyond what the base layers
 do.
 
-    >>> from plone.testing import z2, zca
+    >>> from plone.testing import zope, zca
     >>> zca.LAYER_CLEANUP.testSetUp()
-    >>> z2.STARTUP.testSetUp()
+    >>> zope.STARTUP.testSetUp()
     >>> layers.SELENIUM_FIXTURE.testSetUp()
     >>> layers.SELENIUM_PLONE_FUNCTIONAL_TESTING.testSetUp()
 
@@ -120,7 +120,7 @@ Test tear-down does nothing beyond what the base layers do.
 
     >>> layers.SELENIUM_PLONE_FUNCTIONAL_TESTING.testTearDown()
     >>> layers.SELENIUM_FIXTURE.testTearDown()
-    >>> z2.STARTUP.testTearDown()
+    >>> zope.STARTUP.testTearDown()
     >>> zca.LAYER_CLEANUP.testTearDown()
 
     >>> 'portal' in layers.SELENIUM_PLONE_FUNCTIONAL_TESTING
@@ -137,7 +137,7 @@ When the layer is torn down, the Selenium browser is closed.
     >>> runner.tear_down_unneeded(options, [], setupLayers)
     Tear down plone.app.testing.selenium_layers.SeleniumTesting:Functional in ... seconds.
     Tear down plone.app.testing.layers.PloneFixture in ... seconds.
-    Tear down plone.testing.z2.Startup in ... seconds.
+    Tear down plone.testing.zope.Startup in ... seconds.
     Tear down plone.testing.zca.LayerCleanup in ... seconds.
 
     >>> if getattr(selenium, '_server', None) is None:
