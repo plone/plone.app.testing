@@ -278,7 +278,7 @@ class PloneTestLifecycle:
     resource and resets the environment between each test.
 
     This class is used as a mixing for the IntegrationTesting and
-    FunctionalTesting classes below, which also mix in the z2 versions of
+    FunctionalTesting classes below, which also mix in the zope versions of
     the same.
     """
 

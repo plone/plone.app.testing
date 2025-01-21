@@ -79,7 +79,7 @@ setup(
         "plone.dexterity",
         "plone.memoize",
         "plone.registry",
-        "plone.testing [zca,security,zodb,z2]",
+        "plone.testing [zca,security,zodb]",
         "setuptools",
         "zope.configuration",
         "zope.component",
