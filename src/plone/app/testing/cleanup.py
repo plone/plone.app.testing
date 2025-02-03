@@ -1,5 +1,4 @@
-"""Cleanup handlers for various global registries
-"""
+"""Cleanup handlers for various global registries"""
 
 from zope.testing.cleanup import addCleanUp
 
