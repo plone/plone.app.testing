@@ -68,7 +68,7 @@ setup(
     namespace_packages=["plone", "plone.app"],
     include_package_data=True,
     zip_safe=False,
-    python_requires=">=3.7",
+    python_requires=">=3.8",
     install_requires=[
         "Products.CMFPlone",
         "Products.GenericSetup",
