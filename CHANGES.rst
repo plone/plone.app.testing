@@ -8,6 +8,15 @@ Changelog
 
 .. towncrier release notes start
 
+7.1.2 (2025-11-19)
+------------------
+
+Internal:
+
+
+- Update config files [plone devs]
+
+
 7.1.1 (2025-01-24)
 ------------------
 
