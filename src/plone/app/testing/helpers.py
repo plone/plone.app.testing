@@ -18,7 +18,6 @@ from zope.configuration import xmlconfig
 
 import contextlib
 
-
 # User management
 
 

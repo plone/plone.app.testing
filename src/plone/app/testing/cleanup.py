@@ -2,7 +2,6 @@
 
 from zope.testing.cleanup import addCleanUp
 
-
 # Make sure cleanup handlers from GenericSetup are registered
 try:
     import Products.GenericSetup.zcml
