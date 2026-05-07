@@ -8,6 +8,22 @@ Changelog
 
 .. towncrier release notes start
 
+8.0.0 (2026-05-07)
+------------------
+
+Internal:
+
+
+- Update configuration files.
+  [plone devs]
+
+
+Tests:
+
+
+- Update meta workflow: add ``circular``, remove ``test`` (replaced with test-matrix).  [maurits]
+
+
 8.0.0a1 (2025-11-26)
 --------------------
 
