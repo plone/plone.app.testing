@@ -2,8 +2,8 @@
 
 from AccessControl import getSecurityManager
 from plone.app import testing
+from plone.base.utils import unrestricted_construct_instance
 from plone.testing import zope
-from Products.CMFPlone.utils import _createObjectByType
 from Testing.ZopeTestCase.functional import Functional
 
 import transaction
@@ -14,7 +14,7 @@ def _createMemberarea(portal, user_id):
     mtool = portal.portal_membership
     members = mtool.getMembersFolder()
     if members is None:
-        _createObjectByType("Folder", portal, id="Members")
+        unrestricted_construct_instance("Folder", portal, id="Members")
     if not mtool.getMemberareaCreationFlag():
         mtool.setMemberareaCreationFlag()
     mtool.createMemberArea(user_id)

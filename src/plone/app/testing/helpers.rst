@@ -50,7 +50,7 @@ course, if our setup had changed any other global or external state, we would
 need to tear that down as well.
 
     >>> def is_installed(portal, product_name):
-    ...     from Products.CMFPlone.utils import get_installer
+    ...     from plone.base.utils import get_installer
     ...     qi = get_installer(portal)
     ...     return qi.is_product_installed(product_name)
 

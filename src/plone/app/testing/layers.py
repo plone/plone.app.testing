@@ -210,7 +210,6 @@ class PloneFixture(Layer):
             app,
             PLONE_SITE_ID,
             title=PLONE_SITE_TITLE,
-            setup_content=False,
             default_language=DEFAULT_LANGUAGE,
             extension_ids=self.extensionProfiles,
         )

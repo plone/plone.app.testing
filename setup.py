@@ -70,6 +70,7 @@ setup(
         "Zope",
         "persistent",
         "plone.app.contenttypes",
+        "plone.base",
         "plone.dexterity",
         "plone.memoize",
         "plone.registry",

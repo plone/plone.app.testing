@@ -1164,7 +1164,7 @@ has been applied. Some of the more common such tests are shown below.
 To verify that a product has been installed (e.g. as a dependency via
 ``metadata.xml``)::
 
-    from Products.CMFPlone.utils import get_installer
+    from plone.base.utils import get_installer
 
     qi = get_installer(portal)
     self.assertTrue(qi.is_product_installed('my.product'))
