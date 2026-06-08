@@ -79,7 +79,7 @@ def quickInstallProduct(portal, productName, reinstall=False):
 
     zope.login(app["acl_users"], SITE_OWNER_NAME)
 
-    from Products.CMFPlone.utils import get_installer
+    from plone.base.utils import get_installer
 
     qi = get_installer(portal)
 

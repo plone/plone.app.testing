@@ -1,0 +1,3 @@
+Use ``plone.base.utils`` instead of ``Products.CMFPlone.utils`` when deprecated.
+No longer pass deprecated ``setup_content=False`` to ``addPloneSite`` call.
+[maurits]
