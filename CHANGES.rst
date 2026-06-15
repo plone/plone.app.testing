@@ -8,6 +8,17 @@ Changelog
 
 .. towncrier release notes start
 
+8.0.1 (2026-06-15)
+------------------
+
+Bug fixes:
+
+
+- Use ``plone.base.utils`` instead of ``Products.CMFPlone.utils`` when deprecated.
+  No longer pass deprecated ``setup_content=False`` to ``addPloneSite`` call.
+  [maurits]
+
+
 8.0.0 (2026-05-07)
 ------------------
 
