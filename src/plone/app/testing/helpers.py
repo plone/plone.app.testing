@@ -22,19 +22,39 @@ import contextlib
 
 
 def login(portal, userName):
-    """Log in as the given user in the given Plone site"""
+    """Log in as the named user in the given Plone site.
+
+    Subsequent operations run as this user until :func:`logout` is called
+    or the test tears down.
+
+    :param portal: the Plone site to log in to.
+    :param userName: the login name of the user to become, for example
+        :data:`TEST_USER_NAME`. This is the login name, not the user id.
+    """
 
     zope.login(portal["acl_users"], userName)
 
 
 def logout():
-    """Log out, i.e. become anonymous"""
+    """Log out, so that subsequent operations run as the anonymous user.
+
+    The inverse of :func:`login`.
+    """
 
     zope.logout()
 
 
 def setRoles(portal, userId, roles):
-    """Set the given user's roles to a tuple of roles."""
+    """Set a user's global roles to exactly the given roles.
+
+    Replaces the user's current roles rather than adding to them.
+
+    :param portal: the Plone site.
+    :param userId: the id of the user whose roles to set, for example
+        :data:`TEST_USER_ID`. This is the user id, not the login name.
+    :param roles: the roles the user should have, as a sequence of role
+        names, for example ``["Manager"]``.
+    """
 
     userFolder = portal["acl_users"]
     zope.setRoles(userFolder, userId, roles)
@@ -105,8 +125,25 @@ def applyProfile(
     archive=None,
     blacklisted_steps=None,
 ):
-    """Install an extension profile into the portal. The profile name
-    should be a package name and a profile name, e.g. 'my.product:default'.
+    """Install a GenericSetup extension profile into the portal.
+
+    Runs every import step of the profile as the site owner, then rebuilds
+    the current skin. Use this to install an add-on into the test site,
+    typically from a layer's ``setUpPloneSite`` or directly in a test.
+
+    :param portal: the Plone site to install the profile into.
+    :param profileName: the profile id in ``package:profile`` form, for
+        example ``"my.product:default"``. Give it without the ``profile-``
+        prefix; that is added internally.
+    :param purge_old: passed through to GenericSetup. When ``None`` (the
+        default) GenericSetup decides; ``True`` purges existing settings
+        before importing, ``False`` keeps them.
+    :param ignore_dependencies: when ``True``, run only the profile's own
+        import steps and skip the profiles it depends on.
+    :param archive: an optional GenericSetup archive (tarball) to import
+        from instead of the profile directory.
+    :param blacklisted_steps: an optional sequence of import step ids to
+        skip.
     """
 
     from AccessControl import getSecurityManager

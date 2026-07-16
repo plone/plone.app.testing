@@ -16,6 +16,13 @@ except ImportError:
 
 
 def cleanUpMultiPlugins():
+    """Remove PAS MultiPlugin registrations left in the global registry.
+
+    Registered as a ``zope.testing`` cleanup handler, so it runs
+    automatically between test layers and keeps global PluggableAuthService
+    state from leaking from one layer into the next. Plugins that
+    GenericSetup's own cleanup handler already manages are left untouched.
+    """
     try:
         from Products.PluggableAuthService.PluggableAuthService import MultiPlugins
 
