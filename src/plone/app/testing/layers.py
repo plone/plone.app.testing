@@ -398,11 +398,30 @@ MOCK_MAILHOST_FIXTURE = MockMailHostLayer()
 
 
 class IntegrationTesting(PloneTestLifecycle, zope.IntegrationTesting):
-    """Plone version of the integration testing layer"""
+    """Testing layer for integration tests.
+
+    Wraps a Plone site fixture with per-test isolation: each test runs
+    inside a transaction that is rolled back on tear-down, so tests do not
+    see each other's changes. Derive one from your fixture with
+    ``IntegrationTesting(bases=(MY_FIXTURE,), name=...)``.
+
+    Use this for in-process tests. When a test makes a real HTTP request,
+    use :class:`FunctionalTesting` instead.
+    """
 
 
 class FunctionalTesting(PloneTestLifecycle, zope.FunctionalTesting):
-    """Plone version of the functional testing layer"""
+    """Testing layer for functional tests.
+
+    Like :class:`IntegrationTesting`, but each test runs against a stacked
+    ``DemoStorage`` and may commit real transactions, which a separate
+    process such as a browser or HTTP client can then see. The storage is
+    discarded on tear-down.
+
+    Use this when a request has to travel over the network, for example a
+    REST API or browser test. Add ``WSGI_SERVER_FIXTURE`` to the bases so a
+    server is running. For in-process tests, use :class:`IntegrationTesting`.
+    """
 
 
 class ZServerFunctionalTesting(PloneZServerTestLifecycle, zserver.FunctionalTesting):
