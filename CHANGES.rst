@@ -8,6 +8,20 @@ Changelog
 
 .. towncrier release notes start
 
+8.0.2 (2026-07-27)
+------------------
+
+Documentation:
+
+
+- Enrich the docstrings of the public testing helpers and layer classes
+  (``login``, ``logout``, ``setRoles``, ``applyProfile``,
+  ``cleanUpMultiPlugins``, ``IntegrationTesting``, ``FunctionalTesting``)
+  with parameter descriptions and behaviour notes.
+  This makes them usable as an autodoc API reference and improves IDE help.
+  [jensens]
+
+
 8.0.1 (2026-06-15)
 ------------------
 
